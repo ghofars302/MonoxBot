@@ -1,0 +1,21 @@
+{
+  "name": "MonoxBot",
+  "version": "1.2.0",
+  "description": "Cool bot made by @Monodoxy#0240",
+  "author": "Monodoxy",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ."
+  },
+  "repository": {
+  "url": "https://github.com/ghofars302/MonoxBot"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^11.3.0",
+    "node-opus": "^0.2.7",
+    "webdict": "^0.2.2",
+    "ytdl-core": "^0.20.2"
+  }
+}
