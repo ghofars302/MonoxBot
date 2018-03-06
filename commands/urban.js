@@ -1,30 +1,62 @@
 exports.run = async (client, message, args, level) => {
     const msg = await message.channel.send('Searching...')
     try {
-      const webdict = require('webdict');
-      const word = args.join(" ");
-      if(!word) return message.channel.send('I need a word before I search it')
-      webdict('dictionary', word).then(res => {
-        let result;
-        if(!res || !res.definition || !res.definition[0] || !res.definition[1] || !res.definition[2]) {
-          result = 'No result found.';
+      const search = args.join(" ");
+      const urban = require('urban-dictionary');
+      if(!search) return msg.edit('You must provide the text.');
+      urban.term(search, function (error, entries, tags, sounds) {
+        if (error) {
+          msg.edit({embed: {
+            title: ":book: " + entries[0].word,
+            fields: [{
+              name: 'Results',
+              value: 'No Results found. :(',
+            }],
+            footer: {
+              icon_url: 'http://www.packal.org/sites/default/files/public/styles/icon_large/public/workflow-files/florianurban/icon/icon.png?itok=sMaOFyEA',
+              text: 'Urban Dictionary'
+            }
+          }});
         } else {
-          result = `--\n${res.definition[0]}\n--\n${res.definition[1]}\n--\n${res.definition[2]}\n--`;
-        }
-        msg.edit({embed: {
-          description: `:book: Result of : **${word}**\n` + result
-        }});
-      })
-    } catch (error) {
-      msg.edit(':warning: Webdict API down!');
-      console.error(error);
+          if(!entries[0].example) return msg.edit({embed: {
+            title: ":book: " + entries[0].word,
+            fields: [{
+              name: 'Results',
+              value: entries[0].definition,
+            }],
+            footer: {
+              icon_url: 'http://www.packal.org/sites/default/files/public/styles/icon_large/public/workflow-files/florianurban/icon/icon.png?itok=sMaOFyEA',
+              text: 'Urban Dictionary'
+            }
+          }});
+          msg.edit({embed: {
+            title: ":book: " + entries[0].word,
+            fields: [{
+              name: 'Results',
+              value: entries[0].definition,
+            },
+            {
+              name: 'Example',
+              value: entries[0].example
+            }
+            ],
+            footer: {
+              icon_url: 'http://www.packal.org/sites/default/files/public/styles/icon_large/public/workflow-files/florianurban/icon/icon.png?itok=sMaOFyEA',
+              text: 'Urban Dictionary'
+            }
+          }})
+        };
+      });
+    } catch (err) {
+      msg.edit(':warning: Urban.js API down!');
+      console.error(err);
     }
 };
 
 exports.conf = {
   enabled: true,
   guildOnly: false,
-  aliases: [],
+  aliases: ['dictionary'],
   permLevel: "User"
 };
 
@@ -32,5 +64,5 @@ exports.help = {
   name: "urban",
   category: "Unity",
   description: "Get meaning of word from urbandictionary.com",
-  usage: "urban word"
+  usage: "urban (word)"
 };
