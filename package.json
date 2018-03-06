@@ -5,16 +5,29 @@
   "author": "Monodoxy",
   "main": "index.js",
   "scripts": {
-    "test": "node ."
+    "start": "node index.js"
   },
   "repository": {
-  "url": "https://github.com/ghofars302/MonoxBot"
+    "url": "https://github.com/ghofars302/MonoxBot"
   },
   "keywords": [],
   "license": "MIT",
   "dependencies": {
+    "chalk": "^2.3.1",
+    "common-tags": "^1.7.2",
     "discord.js": "^11.3.0",
+    "enmap": "^0.4.6",
+    "enmap-level": "^1.0.1",
+    "forever": "^0.15.3",
+    "google-translate-api": "^2.3.0",
+    "loadavg-windows": "^1.0.2",
+    "moment": "^2.20.1",
+    "moment-duration-format": "^2.2.2",
     "node-opus": "^0.2.7",
+    "os-utils": "0.0.14",
+    "python-shell": "^0.5.0",
+    "systeminformation": "^3.37.4",
+    "urban-dictionary": "^1.0.6",
     "webdict": "^0.2.2",
     "ytdl-core": "^0.20.2"
   }
