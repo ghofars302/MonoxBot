@@ -7,7 +7,7 @@ exports.run = async (client, message, args, level) => {
       urban.term(search, function (error, entries, tags, sounds) {
         if (error) {
           msg.edit({embed: {
-            title: ":book: " + entries[0].word,
+            title: ":book: " + search,
             fields: [{
               name: 'Results',
               value: 'No Results found. :(',
