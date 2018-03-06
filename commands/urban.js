@@ -48,7 +48,7 @@ exports.run = async (client, message, args, level) => {
         };
       });
     } catch (err) {
-      msg.edit(':warning: Urban.js API down!');
+      msg.edit(':warning: Urban Dictionary API down!');
       console.error(err);
     }
 };
