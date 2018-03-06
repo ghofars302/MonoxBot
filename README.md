@@ -1,4 +1,4 @@
 # MonoxBot
 A discord bot with music support
 
-Under develoment
+Under develoment, But almost ready.
