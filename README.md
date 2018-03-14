@@ -4,7 +4,7 @@ A cool discord bot made by Monodoxy#0240
 Invite Here: (comming soon xD)
 List command: https://monoxbot.glitch.me/
 
-#Self-Host
+# Self-Host
 Note: I very recommend to host it on linux because some commands will complain if You host it on WINDOWS
 RECOMMENDED FREE-HOSTING: glitch.com
 
