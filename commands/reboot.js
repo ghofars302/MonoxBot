@@ -1,5 +1,5 @@
 exports.run = async (client, message, args, level) => {
-  await message.reply("Bot is shutting down.");
+  await message.reply("Bot is Restarting...");
   client.commands.forEach( async cmd => {
     await client.unloadCommand(cmd);
   });
@@ -16,6 +16,6 @@ exports.conf = {
 exports.help = {
   name: "reboot",
   category: "System",
-  description: "Shuts down the bot. If running under PM2, bot will restart automatically.",
+  description: "Reload everything.",
   usage: "reboot"
 };

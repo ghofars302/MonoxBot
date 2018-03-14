@@ -19,19 +19,6 @@ exports.run = async (client, message, [action, key, ...value], level) => {
     client.settings.set(message.guild.id, settings);
     message.channel.send(`:white_check_mark: \`\`${key}\`\` successfully edited to \`\`${value.join(" ")}\`\``);
   } else
-  if (action === "del") {
-    if (!key) return message.channel.send("Please specify a key to delete.");
-    if (!settings[key]) return message.channel.send("This key does not exist in the settings");
-    const response = await client.awaitReply(message, `Are you sure you want to permanently delete ${key}? This **CANNOT** be undone.`);
-    if (["y", "yes"].includes(response)) {
-      delete settings[key];
-      client.settings.set(message.guild.id, settings);
-      message.channel.send(`${key} was successfully deleted.`);
-    } else
-    if (["n","no","cancel"].includes(response)) {
-      message.channel.send("Action cancelled.");
-    }
-  } else
 
   if (action === "get") {
     if (!key) return message.channel.send("Please specify a key to view");

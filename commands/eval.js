@@ -1,6 +1,7 @@
-
+const os = require('os');
 exports.run = async (client, message, args, level) => {
   const code = args.join(" ");
+  if(!code) return message.channel.send('```\neval (code)\n\neval Javascript code```');
   try {
     const evaled = eval(code);
     const clean = await client.clean(client, evaled);

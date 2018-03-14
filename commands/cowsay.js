@@ -1,14 +1,13 @@
 
 exports.run = async (client, message, args, level) => {
+  var cowsay = require('cowsay');
+  const text = args.join(" ");
   try {
-    const sayqueue = args.join(" ");
-    if (!sayqueue) return message.channel.send('```Cowsay (text)```');
-    var exec = require('child_process').execSync;
-    let cowsaying = exec(`cowsay "${sayqueue}"`);
-    message.channel.send(`\`\`\`xl\n${cowsaying}\n\`\`\``)
-  } catch (err) {
-    message.channel.send(`\`\`\`xl\n${err}\n\`\`\``);
-    console.error(error)
+   if(!text) return message.channel.send('```cowsay (text)```');
+   message.channel.send(cowsay.say({text: text}), {code:"xl"});
+  } catch (e) {
+    console.log(e);
+    message.channel.send(e);
   }
 };
 
@@ -16,7 +15,7 @@ exports.conf = {
   enabled: true,
   guildOnly: false,
   aliases: [],
-  permLevel: "User"
+  permLevel: "Users"
 };
 
 exports.help = {

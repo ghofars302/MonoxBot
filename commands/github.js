@@ -6,7 +6,7 @@ exports.conf = {
   enabled: true,
   guildOnly: false,
   aliases: ['git'],
-  permLevel: "User"
+  permLevel: "Users"
 };
 
 exports.help = {

@@ -1,5 +1,5 @@
 exports.run = async (client, message, args, level) => {
-  const Users = message.users.find("name", args);
+  let Users = client.users.find('username', args).slice();
   try {
     if(!Users) return message.channel.send(`\`\``+ message.author.username + '``\'s avatar. ' + message.author.displayAvatarURL);
     message.channel.send('``' + Users.username + '``\'s avatar. ' + Users.displayAvatarURL);
@@ -9,16 +9,16 @@ exports.run = async (client, message, args, level) => {
   };
 };
 
-exports.conf = {
-  enabled: true,
-  guildOnly: false,
-  aliases: [],
-  permLevel: "User"
-};
+  exports.conf = {
+    enabled: true,
+    guildOnly: false,
+    aliases: [],
+    permLevel: "Users"
+  };
 
-exports.help = {
-  name: "avatar",
-  category: "unity",
-  description: "Get user avatar.",
-  usage: "avatar (user)"
-};
+  exports.help = {
+    name: "avatar",
+    category: "unity",
+    description: "Get user avatar.",
+    usage: "avatar (user)"
+  };

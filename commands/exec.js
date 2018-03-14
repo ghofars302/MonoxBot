@@ -1,12 +1,15 @@
 exports.run = async (client, message, args, level) => {
   const code = args.join(" ");
-  try {
-    const exec = require('child_process').execSync;
-    const execute = exec(`${code}`);
-    message.channel.send(`\`\`\`xl\n${execute}\n\`\`\``)
-  } catch (err) {
-    message.channel.send(`\`ERROR\` \`\`\`xl\n${err}\n\`\`\``);
+  var exec = require('child_process').exec;
+  async function output(error, stdout, stderr)
+  {
+    if(error) return message.channel.send("\`\`\`xl\n"+stderr+"\`\`\`");
+    message.channel.send("\`\`\`xl\n"+stdout+"\`\`\`");
   }
+  if(code)
+    return exec(code, output);
+  else
+    return message.channel.send('```\nexec (command)\n\neval system command```');
 };
 
 exports.conf = {

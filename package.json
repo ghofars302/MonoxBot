@@ -1,34 +1,45 @@
 {
   "name": "MonoxBot",
-  "version": "1.2.0",
+  "version": "5.5.0",
   "description": "Cool bot made by @Monodoxy#0240",
   "author": "Monodoxy",
   "main": "index.js",
   "scripts": {
-    "start": "node start.js"
+    "start": "node bot.js"
   },
   "repository": {
     "url": "https://github.com/ghofars302/MonoxBot"
   },
   "keywords": [],
   "license": "MIT",
+  "engines": {
+    "node": "9.x"
+  },
   "dependencies": {
-    "chalk": "^2.3.1",
+    "booru": "^0.4.0",
+    "chalk": "^2.3.2",
+    "cheerio": "^1.0.0-rc.2",
     "common-tags": "^1.7.2",
-    "discord.js": "^11.3.0",
-    "enmap": "^0.4.6",
+    "discord.js": "^11.3.2",
+    "enmap": "^0.6.1",
     "enmap-level": "^1.0.1",
     "forever": "^0.15.3",
-    "google-translate-api": "^2.3.0",
+    "got": "^8.3.0",
+    "install": "^0.10.4",
     "loadavg-windows": "^1.0.2",
-    "moment": "^2.20.1",
+    "moment": "^2.21.0",
     "moment-duration-format": "^2.2.2",
     "node-opus": "^0.2.7",
-    "os-utils": "0.0.14",
+    "npm": "^5.7.1",
+    "os-utils": "^0.0.14",
     "python-shell": "^0.5.0",
     "systeminformation": "^3.37.4",
     "urban-dictionary": "^1.0.6",
     "webdict": "^0.2.2",
-    "ytdl-core": "^0.20.2"
+    "ytdl-core": "^0.20.2",
+    "express": "^4.16.2",
+    "concurrently": "^3.5.1",
+    "cowsay": "^1.2.1",
+    "google-translate-api-plus": "^1.0.1"
   }
 }

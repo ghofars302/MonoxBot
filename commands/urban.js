@@ -61,7 +61,7 @@ exports.conf = {
   enabled: true,
   guildOnly: false,
   aliases: ['dictionary'],
-  permLevel: "User"
+  permLevel: "Users"
 };
 
 exports.help = {

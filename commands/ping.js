@@ -34,24 +34,28 @@ function randomItem(array) {
 }
 
 exports.run = async (client, message, args, level) => {
-      const msg = await message.channel.send('Pinging...');
-      const code = args.join(" ");
-      try {
-        if (!code) return msg.edit('Pong!. It took ``' + Math.round(client.ping) + 'ms`` to ping **' + randomItem(randomfact) + '**');
-        var exec = require('child_process').execSync;
-        let pinged = exec(`ping "${code}"`);
-        msg.edit(`\`\`\`xl${pinged}\n\n\`\`\``)
-      } catch (error) {
-        msg.edit(`\`\`\`xl\nUnknown hostname : "${code}"\`\`\``);
-        console.error(error)
+      function isURL(value) {
+         return /^(https?:\/\/)?.+(\..+)?\.\w+(\/[^\/]*)*$/.test(value);
       }
+      const Content = args.join(" ");
+      var exec = require('child_process').exec;
+      const msg = await message.channel.send('Pinging...');
+      async function output(error, stdout, stderr)
+      {
+          msg.edit("\`\`\`xl\n"+stdout+"\`\`\`");
+      }
+      var msgExec = `ping -c 4 "${Content}" `;
+      if (Content.length > 5 && (isURL(Content)))
+          return exec(msgExec, output);
+      else
+          return msg.edit('Pong! It took ``' + Math.round(client.ping) + 'ms`` to ping **' + randomItem(randomfact) + '**');
 };
 
 exports.conf = {
   enabled: true,
   guildOnly: false,
   aliases: [],
-  permLevel: "User"
+  permLevel: "Users"
 };
 
 exports.help = {
