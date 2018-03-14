@@ -1,18 +1,11 @@
-# MonoxBot
-A discord bot ... Music?_? i still working on it
+# MonoxBot -- BETA 5.5.0
+A cool discord bot made by Monodoxy#0240
 
-How2Install??
+Invite Here: (comming soon xD)
+List command: https://monoxbot.glitch.me/
 
-First there 2 ways to install this bot.
+#Self-Host
+Note: I very recommend to host it on linux because some commands will complain if You host it on WINDOWS
+RECOMMENDED FREE-HOSTING: glitch.com
 
-1. Just install it on glitch.com || glitch.com is free hosting for small node.js project or small website
-2. Use this below thing.
-
-Manual Install.
-------------------------------------------------
-First you need Node.js version above 8.0.0
-GIT
-------------------------------------------------
-
-THEN CLONE THIS GIT AND DO NPM I
-KTHX
+I don't take any respond if you host it on your computer and got attacked because this bot still in BETA
