@@ -3,9 +3,9 @@
   "version": "6.0.0",
   "description": "Cool bot made by @Monodoxy#0240",
   "author": "Monodoxy",
-  "main": "index.js",
+  "main": "bot.js",
   "scripts": {
-    "start": "concurrently -p \"[{name}]\" -n \"HTTP,JS,LESS\" -c \"bgBlue.bold,bgMagenta.bold,bgGreen.bold\" \"node index.js\" \"node express.js\""
+    "start": "node bot.js"
   },
   "repository": {
     "url": "https://github.com/ghofars302/MonoxBot"
