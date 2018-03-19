@@ -1,11 +1,11 @@
 {
   "name": "MonoxBot",
-  "version": "5.5.0",
+  "version": "6.0.0",
   "description": "Cool bot made by @Monodoxy#0240",
   "author": "Monodoxy",
   "main": "index.js",
   "scripts": {
-    "start": "node bot.js"
+    "start": "concurrently -p \"[{name}]\" -n \"HTTP,JS,LESS\" -c \"bgBlue.bold,bgMagenta.bold,bgGreen.bold\" \"node index.js\" \"node express.js\""
   },
   "repository": {
     "url": "https://github.com/ghofars302/MonoxBot"
@@ -29,13 +29,16 @@
     "moment-duration-format": "^2.2.2",
     "node-opus": "^0.2.7",
     "os-utils": "^0.0.14",
-    "systeminformation": "^3.37.4",
+    "systeminformation": "^3.37.5",
     "urban-dictionary": "^1.0.6",
-    "webdict": "^0.2.2",
     "ytdl-core": "^0.20.2",
-    "express": "^4.16.2",
+    "express": "^4.16.3",
     "concurrently": "^3.5.1",
     "cowsay": "^1.2.1",
-    "google-translate-api-plus": "^1.0.1"
+    "google-translate-api-plus": "^1.0.1",
+    "speedtest-net": "^1.4.2",
+    "snekfetch": "^3.6.4",
+    "random-puppy": "^1.1.0",
+    "puppeteer": "^1.2.0"
   }
 }
