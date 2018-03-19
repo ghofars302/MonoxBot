@@ -7,7 +7,7 @@ const EnmapLevel = require("enmap-level");
 const client = new Discord.Client({disableEveryone: true});
 client.config = require("./config.js");
 client.logger = require("./util/Logger");
-require("./util/functions.js")(client);
+require("./util/utils.js")(client);
 client.commands = new Enmap();
 client.aliases = new Enmap();
 client.settings = new Enmap({provider: new EnmapLevel({name: "settings"})});
