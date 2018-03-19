@@ -1,4 +1,4 @@
-# MonoxBot -- BETA 5.5.0
+# MonoxBot -- 6.0.0
 A cool discord bot made by Monodoxy#0240
 
 Invite Here: (comming soon xD)
