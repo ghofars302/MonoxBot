@@ -1,41 +1,96 @@
-if (process.version.slice(1).split(".")[0] < 9) throw new Error("Node 9.x is require by Monox BOT 6.0.0");
-const Discord = require("discord.js");
-const { promisify } = require("util");
-const readdir = promisify(require("fs").readdir);
-const Enmap = require("enmap");
-const EnmapLevel = require("enmap-level");
-const client = new Discord.Client({disableEveryone: true});
-client.config = require("./config.js");
-client.logger = require("./util/Logger");
-require("./util/utils.js")(client);
-client.commands = new Enmap();
-client.aliases = new Enmap();
-client.settings = new Enmap({provider: new EnmapLevel({name: "settings"})});
+/* eslint-disable no-console */
+const commando = require('discord.js-commando');
+const path = require('path');
+const oneLine = require('common-tags').oneLine;
+const sqlite = require('sqlite');
+const config = require('./config/BotCfg.json');
 
-const init = async () => {
-  const cmdFiles = await readdir("./commands/");
-  client.logger.log(`Loaded ${cmdFiles.length} commands.`);
-  cmdFiles.forEach(f => {
-    if (!f.endsWith(".js")) return;
-    const response = client.loadCommand(f);
-    if (response) console.log(response);
-  });
+const client = new commando.Client({
+	owner: config.owner,
+	commandPrefix: config.defaultPrefix,
+	disableEveryone: true,
+	unknownCommandResponse: false
+});
 
-  const evtFiles = await readdir("./events/");
-  client.logger.log(`Loaded ${evtFiles.length} events.`);
-  evtFiles.forEach(file => {
-    const eventName = file.split(".")[0];
-    const event = require(`./events/${file}`);
-    client.on(eventName, event.bind(null, client));
-    delete require.cache[require.resolve(`./events/${file}`)];
-  });
+client
+	.on('error', console.error)
+	.on('warn', console.warn)
+	.on('debug', console.log)
+	.on('ready', () => {
+		console.log(`Client ready; logged in as ${client.user.username}#${client.user.discriminator} (${client.user.id})`);
+	})
+	.on('disconnect', () => { console.warn('Disconnected!'); })
+	.on('reconnecting', () => { console.warn('Reconnecting...'); })
+	.on('commandError', (cmd, err) => {
+		if(err instanceof commando.FriendlyError) return;
+		console.error(`Error in command ${cmd.groupID}:${cmd.memberName}`, err);
+	})
+	.on('commandBlocked', (msg, reason) => {
+		console.log(oneLine`
+			Command ${msg.command ? `${msg.command.groupID}:${msg.command.memberName}` : ''}
+			blocked; ${reason}
+		`);
+	})
+	.on('commandPrefixChange', (guild, prefix) => {
+		console.log(oneLine`
+			Prefix ${prefix === '' ? 'removed' : `changed to ${prefix || 'the default'}`}
+			${guild ? `in guild ${guild.name} (${guild.id})` : 'globally'}.
+		`);
+	})
+	.on('commandStatusChange', (guild, command, enabled) => {
+		console.log(oneLine`
+			Command ${command.groupID}:${command.memberName}
+			${enabled ? 'enabled' : 'disabled'}
+			${guild ? `in guild ${guild.name} (${guild.id})` : 'globally'}.
+		`);
+	})
+	.on('groupStatusChange', (guild, group, enabled) => {
+		console.log(oneLine`
+			Group ${group.id}
+			${enabled ? 'enabled' : 'disabled'}
+			${guild ? `in guild ${guild.name} (${guild.id})` : 'globally'}.
+		`);
+	});
 
-  client.levelCache = {};
-  for (let i = 0; i < client.config.permLevels.length; i++) {
-    const thisLevel = client.config.permLevels[i];
-    client.levelCache[thisLevel.name] = thisLevel.level;
-  }
-  client.login(client.config.token);
+client.setProvider(
+	sqlite.open(path.join(__dirname, 'database.sqlite3')).then(db => new commando.SQLiteProvider(db))
+).catch(console.error);
+
+client.jimp = require('jimp');
+client.ytdl = require('ytdl-core');
+client.puppeteer = require('puppeteer');
+client.isURL = function (value) {
+	return /^(https?:\/\/)?.+(\..+)?\.\w+(\/[^\/]*)*$/.test(value);
+};
+client.getBufferFromJimp = async function (img, mime) {
+	return new Promise((resolve, reject) => {
+		img.getBuffer(mime || 'image/png', (err, buffer) => {
+			if (err) reject(err);
+			resolve(buffer);
+		});
+	});
 };
 
-init();
+client.registry
+	.registerDefaultGroups()
+	.registerGroups([
+        ['util', 'util'],
+				['image', 'image'],
+				['']
+
+    ])
+  .registerDefaultTypes()
+	.registerDefaultCommands({
+     ping: false,
+		 eval_: false,
+		 commandState: false,
+		 help: false
+	 })
+	.registerCommandsIn(path.join(__dirname, 'commands'));
+
+client.login(config.token);
+
+process.on('unhandledRejection', (err) => {
+	if (err.message && ['Missing Access', 'Missing Permissions'].some(x => err.message.includes(x))) return;
+	console.error(`[ERROR] Unhandled rejection:\n${(err && err.stack) || err}`); // eslint-disable-line no-console
+});
