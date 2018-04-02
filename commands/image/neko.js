@@ -188,6 +188,7 @@ class NekoCommand extends commando.Command {
 						text: 'Powered by nekos.life'
 					}
 				}}));
+				msg.channel.stopTyping(true);
 			}
 		} else if (argString === 'cumsluts') {
 			if (!msg.channel.nsfw) {
