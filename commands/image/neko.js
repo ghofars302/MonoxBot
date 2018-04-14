@@ -188,7 +188,7 @@ class NekoCommand extends commando.Command {
 						text: 'Powered by nekos.life'
 					}
 				}}));
-				msg.channel.stopTyping(true);
+        msg.channel.stopTyping(true);
 			}
 		} else if (argString === 'cumsluts') {
 			if (!msg.channel.nsfw) {
@@ -230,6 +230,7 @@ class NekoCommand extends commando.Command {
 					text: 'Powered by nekos.life'
 				}
 			}}));
+      msg.channel.stopTyping(true);
 		} else if (argString === 'tickle') {
 			search.getSFWTickle().then(images => msg.channel.send({embed: {
 				title: 'Nekos.life Tag Tickle',

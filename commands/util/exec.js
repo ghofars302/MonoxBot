@@ -1,6 +1,6 @@
-const stripIndents = require('common-tags').stripIndents;
 const commando = require('discord.js-commando');
 const { exec } = require('child_process');
+const config = require('../../config/BotCfg.json');
 
 class EvalCommand extends commando.Command {
 	constructor(client) {
@@ -22,7 +22,7 @@ class EvalCommand extends commando.Command {
 				msg.channel.send(stdout, {code: "xl"});
 			}
 		}
-    if (msg.author.id !== "344754852989108226") {
+    if (msg.author.id !== config.owner) {
       msg.channel.send(":x: ``Access denied. only Bot Owner can use this command.``");
     } else if (!argString) {
       msg.channel.send(":warning: ``Unable to execute empty script``");

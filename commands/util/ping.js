@@ -47,6 +47,10 @@ class PingCommand extends commando.Command {
 			memberName: 'ping',
 			description: 'PING!!!!!',
 			examples: ['Nothing here :D'],
+			throttling: {
+				usages: 1,
+				duration: 1.5
+			},
 		});
 	}
 
@@ -59,7 +63,7 @@ class PingCommand extends commando.Command {
 				message.edit(stdout, {code: "xl"});
 			}
 		}
-		let msgExec = `ping "` + argString + `"`;
+		let msgExec = `ping -c 4 "` + argString + `"`;
 		if (argString.length > 2 && isURL(argString)) {
 			exec(msgExec, output);
 		} else {

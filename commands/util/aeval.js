@@ -1,6 +1,6 @@
-const stripIndents = require('common-tags').stripIndents;
 const commando = require('discord.js-commando');
 const util = require('util');
+const config = require('../../config/BotCfg.json');
 
 class AsyncEvalCommand extends commando.Command {
 	constructor(client) {
@@ -15,14 +15,17 @@ class AsyncEvalCommand extends commando.Command {
 	}
 
   async run(msg, argString) {
-    if (msg.author.id !== "344754852989108226") {
+    if (msg.author.id !== config.owner) {
       msg.channel.send(":x: ``Access denied. only Bot Owner can use this command.``");
     } else if (!argString) {
       msg.channel.send(":warning: ``Unable to execute empty script``");
     } else {
 			try {
-				eval("(async () => { try {" + argString + "; msg.channel.send(':white_check_mark: ``Async eval execute success!``'); } catch (error) {msg.channel.send(':warning: ``Unable to execute async code`` ```' + error + '```');}})();")
-			} catch (error) {
+				let result = await eval(`(async()=>{${argString}})()`);
+        result = util.inspect(result, {depth: 0})
+        result = result.replace(this.client.token, 'i wont let you evaluated the token');
+			  msg.channel.send(result, {code: "js"});
+      } catch (error) {
 				msg.channel.send({embed: {
 					description: `An error while eval. \`\`\`${error}\`\`\``
 				}});
