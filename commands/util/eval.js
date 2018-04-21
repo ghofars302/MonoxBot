@@ -1,48 +1,31 @@
-const commando = require('discord.js-commando');
-const util = require('util');
-const config = require('../../config/BotCfg.json');
+const MonoxCommand = require('../../const/MonoxCommand.js');
 
-class EvalCommand extends commando.Command {
+class EvalCommand extends MonoxCommand {
 	constructor(client) {
 		super(client, {
 			name: 'eval',
 			aliases: [],
 			group: 'util',
-			memberName: 'eval',
-			description: 'eval javascript code',
-			examples: ['Nothing here :D'],
-		});
+			memberName: 'util',
+			description: 'Execute javascript code...'
+		})
 	}
-
-  async run(msg, argString) {
-    if (msg.author.id !== config.owner) {
-      msg.channel.send(":x: ``Access denied. only Bot Owner can use this command.``");
-    } else if (!argString) {
-      msg.channel.send(":warning: ``Unable to execute empty script``");
-    } else {
-      try {
-        let evaled = eval(argString);
-				if (evaled && evaled.constructor.name == "Promise")
-					evaled = await evaled;
-				if (typeof evaled !== "sting")
-        	evaled = util.inspect(evaled, {depth: 0});
-
-        evaled = evaled.replace(/`/g, "`" + String.fromCharCode(8203))
-                       .replace(/@/g, "@" + String.fromCharCode(8203))
-                       .replace(this.client.token, 'No, i wont evaluated the client token for you!');
-
-				evaled.length > 2048 ? evaled = evaled.substring(0, 2000) : evaled;
-				msg.channel.send(':white_check_mark: ``Eval execute success!``', {embed: {
-					description: `\`\`\`js\n${evaled}\n\`\`\``
-				}}
-			);
-      } catch (error) {
-        msg.channel.send({embed: {
-					description: `An error while eval. \`\`\`js\n${error}\`\`\``
-				}});
-      }
-    }
-  }
-};
+	
+	async run(msg, argString){
+		if (msg.author.id !== this.config.owner) return msg.channel.send(':x: ``Access denied. only bot owner can use this command.``');
+		if (!argString) return this.utils.infoTextBlock(msg, 'm1eval (code..)'. 'Execute javascript code...');
+		if (argString === 'this.client') return msg.channel.send('Ayee retard. i won\'t evaluate the entire client object.');
+		try {
+			let result = await eval(argString);
+			
+			result = this.util.inspect(result, {depth: 0});
+			result = result.replace(this.client.token, 'TOKEN_LEAKED_XD');
+			
+			msg.channel.send(result, {code: 'js'});
+		} catch (error) {
+			msg.channel.send(error, {code: 'js'});
+		}
+	}
+}
 
 module.exports = EvalCommand;

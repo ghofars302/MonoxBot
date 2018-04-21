@@ -1,6 +1,6 @@
-const { Command } = require('discord.js-commando');
+const MonoxCommand = require('../../const/MonoxCommand.js');
 
-class InvertCommand extends Command {
+class InvertCommand extends MonoxCommand {
 	constructor(client) {
 		super(client, {
 			name: 'invert',
@@ -8,7 +8,7 @@ class InvertCommand extends Command {
 			group: 'image-manipulation',
 			memberName: 'invert',
 			description: 'Invert your image xD',
-			examples: ['invert @your mom#0002'],
+			examples: ['Invert @your mom#0003'],
 			throttling: {
 				usages: 1,
 				duration: 5
@@ -17,19 +17,20 @@ class InvertCommand extends Command {
 	}
 	
 	async run(msg, argString) {
-		let args = this.client.utils.splitArgs(argString);
-		let image = await this.client.utils.getImagesFromMessage(msg, args);
+		if (msg.channel.type === 'dm') return msg.reply('Sorry, this command can\'t be use in DM Channel.')
+		let args = this.utils.splitArgs(argString);
+		let image = await this.utils.getImagesFromMessage(msg, args);
 		
-		if (image.length === 0) return msg.channel.send('```m!invert (user || @mentions || url link)\n\nInvert your image xD');
+		if (image.length === 0) return msg.channel.send('```m!Invert (user || @mentions || url link)\n\nInvert your image xD```');
 		
-		this.client.jimp.read(image[0], function(err, img) {
-			if (err) return msg.channel.send(':warning: ``Unable to read image```');
-			img.invert()
-				.getBuffer('image/png', function(err, buffer) {
-					if (err) return msg.channel.send(':warning: ``Unable to send file. perhaps missing permission?``');
-					msg.channel.send({files: [{name: 'invert.png', attachment: buffer}]});
-				});
-		});
+		msg.channel.startTyping();
+		this.gm(this.request(image[0]))
+			.negative()
+			.toBuffer('PNG', function(err, buffer) {
+				if (err) return msg.channel.send(':warning: ``Unable to send file. perhaps missing permission?``').then(msg.channel.stopTyping(true));
+				msg.channel.send({files: [{name: 'Invert.png', attachment: buffer}]});
+			});
+		msg.channel.stopTyping(true);
 	}
 }
 

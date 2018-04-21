@@ -1,9 +1,8 @@
-const stripIndents = require('common-tags').stripIndents;
-const commando = require('discord.js-commando');
+const MonoxCommand = require('../../const/MonoxCommand.js');
 const NekoClient = require('nekos.life');
 const search = new NekoClient();
 
-class NekoCommand extends commando.Command {
+class NekoCommand extends MonoxCommand {
 	constructor(client) {
 		super(client, {
 			name: 'neko',
@@ -11,12 +10,11 @@ class NekoCommand extends commando.Command {
 			group: 'image',
 			memberName: 'neko',
 			description: 'Get random neko',
-			examples: ['neko kiss'],
 			throttling: {
 				usages: 1,
 				duration: 2
 			}
-		});
+		})
 	}
 
   async run(msg, argString) {
@@ -157,7 +155,7 @@ class NekoCommand extends commando.Command {
 				}}));
 				msg.channel.stopTyping(true);
 			}
-	  } else if (argString === 'lesbian') {
+		} else if (argString === 'lesbian') {
 			if (!msg.channel.nsfw) {
 				msg.channel.send(':x: ``NSFW tag. can only used in channel tagged as NSFW``');
 			} else {
@@ -188,7 +186,7 @@ class NekoCommand extends commando.Command {
 						text: 'Powered by nekos.life'
 					}
 				}}));
-        msg.channel.stopTyping(true);
+				msg.channel.stopTyping(true);
 			}
 		} else if (argString === 'cumsluts') {
 			if (!msg.channel.nsfw) {
@@ -230,7 +228,7 @@ class NekoCommand extends commando.Command {
 					text: 'Powered by nekos.life'
 				}
 			}}));
-      msg.channel.stopTyping(true);
+			msg.channel.stopTyping(true);
 		} else if (argString === 'tickle') {
 			search.getSFWTickle().then(images => msg.channel.send({embed: {
 				title: 'Nekos.life Tag Tickle',
@@ -247,7 +245,7 @@ class NekoCommand extends commando.Command {
 			msg.channel.send(':x: ``Invalid tags.``');
 			msg.channel.stopTyping(true);
 		}
-  }
+	}
 };
 
 module.exports = NekoCommand;

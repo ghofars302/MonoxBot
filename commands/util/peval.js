@@ -1,28 +1,28 @@
-const { Command } = require('discord.js-commando');
+const MonoxCommand = require('../../const/MonoxCommand.js');
 const { exec } = require('child_process');
-const config = require('../../config/BotCfg.json');
 
-class PythonEval extends Command {
+class PythonEval extends MonoxCommand {
 	constructor(client) {
 		super(client, {
 			name: 'peval',
-			alias: ['python'],
+			aliases: ['python', 'py'],
 			group: 'util',
 			memberName: 'peval',
-			description: 'eval Python script.'
+			description: 'Execute python code...'
 		})
 	}
 	
 	async run(msg, argString) {
-		if (msg.author.id !== config.owner) {
+		if (msg.author.id !== this.config.owner) {
 			msg.channel.send(":x: ``Access denied. only Bot Owner can use this command.``");
 		} else if (!argString) {
-			msg.channel.send(":warning: ``Unable to execute empty script``");
+			this.utils.infoTextBlock(msg, 'm!peval (code..)', 'Execute python code...')
 		} else {
 			async function output(err, stdout, stderr) {
 				if (err) {
 					msg.channel.send(stderr, {code: "py"});
 				} else {
+					if (stdout.length < 1) return msg.channel.send('✅ Executed!', {code: "py"});
 					msg.channel.send(stdout, {code: "py"});
 				};
 			};

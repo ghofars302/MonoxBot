@@ -1,36 +1,36 @@
 const MonoxCommand = require('../../const/MonoxCommand.js');
 
-class EnlargeCommand extends MonoxCommand {
+class jpegCommand extends MonoxCommand {
 	constructor(client) {
 		super(client, {
-			name: 'enlarge',
+			name: 'jpeg',
 			aliases: [],
 			group: 'image-manipulation',
-			memberName: 'enlarge',
-			description: 'Make your image bigger.',
+			memberName: 'jpeg',
+			description: 'format image into jpeg format',
 			throttling: {
 				usages: 1,
 				duration: 5
 			}
 		})
 	}
-
+	
 	async run(msg, argString) {
 		if (msg.channel.type === 'dm') return msg.reply('Sorry, this command can\'t be use in DM Channel.')
 		let args = this.utils.splitArgs(argString);
 		let image = await this.utils.getImagesFromMessage(msg, args);
 		
-		if (image.length === 0) return msg.channel.send('```m!enlarge (user || @mentions || url link)\n\nMake your image bigger xD```');
+		if (image.length === 0) return msg.channel.send('```m!jpeg (user || @mentions || url link)\n\nturn image into jpeg format```');
 		
 		msg.channel.startTyping();
 		this.gm(this.request(image[0]))
-			.resize(1024, 1024)
-			.toBuffer('PNG', function(err, buffer) {
+			.format('JPEG')
+			.toBuffer('JPEG', function(err, buffer) {
 				if (err) return msg.channel.send(':warning: ``Unable to send file. perhaps missing permission?``').then(msg.channel.stopTyping(true));
-				msg.channel.send({files: [{name: 'scale.png', attachment: buffer}]});
-			})
+				msg.channel.send(':white_check_mark: Format success, => JPEG format.',{files: [{name: 'moremorejpeg.jpg', attachment: buffer}]});
+			});
 		msg.channel.stopTyping(true);
 	}
 }
 
-module.exports = EnlargeCommand;
+module.exports = jpegCommand;
