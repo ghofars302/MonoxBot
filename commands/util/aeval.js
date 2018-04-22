@@ -1,4 +1,4 @@
-const MonoxCommand = requre('../../const/MonoxCommand.js');
+const MonoxCommand = require('../../const/MonoxCommand.js');
 
 class AsyncEvalCommand extends MonoxCommand {
 	constructor(client) {
@@ -14,7 +14,7 @@ class AsyncEvalCommand extends MonoxCommand {
 	async run(msg, argString) {
 		if (msg.author.id !== this.config.owner) return msg.channel.send(':x: ``Access denied. only bot owner can use this command.``');
 		if (!argString) return this.utils.infoTextBlock(msg, 'm!aeval (code...)', 'Execute async javascript code...');
-		if (argString === 'return this.client') return msg.channel.send('Ayee retard. i won\'t evaluate the entire client object.');
+		if (argString === 'return this') return msg.channel.send('Ayee retard. i won\'t evaluate the entire this object.');
 		try {
 			let result = await eval(`(async()=>{${argString}})()`);
 			

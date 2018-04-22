@@ -9,10 +9,9 @@ const sqlite = require('sqlite');
 class bot {
 	constructor() {
 		this.config = BotCfg;
-		this.utils = new utils(this);
 		
 		this.client = new Client({
-			ownerID: this.config.owner,
+			owner: this.config.owner,
 			commandPrefix: this.config.defaultPrefix,
 			disableEveryone: true,
 			fetchAllMembers: true,
@@ -25,14 +24,11 @@ class bot {
 		this.client.login(process.env.TOKEN);
 	}
 	
-	onCmdError() {
-		return (cmd, err, msg) => {
-			if (err.message && ['Missing Access', 'Missing Permission'].some(x => err.message.includes(x))) return;
+  onCmdError() {
+	  return (cmd, err, msg) => {
 			if (err instanceof FriendlyError) return;
 			throw msg.channel.send(':warning: **Command Error**, usually it is: SyntaxError or Module is not defined.```js\n' + err + '```')
-				.then(msg.channel.stopTyping(true))
-				.then(this.client.channels.get("432177642842750976").send('Command Error on command: ' + cmd.groupID + ':' + cmd.memberName + '```js\n' + err + '```'))
-				.then(console.log((err && err.stack) || err));
+				.then(msg.channel.stopTyping(true));
 		};
 	}
 	
@@ -63,9 +59,7 @@ class bot {
 			console.log('[Bot Client] Id:' + this.client.user.id);
 			console.log('[Bot Client] MonoxBot 1.0.0');
 			console.log('[Bot Client] =======================');
-			this.client.user.setActivity('m!help | 1.0.0', {
-				type: "WATCHING"
-			});
+			this.client.user.setActivity('m!help | 1.0.0', {type: 'PLAYING'});
 		};
 	}
 	
@@ -76,7 +70,7 @@ class bot {
 			.on('ready', this.onReady())
 			.on('disconnect', this.onDisconnect())
 			.on('reconect', this.onReconnect())
-			.on('commandError', this.onCmdError())
+ 			.on('commandError', this.onCmdError())
 			.on('warn', console.warn)
 			.on('error', console.error)
 			.on('debug', console.log);

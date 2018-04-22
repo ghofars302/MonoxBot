@@ -1,7 +1,7 @@
 const MonoxCommand = require('../../const/MonoxCommand.js');
 const { MessageEmbed } = require('discord.js');
 
-class userinfoCommand extends Command {
+class userinfoCommand extends MonoxCommand {
 	constructor(client) {
 		super(client, {
 			name: 'userinfo',
@@ -42,7 +42,7 @@ class userinfoCommand extends Command {
 			.addField('Game:', msg.author.presence.activity);
 		if (!argString) return msg.channel.send(self);
 			
-		const member = await this.client.utils.getMemberFromString(msg, argString);
+		const member = await this.utils.getMemberFromString(msg, argString);
 		if (!member) return msg.channel.send(':x: ``User ' + argString + ' not found.``');
 		const info = new MessageEmbed();
 		info.setTitle('User info ' + member.user.tag)

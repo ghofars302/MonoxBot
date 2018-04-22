@@ -49,8 +49,8 @@ class UrbanCommand extends MonoxCommand {
 					embed.setTitle(entries[0].word)
 						.setURL(entries[0].permalink)
 						.addField('Definition', definition)
-						.addField('Example 1', example2)
-						.addField('Example 2', example2)
+						.addField('Example 1', example, true)
+						.addField('Example 2', example2, true)
 						.setFooter('Urban Dictionary || 👍 ' + entries[0].thumbs_up + ' 👎 ' + entries[0].thumbs_down, 'http://www.packal.org/sites/default/files/public/styles/icon_large/public/workflow-files/florianurban/icon/icon.png?itok=sMaOFyEA');
 					msg.channel.send(embed);					
 				}
