@@ -1,3 +1,3 @@
-import os
+from os import system
 
-os.system('ping -c 4 google.com');
+print(system('ping -c 4 google.com'))
