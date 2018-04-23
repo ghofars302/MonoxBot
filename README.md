@@ -1,3 +1,5 @@
-# MonoxBot --- Release 1.0
+# MonoxBot v.1.0.0
 
-MonoxBot now use Discord.js-commando framework for better message handling.
+MonoxBot use extends Discord.js-commando
+
+hosted on glitch.com
