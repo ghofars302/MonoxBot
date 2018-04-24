@@ -121,14 +121,14 @@ class utils {
 	}
 	
 	isYoutubeURL(value) {
-    let exp = new RegExp("^(https?://)?(www.)?(youtube.com|youtu.?be)/.+$");
+                let exp = new RegExp("^(https?://)?(www.)?(youtube.com|youtu.?be)/.+$");
 		return exp.test(value);
 	}
   
-  isHttp(value) {
-    const regex = new RegExp("^(http|https)://");
-    return regex.test(value)
-  }
+       isHttp(value) {
+               const regex = new RegExp("^(http|https)://");
+              return regex.test(value)
+       }
 }
 
 module.exports = utils;
