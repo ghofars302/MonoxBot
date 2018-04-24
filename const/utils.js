@@ -96,7 +96,7 @@ class utils {
 		return imageURLs;
 	}
 	
-    splitArgs(string) {
+        splitArgs(string) {
 		const splitArgs = string.trim().split('');
 		
 		const args = [];
@@ -125,10 +125,10 @@ class utils {
 		return exp.test(value);
 	}
   
-       isHttp(value) {
+        isHttp(value) {
                const regex = new RegExp("^(http|https)://");
               return regex.test(value)
-       }
+        }
 }
 
 module.exports = utils;
