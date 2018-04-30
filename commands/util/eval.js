@@ -6,7 +6,7 @@ class EvalCommand extends MonoxCommand {
             name: 'eval',
             aliases: [],
             group: 'util',
-            memberName: 'util',
+            memberName: 'eval',
             description: 'Execute javascript code...'
         })
     }
@@ -21,13 +21,14 @@ class EvalCommand extends MonoxCommand {
             result = this.util.inspect(result, {
                 depth: 0
             });
-            result = result.replace(this.client.token, 'TOKEN_LEAKED_XD');
+            result = result.replace(this.client.token, 'TOKEN_LEAKED_XD')
+                          .replace(process.env.API, 'API_KEY_LEAKED_XD');
 
             msg.channel.send(result, {
                 code: 'js'
             });
         } catch (error) {
-            msg.channel.send(error, {
+            await msg.channel.send(error, {
                 code: 'js'
             });
         }

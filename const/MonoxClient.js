@@ -1,9 +1,9 @@
-const { Client } = require('discord.js-commando')
+const { CommandoClient } = require('discord.js-commando');
 
-class MonoxClient extends Client {
+class MonoxClient extends CommandoClient {
 	constructor(options) {
-		super(options)
+		super(options);
 	}
 }
 
-module.exports = MonoxClient;
+module.export = MonoxClient;

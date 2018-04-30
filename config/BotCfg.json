@@ -1,5 +1,4 @@
 {
-  "defaultPrefix": "m!",
-  "owner": "344754852989108226",
-  "ReportChannel": "432177642842750976"
+	'owner': '344754852989108226',
+	'defaultPrefix': 'm!'
 }

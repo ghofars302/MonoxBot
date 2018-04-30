@@ -24,7 +24,6 @@ class jpegCommand extends MonoxCommand {
 		
 		msg.channel.startTyping();
 		this.gm(this.request(image[0]))
-			.format('JPEG')
 			.toBuffer('JPEG', function(err, buffer) {
 				if (err) return msg.channel.send(':warning: ``Unable to send file. perhaps missing permission?``').then(msg.channel.stopTyping(true));
 				msg.channel.send(':white_check_mark: Format success, => JPEG format.',{files: [{name: 'moremorejpeg.jpg', attachment: buffer}]});

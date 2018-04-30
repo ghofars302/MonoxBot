@@ -44,6 +44,7 @@ class userinfoCommand extends MonoxCommand {
 			
 		const member = await this.utils.getMemberFromString(msg, argString);
 		if (!member) return msg.channel.send(':x: ``User ' + argString + ' not found.``');
+		if (member.user.id === this.client.user.id && msg.author.id !== this.config.owner) return msg.channel.send('no');
 		const info = new MessageEmbed();
 		info.setTitle('User info ' + member.user.tag)
 			.setColor(0xFF0000)

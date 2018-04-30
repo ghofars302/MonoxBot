@@ -19,7 +19,8 @@ class AsyncEvalCommand extends MonoxCommand {
 			let result = await eval(`(async()=>{${argString}})()`);
 			
 			result = this.util.inspect(result, {depth: 0});
-			result = result.replace(this.client.token, 'TOKEN_LEAKED_XD');
+			result = result.replace(this.client.token, 'TOKEN_LEAKED_XD')
+                          .replace(process.env.API, 'API_KEY_LEAKED_XD');
 			
 			msg.channel.send(result, {code: 'js'});
 		} catch (error) {

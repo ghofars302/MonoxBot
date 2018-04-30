@@ -37,28 +37,32 @@ class PingCommand extends MonoxCommand {
     }
 
     async run(msg, argString) {
-        const message = await msg.channel.send("Ok. Pinging...")
+		const message = await msg.channel.send("Ok. Pinging...")
 
-        async function output(error, stdout, stderr) {
-            if (error) {
-                message.edit(stderr, {
-                    code: "xl"
-                });
-            } else {
-                message.edit(stdout, {
-                    code: "xl"
-                });
-            }
-        }
+		async function output(error, stdout, stderr) {
+			if (error) {
+				message.edit(stderr, {
+					code: "xl"
+				});
+			} else {
+				message.edit(stdout, {
+					code: "xl"
+				});
+			}
+		}
 
-        let msgExec = `ping -c 4 "` + argString + `"`;
+		let msgExec = `ping -c 4 "` + argString + `"`;
 
-        if (argString.length > 2 && this.utils.isURL(argString)) {
-            exec(msgExec, output);
-        } else {
-            message.edit('Pong! It took ``' + Math.round(this.client.ping) + 'ms`` to ping **' + this.randomItem(randomfact) + '**');
-        }
-    }
+		if (argString === 'debug') {
+			if (msg.author.id !== this.config.owner) return message.edit('Pong! It took ``' + Math.round(this.client.ping) + 'ms`` to ping **' + this.randomItem(randomfact) + '**');
+			message.edit(`☁ Websocked: \`\`${Math.round(this.client.ping)}ms\`\`\n📝 Message: \`\`${message.createdTimestamp - msg.createdTimestamp}ms\`\``)
+		} else if (argString.length > 2 && this.utils.isURL(argString)) {
+			if (msg.author.id !== this.config.owner) return message.edit(':x: ``Pinging website function is disabled for unknown days``');
+			exec(msgExec, output);
+		} else {
+			message.edit('Pong! It took ``' + Math.round(this.client.ping) + 'ms`` to ping **' + this.randomItem(randomfact) + '**');
+		}
+	}
 
     randomItem(array) {
         return array[Math.floor(Math.random() * array.length)];

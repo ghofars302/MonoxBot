@@ -1,6 +1,21 @@
 class utils {
 	constructor(bot) {
-		this.bot = bot;
+		this.client = bot;
+	}
+  
+	filterMentions(string) {
+		return string.replace(/<@&(\d+)>|<@!(\d+)>|<@(\d+)>|<#(\d+)>/g, (match, RID, NID, UID, CID) => {
+			if ((UID || NID) && this.client.users.has(UID || NID)) return `@${this.client.users.get(UID || NID).username}`;
+			if (CID && this.client.channels.has(CID)) return `#${this.client.channels.get(CID).name}`;
+
+			if (RID)
+				for (const server of this.client.guilds.values())
+					if (server.roles.has(RID)) return `@${server.roles.get(RID).name}`;
+
+			if (CID) return '#deleted-channel';
+			if (RID) return '@deleted-role';
+			return '@invalid-user';
+		});
 	}
   
 	async getBufferFromJimp(img, mime) {
@@ -10,6 +25,24 @@ class utils {
 				resolve(buffer)
 			});
 		});
+	}
+	
+	async takeScreenshot(puppeteer, gm, msg, args) {
+		try {
+			const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
+			const page = await browser.newPage();
+			await page.setViewport({width: 1920, height: 1080});
+			await page.goto(args, {"waitUntil" : "networkidle0"});
+			let result = await page.screenshot();
+			gm(result)
+				.toBuffer('PNG', (err, buffer) => {
+					if (err) return msg.channel.send(':warning: ``Unable to upload screenshot`` ```' + err + '```');
+					msg.channel.send({files: [{name: 'screenshot.png', attachment: buffer}]})
+				});
+			await browser.close();
+		} catch (error) {
+		  	msg.channel.send(':warning: ``Unable to take screenshot.`` ```' + error + '```');
+		}
 	}
   
 	getMemberFromString(msg, text) {
@@ -96,7 +129,7 @@ class utils {
 		return imageURLs;
 	}
 	
-        splitArgs(string) {
+    splitArgs(string) {
 		const splitArgs = string.trim().split('');
 		
 		const args = [];
@@ -121,14 +154,14 @@ class utils {
 	}
 	
 	isYoutubeURL(value) {
-                let exp = new RegExp("^(https?://)?(www.)?(youtube.com|youtu.?be)/.+$");
+		let exp = new RegExp("^(https?://)?(www.)?(youtube.com|youtu.?be)/.+$");
 		return exp.test(value);
 	}
   
-        isHttp(value) {
-               const regex = new RegExp("^(http|https)://");
-              return regex.test(value)
-        }
+	isHttp(value) {
+		const regex = new RegExp("^(http|https)://");
+		return regex.test(value)
+	}
 }
 
 module.exports = utils;
