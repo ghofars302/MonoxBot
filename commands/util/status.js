@@ -7,19 +7,20 @@ class StatusCommand extends MonoxCommand {
 			aliases: [],
 			group: 'util',
 			memberName: 'status',
-			description: 'Change status?'
+			description: 'Change bot status on all Shards',
+			examples: ['(Words...)'],
+			ownerOnly: true
 		})
 	}
 	
-	async run(msg, argString) {
-		if (msg.author.id !== this.config.owner) return msg.channel.send(':x: ``Access denied. only bot owner can use this command``');
-		if (!argString) {
+	async run(msg, args) {
+		if (!args) {
 			this.client.shard.broadcastEval('this.user.setActivity("m!help | 1.0.0")');
 			msg.channel.send('✅ ``Reset status on all shards.``');
 		} else {
 			try {
-				this.client.shard.broadcastEval(`this.user.setActivity("${argString}")`)
-				msg.channel.send('✅ ``Changed status to ' + argString + ' on all shards.``');
+				this.client.shard.broadcastEval(`this.user.setActivity("${args}")`)
+				msg.channel.send('✅ ``Changed status to ' + args+ ' on all shards.``');
 			} catch (error) {
 				msg.channel.send(':warning: ``Unable to change the status``');
 			}

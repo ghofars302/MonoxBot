@@ -20,7 +20,7 @@ class NekoCommand extends MonoxCommand {
   async run(msg, argString) {
 		msg.channel.startTyping();
 		if (!argString) {
-			msg.channel.send(':question: Nekos.life available Tags ```SFW: hug, kiss, pat, nekoSFW, meow, slap, tickle\n\nNSFW: anal, pussy, nekoNSFW, hentai, boobs, nekoNSFWGif, lesbian, cumsluts```');
+			msg.channel.send(':question: Nekos.life available Tags ```SFW: hug, kiss, pat, nekoSFW, meow, slap, tickle\n\nNSFW: anal, pussy, nekoNSFW, hentai, boobs, nekoNSFWGif, lesbian, cumsluts\n\nNOTE: This command is too old on current bot version and might be rewritten.```');
 			msg.channel.stopTyping(true);
 		} else if (argString === 'anal') {
 			if (!msg.channel.nsfw) {

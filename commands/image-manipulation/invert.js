@@ -8,7 +8,9 @@ class InvertCommand extends MonoxCommand {
 			group: 'image-manipulation',
 			memberName: 'invert',
 			description: 'Invert your image xD',
-			examples: ['Invert @your mom#0003'],
+			examples: ['(User | @Mentions | URL)'],
+			guildOnly: true,
+			argsType: 'multiple',
 			throttling: {
 				usages: 1,
 				duration: 5
@@ -16,21 +18,48 @@ class InvertCommand extends MonoxCommand {
 		})
 	}
 	
-	async run(msg, argString) {
-		if (msg.channel.type === 'dm') return msg.reply('Sorry, this command can\'t be use in DM Channel.')
-		let args = this.utils.splitArgs(argString);
+	async run(msg, args) {
 		let image = await this.utils.getImagesFromMessage(msg, args);
 		
-		if (image.length === 0) return msg.channel.send('```m!Invert (user || @mentions || url link)\n\nInvert your image xD```');
+		if (image.length === 0) return this.utils.invalidArgument(msg);
 		
-		msg.channel.startTyping();
-		this.gm(this.request(image[0]))
-			.out('-negate')
-			.toBuffer('PNG', function(err, buffer) {
-				if (err) return msg.channel.send(':warning: ``Unable to send file. perhaps missing permission?``').then(msg.channel.stopTyping(true));
-				msg.channel.send({files: [{name: 'Invert.png', attachment: buffer}]});
-			});
-		msg.channel.stopTyping(true);
+		let content = await this.axios.get(image[0]);
+		let mimeType = content['headers']['content-type'];
+		
+		let message = await msg.channel.send('Ok, processing....')
+		if (mimeType === 'image/gif') {
+			this.gm(this.request(image[0]))
+				.out('-negate')
+				.toBuffer('GIF', function(err, buffer) {
+					if (err) {
+						message.delete();
+						msg.channel.send(':x: Error while processing image. ```' + err + '```');
+					} else {
+						if (buffer.byteLength > 8388353) {
+							message.delete();
+							return msg.channel.send(':x: ``File is too big (> 8MB)``');	
+						}
+						message.delete();
+						msg.channel.send({files: [{name: 'invert.gif', attachment: buffer}]});
+					}					
+				})
+		} else {
+			this.gm(this.request(image[0]))
+				.out('-negate')
+				.toBuffer('PNG', function(err, buffer) {
+					if (err) {
+						message.delete();
+						msg.channel.send(':x: Error while processing image. ```' + err + '```');
+					} else {
+						if (buffer.byteLength > 8388353) {
+							message.delete();
+							return msg.channel.send(':x: ``File is too big (> 8MB)``');	
+						}
+						message.delete();
+						msg.channel.send({files: [{name: 'invert.png', attachment: buffer}]});
+					}
+				})
+		}
 	}
 }
 

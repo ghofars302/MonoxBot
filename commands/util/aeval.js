@@ -7,22 +7,28 @@ class AsyncEvalCommand extends MonoxCommand {
 			aliases: [],
 			group: 'util',
 			memberName: 'aeval',
-			description: 'Execute async javascript code...'
+			description: 'Evaluate async javascript code on current shard.',
+			examples: ['(Code..)'],
+			ownerOnly: true
 		})
 	}
 	
-	async run(msg, argString) {
-		if (msg.author.id !== this.config.owner) return msg.channel.send(':x: ``Access denied. only bot owner can use this command.``');
-		if (!argString) return this.utils.infoTextBlock(msg, 'm!aeval (code...)', 'Execute async javascript code...');
-		if (argString === 'return this') return msg.channel.send('Ayee retard. i won\'t evaluate the entire this object.');
+	async run(msg, args) {
+		if (!args) return this.utils.invalidArgument(msg);
+		if (args === 'return this') return msg.channel.send('Ayee retard. i won\'t evaluate the entire this object.');
 		try {
-			let result = await eval(`(async()=>{${argString}})()`);
+			let result = await eval(`(async()=>{${args}})()`);
 			
-			result = this.util.inspect(result, {depth: 0});
-			result = result.replace(this.client.token, 'TOKEN_LEAKED_XD')
-                          .replace(process.env.API, 'API_KEY_LEAKED_XD');
-			
-			msg.channel.send(result, {code: 'js'});
+            result = this.util.inspect(result, {
+                depth: 0
+            });
+            result = result.replace(this.client.token, 'TOKEN_LEAKED_XD')
+                          .replace(process.env.API, 'API_KEY_LEAKED_XD')
+                          .replace(process.env.OSU, 'API_KEY_LEAKED_XD');
+
+            await msg.channel.send(result, {
+                code: 'js'
+            });
 		} catch (error) {
 			msg.channel.send(error, {code: 'js'});
 		}

@@ -32,7 +32,7 @@ module.exports = class ReloadCommandCommand extends Commando.Command {
 		const { cmdOrGrp } = args;
 		const isCmd = Boolean(cmdOrGrp.groupID);
 		cmdOrGrp.reload();
-    if(!msg.author.id === "344754852989108226") return msg.channel.send(":x: ``Access denied. only Bot Owner can use this command.``");
+ 	    if(!msg.author.id === "344754852989108226") return msg.channel.send(":x: ``Access denied. only Bot Owner can use this command.``");
 
 		if(this.client.shard) {
 			try {

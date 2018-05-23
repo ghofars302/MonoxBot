@@ -7,13 +7,14 @@ class RPC extends MonoxCommand {
             aliases: [],
             group: 'util',
             memberName: 'rpc',
-            description: 'Remote all shards'
+            description: 'Remote all shards',
+            examples: ['(code..)'],
+            ownerOnly: true
         })
     }
 
     async run(msg, argString) {
-        if (msg.author.id !== this.config.owner) return msg.channel.send(':x: ``Access denied. only bot owner can use this command.``');
-        if (!argString) return this.utils.infoTextBlock(msg, 'm!rpc (eval code)', 'Remote all shards');
+        if (!argString) return this.utils.invalidArgument(msg)
         try {
             let evaled = await this.client.shard.broadcastEval(argString);
             evaled = this.util.inspect(evaled);

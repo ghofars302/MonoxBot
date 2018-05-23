@@ -9,6 +9,7 @@ class RedditCommand extends MonoxCommand {
 			group: 'others',
 			memberName: 'reddit',
 			description: 'Get random image from subreddit',
+			examples: ['(Subreddits name)'],
 			throttling: {
 				usages: 1,
 				duration: 5
@@ -16,16 +17,17 @@ class RedditCommand extends MonoxCommand {
 		})
 	}
 	
-	async run(msg, argString) {
-		if (!argString) return this.utils.infoTextBlock(msg, 'm!reddit (subreddit)', 'Get random image from subreddit')
+	async run(msg, args) {
+		if (!args) return this.utils.invalidArgument(msg);
+
 		try {
-			let test = await this.axios.get(`https://reddit.com/r/${argString}/about.json`);
+			let test = await this.axios.get(`https://reddit.com/r/${args}/about.json`);
 			if (test.data.data.over18 && !msg.channel.nsfw) return msg.channel.send(':x: ``NSFW subreddit. please switch to channel tagged as NSFW to use this subReddit``');
-				this.randomPuppy(argString)
+				this.randomPuppy(args)
 					.then(url => {
 						if (!url) return msg.channel.send(':x: ``Image not found in return``');
 						const embed = new MessageEmbed()
-						embed.setTitle('Subreddit ' + argString)
+						embed.setTitle('Subreddit ' + args)
 							.setURL(url)
 							.setFooter('Reddit image search.', this.client.user.displayAvatarURL())
 							.setImage(url);

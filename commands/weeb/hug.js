@@ -1,5 +1,4 @@
 const MonoxCommand = require('../../const/MonoxCommand');
-const { MessageEmbed } = require('discord.js');
 
 class HugCommand extends MonoxCommand {
 	constructor(client) {
@@ -8,6 +7,7 @@ class HugCommand extends MonoxCommand {
 			aliases: [],
 			group: 'weeb',
 			description: 'Hug someone ( ͡° ͜ʖ ͡°)',
+			examples: ['(@Mentions | User)'],
 			memberName: 'hug',
 			throttling: {
 				usages: 1,
@@ -16,22 +16,22 @@ class HugCommand extends MonoxCommand {
 		})
 	}
 	
-	async run(msg, argString) {
-		if (!argString) return this.utils.infoTextBlock(msg, 'm!hug (User || @Mention)', 'Hug someone ( ͡° ͜ʖ ͡°) ');
+	async run(msg, args) {
+		if (!args) return this.utils.invalidArgument(msg);
 		
-		let member = await this.utils.getMemberFromString(msg, argString);
-		if (!member) return msg.channel.send(':x: ``Member ' + argString + ' not found.``');
+		let member = await this.utils.getMemberFromString(msg, args);
+		if (!member) return msg.channel.send(':x: ``Member ' + args + ' not found.``');
 		if (msg.author.id === member.user.id) return msg.channel.send('You think you can hug yourself?');
 		
 		this.fetch('https://nekos.life/api/v2/img/hug')
 			.then(res => res.json())
-			.then(json => {
-				let embed = new MessageEmbed();
-				embed.setTitle(msg.author.username  + ' hug ' + member.user.username)
-					.setImage(json.url)
-					.setFooter('Powered by nekos.life', 'https://nekos.life/static/icons/favicon-194x194.png');
-				msg.channel.send(embed);
-			});
+				.then(async json => {
+					let embed = new this.api.MessageEmbed();
+					embed.setTitle(msg.author.username  + ' hug ' + member.user.username)
+						.setImage(json.url)
+						.setFooter('Powered by nekos.life', 'https://nekos.life/static/icons/favicon-194x194.png');
+					await msg.channel.send(embed);
+				});
 	}
 }
 

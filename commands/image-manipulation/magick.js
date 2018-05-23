@@ -4,33 +4,55 @@ class MagickCommand extends MonoxCommand {
 	constructor(client) {
 		super(client, {
 			name: 'magick',
-			aliases: ['magik'],
+			aliases: ['magik', 'magic'],
 			group: 'image-manipulation',
 			memberName: 'magick',
-			description: 'Magick your image xD',
+			description: 'Apply an magick effect on a image.',
+			examples: ['(User | @Mentions | URL)'],
+			argsType: 'multiple',
+			guildOnly: true,
 			throttling: {
 				usages: 1,
-				duration: 5
+				duration: 30
 			}
 		})
 	}
 	
-	async run(msg, argString) {
-		if (msg.channel.type === 'dm') return msg.reply('Sorry, this command can\'t be use in DM Channel.')
-		let args = this.utils.splitArgs(argString);
+	async run(msg, args) {
 		let image = await this.utils.getImagesFromMessage(msg, args);
 		
-		if (image.length === 0) return msg.channel.send('```m!magick (user || @mentions || url link)\n\nMagick your image xD```');
-		
-		let ass = await msg.channel.send('Processing... (This might take little longer..)')
-		this.gm(this.request(image[0]))
-			.command('convert')
-			.in('-liquid-rescale')
-			.out('75x75%')
-			.toBuffer('PNG', function(err, buffer) {
-				if (err) return ass.delete().then(msg.channel.send(':warning: ``Unable to send file. perhaps missing permission?``'))
-				ass.delete().then(msg.channel.send({files: [{name: 'magick.png', attachment: buffer}]}))
-			});
+		if (image.length === 0) return this.utils.invalidArgument(msg);
+		let message = await msg.channel.send('Ok, Processing...')
+    
+		let output = `convert -liquid-rescale 50% -liquid-rescale 150%`
+		let content = await this.axios.get(image[0]);
+		let mimeType = content['headers']['content-type'];
+
+		if (content['headers']['content-length'] > 2000000) {
+			return message.edit(':x: ``Input image is too big (> 2MB)``');
+		}
+
+		if (mimeType === 'image/gif') {
+			await message.delete();
+			msg.channel.send(':x: ``Gif support for magick command currently disable for better P.R Bot``');
+		} else {
+			this.gm(this.request(image[0]))
+				.out(...output.split(' '))
+				.out('png8:')
+				.toBuffer('PNG', function(err, buffer) {
+					if (err) {
+						message.delete();
+						msg.channel.send(':x: Error while processing image. ```' + err + '```');
+					} else {
+						if (buffer.byteLength > 8388353) {
+							message.delete();
+							return msg.channel.send(':x: ``File is too big (> 8MB)``');	
+						}
+						message.delete();
+						msg.channel.send({files: [{name: 'magick.png', attachment: buffer}]});
+					}
+				})				
+		}
 	}
 }
 

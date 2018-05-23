@@ -7,8 +7,7 @@ class shardCommand extends MonoxCommand {
 			aliases: [],
 			group: 'util',
 			memberName: 'shards',
-			description: 'Show shards stats',
-			examples: ['shard'],
+			description: 'Show Shards statistic and show current shard where you in.',
 			throttling: {
 				usages: 1,
 				duration: 5

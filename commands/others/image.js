@@ -1,14 +1,14 @@
 const MonoxCommand = require('../../const/MonoxCommand');
-const { MessageEmbed } = require('discord.js');
 
 class ImageCommand extends MonoxCommand {
 	constructor(client) {
 		super(client, {
 			name: 'image',
-			aliases: ['im'],
+			aliases: ['im', 'img'],
 			group: 'others',
 			description: 'Search google images',
 			memberName: 'image',
+			examples: ['(Query....)'],
 			throttling: {
 				usages: 1,
 				duration: 2
@@ -16,21 +16,26 @@ class ImageCommand extends MonoxCommand {
 		})
 	}
 	
-	async run(msg, argString) {
-		if (!argString) return this.utils.infoTextBlock(msg, 'm!image (query...)', 'Search google images\n\nNOTE: MonoxBot only can request image up to 100 per-day.');
+	async run(msg, args) {
+		if (!args) return this.utils.invalidArgument(msg);
 		let message = await msg.channel.send('Searching...')
 		
-		this.image.search(argString)
-			.then(res => {
+		this.image.search(args)
+			.then(async res => {
 				try {
-					const embed = new MessageEmbed();
-					embed.setTitle('Image search result: ' + argString)
+					const embed = new this.api.MessageEmbed();
+					embed.setTitle('Image search result: ' + args)
 						.setImage(res[0].url)
 						.setFooter('MonoxBot 1.0.0 GoogleImageSearch', this.client.user.displayAvatarURL());
-					message.delete().then(msg.channel.send(embed))
+					await message.delete();
+					msg.channel.send(embed);
 				} catch (err) {
-					if (err === 'Daily Limit Exceeded') return message.delete().then(msg.channel.send(':x: ``MonoxBot has been ratelimit.``'));
-					message.delete().then(msg.channel.send(':x: ``Invalid search try again``'));
+					if (err === 'Daily Limit Exceeded') {
+						message.delete();
+						return msg.channel.send(':x: ``MonoxBot has been ratelimit.``');
+					}
+					await message.delete();
+					msg.channel.send(':x: ``Invalid search try again``');
 				};
 			});
 	}

@@ -8,6 +8,7 @@ class SayCommand extends MonoxCommand {
 			group: 'util',
 			memberName: 'say',
 			description: 'Make bot saying your words.',
+			examples: ['(Words...)'],
 			throttling: {
 				usages: 1,
 				duration: 5
@@ -15,13 +16,14 @@ class SayCommand extends MonoxCommand {
 		})
 	}
 	
-	async run(msg, argString) {
-		if (!argString) return this.utils.infoTextBlock(msg, 'm!say (words...)', 'Make bot saying your words.')
+	async run(msg, args) {
+		if (!args) return this.utils.invalidArgument(msg);
+
 		if (msg.author.id === this.config.owner) {
-			return msg.channel.send(argString)
+			await msg.channel.send(args)
 		} else {
-			let cleaned = await this.utils.filterMentions(argString);
-			return msg.channel.send(cleaned)
+			let cleaned = await this.utils.filterMentions(args);
+			await msg.channel.send(cleaned)
 		}
 	}
 }

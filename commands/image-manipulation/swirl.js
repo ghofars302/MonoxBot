@@ -1,16 +1,17 @@
 const MonoxCommand = require('../../const/MonoxCommand.js');
 
-class FlopCommand extends MonoxCommand {
+class SwirlCommand extends MonoxCommand {
 	constructor(client) {
 		super(client, {
-			name: 'flop',
+			name: 'swirl',
 			aliases: [],
 			group: 'image-manipulation',
-			memberName: 'flop',
-			description: 'flop your image xD',
-			examples: ['(User | @Mentions | URL)'],
+			memberName: 'swirl',
+			description: 'swirl your image xD',
 			argsType: 'multiple',
+			argsCount: 2,
 			guildOnly: true,
+			examples: ['(User | @Mentions | URL) (value)'],
 			throttling: {
 				usages: 1,
 				duration: 5
@@ -32,9 +33,10 @@ class FlopCommand extends MonoxCommand {
 		
 		let message = await msg.channel.send('Ok, processing....')
 		if (mimeType === 'image/gif') {
-      		let encodemsg = await message.edit('Ok, processing.... (this gonna take a while)')
+      		let messageGif = await message.edit('Ok, processing.... (this gonna take a while)')
 			this.gm(this.request(image[0]))
-				.flip()
+				.swirl(args[1] || 250)
+				.autoOrient()
 				.toBuffer('GIF', function(err, buffer) {
 					if (err) {
 						messageGif.delete();
@@ -44,14 +46,16 @@ class FlopCommand extends MonoxCommand {
 							messageGif.delete();
 							return msg.channel.send(':x: ``File is too big (> 8MB)``');						
 						}
-						messageGif.delete();
-						msg.channel.send({files: [{name: 'flip.gif', attachment: buffer}]})
+						encodemsg.delete();
+						msg.channel.send({files: [{name: 'swirl.gif', attachment: buffer}]})
 					}				
 				})
 		} else {
 			this.gm(this.request(image[0]))
-				.flip()
+				.swirl(args[1] || 250)
+				.autoOrient()
 				.toBuffer('PNG', function(err, buffer) {
+					let BufferSize = buffer.byteLength;
 					if (err) {
 						message.delete();
 						msg.channel.send(':x: Error while processing image. ```' + err + '```');
@@ -61,11 +65,11 @@ class FlopCommand extends MonoxCommand {
 							return msg.channel.send(':x: ``File is too big (> 8MB)``');						
 						}
 						message.delete();
-						msg.channel.send({files: [{name: 'flip.png', attachment: buffer}]})
+						msg.channel.send({files: [{name: 'swirl.png', attachment: buffer}]})
 					}	
 				})
 		}
 	}
 }
 
-module.exports = FlopCommand;
+module.exports = SwirlCommand;

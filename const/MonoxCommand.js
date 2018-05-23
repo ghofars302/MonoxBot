@@ -1,3 +1,8 @@
+/*
+* @MonoxBot base command class.
+* @param extends commando.Command class
+*/
+
 const { Command } = require('discord.js-commando');
 const GoogleClient = require('google-images');
 
@@ -19,7 +24,12 @@ class MonoxCommand extends Command {
 		this.image = new GoogleClient(process.env.CSE, process.env.API);
 		this.util = require('util');
 		this.childprocess = require('child_process');
-		this.sqlite = require('sqlite');
+		this.db = require('sqlite');
+    	this.randomPuppy = require('random-puppy');
+		this.ytdl = require('ytdl-core');
+		this.api = require('discord.js');
+		this.botVersion = require('../package.json').version;
+		this.canvas = require('canvas');
 	}
 }
 

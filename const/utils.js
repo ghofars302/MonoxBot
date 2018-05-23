@@ -1,3 +1,11 @@
+/*
+* @MonoxBot base utility class.
+*/
+
+const { MessageEmbed } = require('discord.js'); 
+const { URL } = require('url');
+const fetch = require('node-fetch');
+
 class utils {
 	constructor(bot) {
 		this.client = bot;
@@ -17,32 +25,29 @@ class utils {
 			return '@invalid-user';
 		});
 	}
-  
-	async getBufferFromJimp(img, mime) {
-		return new Promise((resolve, reject) => {
-			img.getBuffer(mime || 'image/png', (err, buffer) => {
-				if (err) reject(err)
-				resolve(buffer)
+
+	async invalidArgument(msg) {
+		let defaultPrefix = this.client.commandPrefix
+		let command = msg.command.memberName;
+		let example = msg.command.examples;
+		let embed = new MessageEmbed();
+
+		if (!msg.guild) {
+			embed.addField('Invalid arguments - Try', '```\n' + defaultPrefix + command + ' ' + example + '```');
+			embed.setColor(15158332);
+			const message = await msg.channel.send(embed);
+			return message.delete({
+				timeout: 30000
 			});
-		});
-	}
-	
-	async takeScreenshot(puppeteer, gm, msg, args) {
-		try {
-			const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
-			const page = await browser.newPage();
-			await page.setViewport({width: 1920, height: 1080});
-			await page.goto(args, {"waitUntil" : "networkidle0"});
-			let result = await page.screenshot();
-			gm(result)
-				.toBuffer('PNG', (err, buffer) => {
-					if (err) return msg.channel.send(':warning: ``Unable to upload screenshot`` ```' + err + '```');
-					msg.channel.send({files: [{name: 'screenshot.png', attachment: buffer}]})
-				});
-			await browser.close();
-		} catch (error) {
-		  	msg.channel.send(':warning: ``Unable to take screenshot.`` ```' + error + '```');
 		}
+ 
+		let guildPrefix = msg.guild.commandPrefix;
+		embed.addField('Invalid arguments - Try', '```\n' + guildPrefix + command + ' ' + example + '```');
+		embed.setColor(15158332);
+		const message = await msg.channel.send(embed);
+		return message.delete({
+			timeout: 30000
+		});
 	}
   
 	getMemberFromString(msg, text) {
@@ -82,22 +87,40 @@ class utils {
 		if (args[0] !== '^')
 			for (const value of args) {
 				if (this.isURL(value)) imageURLs.push(value);
-				if (/<:.+:\d+>$/.test(value)) {
-					imageURLs.push(`https://cdn.discordapp.com/emojis/${value.match(/^<:.+:(\d+)>$/)[1]}.png`);
+				
+				if (/^<a?:.+:\d+>$/.test(value)) {
+					imageURLs.push(`https://cdn.discordapp.com/emojis/${value.match(/^<a?:.+:(\d+)>$/)[1]}`);
 				} else {
-				if (value === 'me') {
-					imageURLs.push(msg.author.displayAvatarURL({format: 'png', size: 1024}));
-					continue;
-				}
+					if (value === 'me') {
+						if (msg.author.displayAvatarURL().endsWith('.gif')) {
+							imageURLs.push(msg.author.displayAvatarURL({format: 'gif', size: 1024}));
+							continue;
+						} else {
+							imageURLs.push(msg.author.displayAvatarURL({format: 'png', size: 1024}));
+							continue;
+						}
+					}
+			
+					if (!msg.guild) {
+						if (msg.author.tag.toLowerCase().includes(value.toLowerCase()) || msg.author.id === value.replace(/[^\d]/g, '')) {
+							if (msg.author.displayAvatarURL().endsWith('.gif')) {
+								imageURLs.push(msg.author.displayAvatarURL({format: 'gif', size: 1024}));
+								continue;							
+							} else {
+								imageURLs.push(msg.author.displayAvatarURL({format: 'png', size: 1024}));
+								continue;
+							}
+						}
+					}
           
-				if (!msg.guild) {
-					if (msg.author.tag.toLowerCase().includes(value.toLowerCase()) || msg.author.id === value.replace(/[^\d]/g, ''))
-					imageURLs.push(msg.author.displayAvatarURL({format: 'png', size: 1024}));
-					continue;
-				}
-          
-				const match = this.getMemberFromString(msg, value);
-				if (match) imageURLs.push(match.user.displayAvatarURL({format: 'png', size: 1024}));
+					const match = this.getMemberFromString(msg, value);
+					if (match) {
+						if (match.user.displayAvatarURL().endsWith('.gif')) {
+							imageURLs.push(match.user.displayAvatarURL({format: 'gif', size: 1024}));						
+						} else {
+							imageURLs.push(match.user.displayAvatarURL({format: 'png', size: 1024}));
+						}
+					}
 				}
 			}
 			if (imageURLs.length === 0) {
@@ -147,7 +170,38 @@ class utils {
 		if (currentArg) args.push(currentArg);
 		
 		return args;
-	}                                 
+	}
+
+	async fetchRexAPI(args, endpoints) {
+		const API = require('./endpoints.json');
+		
+		let encodeURL = encodeURIComponent(args);
+		let baseURL = `http://rextester.com/rundotnet/api`;
+		let rawURL = new URL(`${baseURL}?LanguageChoice=${API[endpoints]}&Program=${encodeURL}`);
+
+		let result = await fetch(rawURL, {
+			method: 'POST'
+		});
+
+		return result;
+	}
+
+	async FetchOsuAPI(args, endpoints, mode) {
+		let osuEndpoints = {
+			"standard": 0,
+			"taiko": 1,
+			"catch": 2,
+			"ctb": 2,
+			"mania": 3
+		}
+		let QueryName = ['get_user', 'get_scores', 'get_user_best', 'get_user_recent', 'get_match', 'get_beatmaps'];
+		if (!QueryName.includes(mode)) throw new Error('from FetchOsuAPI: Unknown game mode called ' + mode);
+		let LowerEndpointsArgs = endpoints.toLowerCase();
+		let encodeURL = encodeURIComponent(args);
+		let raw = await fetch(`https://osu.ppy.sh/api/${mode}?k=${process.env.OSU}&u=${encodeURL}&m=${osuEndpoints[LowerEndpointsArgs]}`);
+
+		return raw;
+	}
   
 	isURL(value) {
 		return /^(https?:\/\/)?.+(\..+)?\.\w+(\/[^\/]*)*$/.test(value);

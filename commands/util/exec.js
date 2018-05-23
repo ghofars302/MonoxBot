@@ -1,7 +1,6 @@
 const MonoxCommand = require('../../const/MonoxCommand.js');
-const { exec } = require('child_process');
 
-class EvalCommand extends MonoxCommand {
+class ExecCommand extends MonoxCommand {
     constructor(client) {
         super(client, {
             name: 'exec',
@@ -9,37 +8,35 @@ class EvalCommand extends MonoxCommand {
             group: 'util',
             memberName: 'exec',
             description: 'Execute system command..',
-            examples: ['Nothing here :D'],
+            examples: ['(Command line.)'],
+            ownerOnly: true
         })
     }
 
-    async run(msg, argString) {
-        async function output(error, stdout, stderr) {
+    async run(msg, args) {
+        if (!args) return this.utils.invalidArgument(msg);
+        this.childprocess.exec(args, this.output(msg));
+    }
+
+    output(msg) {
+        return async (error, stdout, stderr) => {
             if (error) {
-                msg.channel.send(stderr, {
+                await msg.channel.send(stderr, {
                     code: "xl"
                 });
             } else {
                 if (stdout.length < 1) return msg.channel.send('✅ Task executed!, but no output were return.', {
                     code: "xl"
                 });
-                if (stdout.length > 2040) return msg.channel.send('✅ Task executed!, but the output length was over 2048 word.', {
+                if (stdout.length > 2000) return msg.channel.send('✅ Task executed!, but the output length was over 2000 word.', {
                     code: "xl"
                 });
-                msg.channel.send(stdout, {
+                await msg.channel.send(stdout, {
                     code: "xl"
                 });
             }
         }
-
-        if (msg.author.id !== this.config.owner) {
-            msg.channel.send("❌ ``Access denied. only Bot Owner can use this command.``");
-        } else if (!argString) {
-            this.utils.infoTextBlock(msg, 'm!exec (command..)', 'Execute system command...')
-        } else {
-            exec(argString, output)
-        }
     }
 };
 
-module.exports = EvalCommand;
+module.exports = ExecCommand;

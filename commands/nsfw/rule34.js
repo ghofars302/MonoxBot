@@ -9,7 +9,9 @@ class Rule34NSFW extends MonoxCommand {
             group: 'nsfw',
             memberName: 'rule34',
             description: 'Search image on rule34',
-            argType: 'array',
+            examples: ['(Tags..) (tags..)'],
+            argsType: 'multiple',
+            nsfw: true,
             throttling: {
                 usages: 1,
                 duration: 2
@@ -17,26 +19,27 @@ class Rule34NSFW extends MonoxCommand {
         })
     }
 
-    async run(msg, argArray) {
-        if (!msg.channel.nsfw) return msg.channel.send(':x: ``NSFW Command. please switch where channel tagged as NSFW``');
-        if (!argArray) return this.utils.infoTextBlock(msg, 'm!rule34 (Query..)', 'Search image on rule34');
+    async run(msg, args) {
+        if (!args) return this.utils.invalidArgument(msg);
+
+        let array = [args[0], args[1]];
         try {
-            let result = await this.booru('rule34', [argArray], {limit: 1, random: true});
-            let images = await result.commonfly;
-            for (const image of images) {
-                let embed = new MessageEmbed()
-                embed.setTitle('Rule34 Search result.')
-                    .setImage(image.common.file_url)
-                    .setFooter('MonoxBot 1.0.0, || Image rating: ' + image.common.rating, this.client.user.displayAvatarURL());
-                msg.channel.send(embed);
-            }
+        await this.booru.search('rule34.xxx', array, {limit: 1, random: true})
+            .then(this.booru.commonfy)
+            .then(async images => {
+                for (let image of images) {
+                    let embed = new this.api.MessageEmbed()
+                        .setTitle('Rule34.xxx Search result.')
+                        .setImage(image.common.file_url);
+
+                    await msg.channel.send(embed);
+                }
+            })
         } catch (error) {
             if (error.name === 'BooruError') {
-                msg.channel.send(':warning: ``No result found..``');
-            } else {
-                msg.channel.send(':x: ``Error while executing command..``');
-                console.log(error);
+                return msg.channel.send(':warning: ``Images not found in query..``');
             }
+            msg.channel.send(':warning: Unable to send image, probably missing permission? ```' + error + '```');
         }
     }
 }

@@ -1,9 +1,14 @@
-const { CommandoClient } = require('discord.js-commando');
+/*
+* @MonoxBot base client class.
+* @param extends commando.Client class
+*/
 
-class MonoxClient extends CommandoClient {
+const { Client } = require('discord.js-commando')
+
+class MonoxClient extends Client {
 	constructor(options) {
-		super(options);
+		super(options)
 	}
 }
 
-module.export = MonoxClient;
+module.exports = MonoxClient;

@@ -1,5 +1,4 @@
 const MonoxCommand = require('../../const/MonoxCommand');
-const { MessageEmbed } = require('discord.js');
 
 class PatCommand extends MonoxCommand {
 	constructor(client) {
@@ -8,6 +7,7 @@ class PatCommand extends MonoxCommand {
 			aliases: ['pet'],
 			group: 'weeb',
 			description: 'Pat someone ( ͡° ͜ʖ ͡°)',
+            examples: ['(@Mentions | User)'],
 			memberName: 'pat',
 			throttling: {
 				usages: 1,
@@ -16,17 +16,17 @@ class PatCommand extends MonoxCommand {
 		})
 	}
 	
-	async run(msg, argString) {
-		if (!argString) return this.utils.infoTextBlock(msg, 'm!pat (User || @Mention)', 'Pat someone ( ͡° ͜ʖ ͡°) ');
+    async run(msg, args) {
+		if (!args) return this.utils.invalidArgument(msg);
 		
-		let member = await this.utils.getMemberFromString(msg, argString);
-		if (!member) return msg.channel.send(':x: ``Member ' + argString + ' not found.``');
+		let member = await this.utils.getMemberFromString(msg, args);
+		if (!member) return msg.channel.send(':x: ``Member ' + args + ' not found.``');
 		if (msg.author.id === member.user.id) return msg.channel.send('You think you can pat yourself?');
 		
 		this.fetch('https://nekos.life/api/v2/img/pat')
 			.then(res => res.json())
 			.then(json => {
-				let embed = new MessageEmbed();
+				let embed = new this.api.MessageEmbed();
 				embed.setTitle(msg.author.username  + ' Pat ' + member.user.username)
 					.setImage(json.url)
 					.setFooter('Powered by nekos.life', 'https://nekos.life/static/icons/favicon-194x194.png');

@@ -1,5 +1,4 @@
 const MonoxCommand = require('../../const/MonoxCommand.js');
-const { MessageEmbed } = require('discord.js');
 
 class UrbanCommand extends MonoxCommand {
 	constructor(client) {
@@ -9,6 +8,7 @@ class UrbanCommand extends MonoxCommand {
 			group: 'others',
 			memberName: 'urban',
 			description: 'Get meaning of words from urban dictionary.',
+			examples: ['(Query....)'],
 			throttling: {
 				usages: 1,
 				duration: 1.5
@@ -16,46 +16,47 @@ class UrbanCommand extends MonoxCommand {
 		})
 	}
 	
-	async run(msg, argString) {
-		if (!argString) return this.utils.infoTextBlock(msg, 'm!urban (words)', 'Get meaning of word from urban dictionary.');
-		this.webdict.term(argString, function(error, entries) {
-			if (error) {
-				msg.channel.send(':warning: ``No result found.``');
-			} else {
-				let definition = entries[0].definition;
-				definition.length > 1024  ? definition = definition.substring(0, 1024) : definition;
-				let example = entries[0].example;
-				example.length > 1024  ? example = example.substring(0, 1024) : example;
-				let example2 = entries[1].example;
-				example2.length > 1024  ? example2 = example2.substring(0, 1024) : example2;
-				
-				if (!entries[0].example && entries[1].example) {
-					const embed = new MessageEmbed();
-					embed.setTitle(entries[0].word)
-						.setURL(entries[0].permalink)
-						.addField('Definition', definition)
-						.setFooter('Urban Dictionary || 👍 ' + entries[0].thumbs_up + ' 👎 ' + entries[0].thumbs_down, 'http://www.packal.org/sites/default/files/public/styles/icon_large/public/workflow-files/florianurban/icon/icon.png?itok=sMaOFyEA');
-					msg.channel.send(embed);
-				} else if (!entries[1].example){
-					const embed = new MessageEmbed();
-					embed.setTitle(entries[0].word)
-						.setURL(entries[0].permalink)
-						.addField('Definition', definition)
-						.addField('Example', example)
-						.setFooter('Urban Dictionary || 👍 ' + entries[0].thumbs_up + ' 👎 ' + entries[0].thumbs_down, 'http://www.packal.org/sites/default/files/public/styles/icon_large/public/workflow-files/florianurban/icon/icon.png?itok=sMaOFyEA');
-					msg.channel.send(embed);					
-				} else {
-					const embed = new MessageEmbed();
-					embed.setTitle(entries[0].word)
-						.setURL(entries[0].permalink)
-						.addField('Definition', definition)
-						.addField('Example 1', example, true)
-						.addField('Example 2', example2, true)
-						.setFooter('Urban Dictionary || 👍 ' + entries[0].thumbs_up + ' 👎 ' + entries[0].thumbs_down, 'http://www.packal.org/sites/default/files/public/styles/icon_large/public/workflow-files/florianurban/icon/icon.png?itok=sMaOFyEA');
-					msg.channel.send(embed);					
+	async run(msg, args) {
+		if (!args) return this.utils.invalidArgument(msg);
+		let term = encodeURIComponent(args);
+		let fetched = await this.fetch(`http://api.urbandictionary.com/v0/define?term=${term}`);
+		let json = await fetched.json();
+		let define = json.list;
+		if (!Object.keys(json.list).length) {
+            return msg.channel.send(':warning: ``No result found.``');
+		}
+
+		if (!define[0].example) {
+			await msg.channel.send({embed: {
+				title: define[0].word,
+				url: define[0].permalink,
+				fields: [{
+					name: 'Definition',
+					value: define[0].definition
+				}],
+				footer: {
+					text: 'Urban Dictionary || 👍 ' + define[0].thumbs_up + ' 👎 ' + define[0].thumbs_down,
+					icon_url: 'http://www.packal.org/sites/default/files/public/styles/icon_large/public/workflow-files/florianurban/icon/icon.png?itok=sMaOFyEA'
 				}
-			}
-		})
+			}})
+		} else {
+			await msg.channel.send({embed: {
+				title: define[0].word,
+				url: define[0].permalink,
+				fields: [{
+					name: 'Definition',
+					value: define[0].definition
+				},
+				{
+					name: 'Example',
+					value: define[0].example
+				}],
+				footer: {
+					text: 'Urban Dictionary || 👍 ' + define[0].thumbs_up + ' 👎 ' + define[0].thumbs_down,
+					icon_url: 'http://www.packal.org/sites/default/files/public/styles/icon_large/public/workflow-files/florianurban/icon/icon.png?itok=sMaOFyEA'
+				}
+			}})			
+		}
 	}
 }
 

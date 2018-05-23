@@ -8,7 +8,7 @@ class InviteCommand extends MonoxCommand {
             aliases: [],
             group: 'util',
             memberName: 'invite',
-            description: 'get invite link',
+            description: 'Get Bot invite or Dev server invite.',
             throttling: {
                 usages: 1,
                 duration: 2
@@ -21,8 +21,8 @@ class InviteCommand extends MonoxCommand {
         embed.setTitle('You wanna invite this bot?')
             .addField('Invite', '[Here](https://discordapp.com/oauth2/authorize?client_id=425292802801401866&permissions=8&scope=bot)', true)
             .addField('DevServer', '[Here](https://discord.gg/g8MF2zk)', true)
-            .setFooter('MonoxBot 1.0.0', this.client.user.displayAvatarURL());
-        msg.channel.send(embed);
+            .setFooter('MonoxBot ' + this.botVersion, this.client.user.displayAvatarURL());
+        await msg.channel.send(embed);
     }
 }
 
