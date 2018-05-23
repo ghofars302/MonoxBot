@@ -1,4 +1,4 @@
-# MonoxBot v.1.0.0
+# MonoxBot v.1.1.0
 
 MonoxBot use extends Discord.js-commando
 
