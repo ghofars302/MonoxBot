@@ -1,39 +1,29 @@
-const NekoAPI = require('../../const/nekos.json');
-
 module.exports = {
-	description: 'Kiss someone or yourself. idk what you love.',
-    category: 'fun',
-    args: '(@Mentions | User)',
-	run: async function (ctx, args, argsString) {
-        const result = await this.rpromise({
-            method: 'GET',
-            uri: `https://nekos.life/api/v2${NekoAPI['kiss']}`,
-            headers: {
-                'User-Agent': 'MonoxBot'
-            },
-            json: true
-        });
+    description: 'kiss someone \\o/',
+    category: 'Fun',
+    args: '[@Mentions | User]',
+    cooldown: 2000,
+    run: async function (ctx, args, argsString) {
+        let userID = ctx.author.id;
 
         if (argsString) {
-            if (!ctx.guild) return ctx.send('Looks you in DMChannel and i can\'t other users in this DM sorry about that.');
-            const member = await this.utils.getMemberFromString(ctx, argsString);
-            if (!member) return ctx.send(`:x: \`\`User ${argsString} not found.\`\``);
-            if (member.user.id === ctx.author.id) return ctx.send(':x: ``You can\'t do it to yourself.``');
+            if (ctx.isDM()) return 'Yoo, you\'re in DMChannel so only me and you'
+            const match = ctx.bot.utils.getMemberFromString(ctx, argsString);
 
-            const embed = new this.api.MessageEmbed()
-            .setImage(result.url)
-            .setDescription(`<@!${ctx.author.id}> Kiss <@!${member.user.id}>, What a couple`)
-            .setFooter('Powered by nekos.life', 'https://nekos.life/static/icons/favicon-194x194.png');
-    
-            await ctx.send(embed);
-            return;
+            if (!match) return `:x: \`\`Member "${argsString}" not found.\`\``
+            if (match.user.id !== userID || match.user.id !== ctx.main.user.id) {
+                userID = match.user.id;
+            }
+
         }
 
-        const embed = new this.api.MessageEmbed()
-            .setImage(result.url)
-            .setDescription(`You kiss yourself?? <@!${ctx.author.id}>`)
+        const res = await ctx.bot.nekosapi.get('kiss');
+
+        const embed = new ctx.bot.api.MessageEmbed()
+            .setDescription(userID === ctx.author.id || userID === ctx.main.user.id ? `You kissing yourself? sorry about that <@!${ctx.author.id}>` : `<@!${ctx.author.id}> has kiss <@!${userID}>, they looks perfect.`)
+            .setImage(res)
             .setFooter('Powered by nekos.life', 'https://nekos.life/static/icons/favicon-194x194.png');
-    
-        await ctx.send(embed);
-	}
+
+        return embed;
+    }
 }

@@ -1,4 +1,6 @@
 {
 	"prefix" : "m;",
-	"admins" : "344754852989108226"
+	"admins" : "344754852989108226",
+	"webhelper" : false,
+	"pageHelp" : true
 }

@@ -40,12 +40,6 @@ class ResourceLoader {
 		return commands;
 	}
 	
-	loadEvents() {
-		for (const fileName of fs.readdirSync('./events/')) {
-			require(path.resolve('./events/', fileName)).call(this.bot);
-		}
-	}
-	
 	loadModules() {
 		this.bot.gm = require('gm').subClass({imageMagick: true});
 		this.bot.fetch = require('node-fetch');
@@ -53,6 +47,7 @@ class ResourceLoader {
 		this.bot.puppeteer = require('puppeteer');
 		this.bot.childProcess = require('child_process');
 		this.bot.ytdl = require('ytdl-core');
+		this.bot.axios = require('axios');
 		this.bot.hd = humanizeDuration.humanizer({
 			languages: {
 				youtube: {
@@ -64,6 +59,8 @@ class ResourceLoader {
 		this.bot.util = require('util');
 		this.bot.rpromise = require('request-promise');
 		this.bot.snekfetch = require('snekfetch');
+		this.bot.nekosapi = require('../modules/nekosAPI');
+		this.bot.fetchapi = require('../modules/fetchAPI');
 	}
 
 	createDBInstance() {

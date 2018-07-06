@@ -1,37 +1,29 @@
-const NekoAPI = require('../../const/nekos.json');
-
 module.exports = {
-	description: 'Slap someone',
-    category: 'fun',
-    args: '(@Mentions | User)',
-	run: async function (ctx, args, argsString) {
-        const result = await this.rpromise({
-            method: 'GET',
-            uri: `https://nekos.life/api/v2${NekoAPI['slap']}`,
-            headers: {
-                'User-Agent': 'MonoxBot'
-            },
-            json: true
-        });
+    description: 'Slap someone you hate or don\'t like',
+    category: 'Fun',
+    args: '[@Mentions | User]',
+    cooldown: 2000,
+    run: async function (ctx, args, argsString) {
+        let userID = ctx.author.id;
 
         if (argsString) {
-            if (!ctx.guild) return ctx.send('Looks you in DMChannel and i can\'t other users in this DM sorry about that.');
-            const member = await this.utils.getMemberFromString(ctx, argsString);
-            if (!member) return ctx.send(`:x: \`\`User ${argsString} not found.\`\``);
+            if (ctx.isDM()) return 'Yoo, you\'re in DMChannel so only me and you'
+            const match = ctx.bot.utils.getMemberFromString(ctx, argsString);
 
-            const embed = new this.api.MessageEmbed()
-            .setImage(result.url)
-            .setDescription(`<@!${ctx.author.id}> Slaps <@!${member.user.id}>, Must be a real BAKA!!`)
-            .setFooter('Powered by nekos.life', 'https://nekos.life/static/icons/favicon-194x194.png');
-    
-            return await ctx.send(embed);
+            if (!match) return `:x: \`\`Member "${argsString}" not found.\`\``
+            if (match.user.id !== userID || match.user.id !== ctx.main.user.id) {
+                userID = match.user.id;
+            }
+
         }
 
-        const embed = new this.api.MessageEmbed()
-            .setImage(result.url)
-            .setDescription(`Here let me slaps you <@!${ctx.author.id}>`)
+        const res = await ctx.bot.nekosapi.get('slap');
+
+        const embed = new ctx.bot.api.MessageEmbed()
+            .setDescription(userID === ctx.author.id || userID === ctx.main.user.id ? `Here let me slaps you <@!${ctx.author.id}>` : `<@!${ctx.author.id}> slapped <@!${userID}>, must be a real BAKA!!`)
+            .setImage(res)
             .setFooter('Powered by nekos.life', 'https://nekos.life/static/icons/favicon-194x194.png');
-    
-        await ctx.send(embed);
-	}
+
+        return embed
+    }
 }

@@ -8,10 +8,9 @@ class ConfirmationHelper {
   }
 
   removeReactions(message) {
-    for (const reaction of message.reactions) {
-      if (reaction.some(e => e.includes('✅', '❎'))) {
-      //if (['✅', '❎'].includes(reaction._emoji.name)) {
-        for (const user of reaction.users) {
+    for (const reaction of message.reactions.values()) {
+      if (['✅', '❎'].includes(reaction.emoji.name)) {
+        for (const user of reaction.users.values()) {
           if (user.id === this.main.client.user.id || (message.guild && message.channel.permissionsFor(message.guild.me).has('MANAGE_MESSAGES'))) {
             reaction.users.remove(user);
           }
@@ -82,10 +81,12 @@ class ConfirmationHelper {
     const eventEmitter = new EventEmitter();
 
     if (message) {
-      if (this.channels[message.channel.id]) {
+      if (!message.guild || (message.guild && message.channel.permissionsFor(message.guild.me).has('ADD_REACTIONS'))) {
+        this.handleConfirmReaction(message, invoker, eventEmitter);
+      } else if (this.channels[message.channel.id]) {
         message.edit('There is still another command in this channel waiting for confirmation. Please handle this first before issuing a new command which needs to be confirmed.');
       } else {
-        message.edit(`${message.content} \nRespond with \`y\` / \`yes\` to confirm or \`n\` / \`no\` to cancel the action.`);
+        message.edit(`${message.content} Respond with \`y\` / \`yes\` to confirm or \`n\` / \`no\` to cancel the action.`);
         this.handleConfirmMessage(message, invoker, eventEmitter);
       }
     }

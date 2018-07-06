@@ -6,7 +6,7 @@ module.exports = {
                 if (argsString) {
                         argsString = argsString.toLowerCase();
                         if (argsString === 'all' || argsString === 'global') {
-                                const message = await ctx.send(':warning: ``Confirm restart all shard!``');
+                                const message = await ctx.reply(':warning: ``Confirm restart all shard!``');
         
                                 const confirm = await this.ConfirmationHelper.initConfirm(message, ctx.author);
             
@@ -20,9 +20,9 @@ module.exports = {
                                 });
                                 return;
                         }
-                        return ctx.send(':x: ``Invalid options``');
+                        return ctx.reply(':x: ``Invalid options``');
                 }
-                const message = await ctx.send(':warning: ``Confirm restart current shard!``');
+                const message = await ctx.reply(':warning: ``Confirm restart current shard!``');
         
                 const confirm = await this.ConfirmationHelper.initConfirm(message, ctx.author);
     

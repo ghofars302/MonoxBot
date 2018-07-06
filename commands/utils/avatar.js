@@ -1,23 +1,21 @@
 module.exports = {
-	description: 'Display someone avatar (default to you.)',
-    category: 'utils',
+    description: 'Display someone avatar (default to you.)',
+    category: 'Utils',
     args: '(@Mentions | User)',
-	run: async function (ctx, args, argsString) {
-        let userID = ctx.author.id;
+    aliases: ['pfp'],
+    run: async function (ctx, args, argsString) {
+        let user = ctx.author;
 
-		if (argsString) {
-			const match = ctx.main.users.get(argsString);
-			if (match) userID = match.id
-			if (!match) {
-				if (!ctx.guild) return ctx.reply(':x: ``Use UserID if you want search user outside guild or inside DM channel``');
-				const match = ctx.bot.utils.getMemberFromString(ctx, argsString);
-				if (!match) return ctx.send(`:x: \`\`Member called ${argsString} not found.\`\``);
-				userID = match.user.id;
-			}
+        if (argsString) {
+            try {
+                const match = await ctx.bot.utils.getUser(ctx, argsString);
+
+                user = match;
+            } catch (e) {
+                return e
+            }
         }
 
-        const userObot = ctx.main.users.get(userID)
-
-        ctx.send(`\`\`${userObot.tag}\`\`'s avatar: \n${userObot.displayAvatarURL({size: 1024})}`);
-	}
+        return `\`\`${user.tag}\`\`'s avatar: \n${user.avatarURL({size: 2048})}`
+    }
 }

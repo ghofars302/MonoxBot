@@ -1,23 +1,44 @@
-module.exports = {
-	description: 'Sends command help',
-	category: 'Utils',
-	args: '(command)',
-	cooldown: 1000,
-	run: async function (ctx, args) {
-		if (args.length === 1) {
-			const commandName = args[0];
-			if (!this.commands.has(commandName.toLowerCase())) return ctx.send('That command doesn\'t exist, try another one!');
-			let command = this.commands.get(commandName.toLowerCase());
-			if (command.alias) command = this.commands.get(command.name);
+const {stripIndent} = require('common-tags');
+const {displayHelpPage} = require('../../const/stringUtils');
 
-			const embed = new this.api.MessageEmbed()
-				.setTitle(commandName)
-				.setFooter('monoxbot.ga', this.client.user.displayAvatarURL())
-				.addField('Description', command.description)
-				.addField('Usage', `${commandName} ${command.args || ''}`)
-				.setTimestamp();
-			
-			await ctx.send(embed);
-		} else ctx.send(`<@!${ctx.author.id}>, http://monoxbot.ga`);
-	}
-};
+module.exports = {
+    description: 'Get list command or individual command information',
+    category: 'Utils',
+    cooldown: 5000,
+    args: '<Command>',
+    run: async function (ctx, args, argsString) {
+        if (ctx.author.id !== ctx.main.owner && !ctx.bot.config.pageHelp && !argsString) return `Help command currently WIP, use \`\`${ctx.bot.config.prefix}help <Command>\`\` instead.`;
+
+        if (!argsString) {
+            const helpMsg = await ctx.reply(displayHelpPage())
+        
+            const paginate = ctx.bot.Paginate.initPaginate(helpMsg, ctx.author, 5);
+
+            if (!paginate) {
+                return false;
+            }
+
+            paginate.on('paginate', number => {
+                helpMsg.edit(displayHelpPage(number));
+            });
+
+            return true;
+        } 
+
+        let command = ctx.bot.commands.get(argsString.toLowerCase());
+
+        if (command) {
+            if (command.alias) command = ctx.bot.commands.get(command.name);
+
+            return stripIndent`
+                \`\`\`
+                ${ctx.bot.config.prefix}${command.args ? `${argsString} ${command.args}` : `${argsString}`}
+
+                ${command.description}
+                \`\`\`
+            `
+        }
+
+        return 'That command doesn\'t exist, try another one!'
+    }
+}

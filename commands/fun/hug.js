@@ -1,37 +1,29 @@
-const NekoAPI = require('../../const/nekos.json');
-
 module.exports = {
-	description: 'Hug someone or yourself..',
-    category: 'fun',
-    args: '(@Mentions | User)',
-	run: async function (ctx, args, argsString) {
-        const result = await this.rpromise({
-            method: 'GET',
-            uri: `https://nekos.life/api/v2${NekoAPI['hug']}`,
-            headers: {
-                'User-Agent': 'MonoxBot'
-            },
-            json: true
-        });
+    description: 'Hug someone \\o/',
+    category: 'Fun',
+    args: '[@Mentions | User]',
+    cooldown: 2000,
+    run: async function (ctx, args, argsString) {
+        let userID = ctx.author.id;
 
         if (argsString) {
-            if (!ctx.guild) return ctx.send('Looks you in DMChannel and i can\'t other users in this DM sorry about that.');
-            const member = await this.utils.getMemberFromString(ctx, argsString);
-            if (!member) return ctx.send(`:x: \`\`User ${argsString} not found.\`\``);
+            if (ctx.isDM()) return 'Yoo, you\'re in DMChannel so only me and you'
+            const match = ctx.bot.utils.getMemberFromString(ctx, argsString);
 
-            const embed = new this.api.MessageEmbed()
-            .setImage(result.url)
-            .setDescription(`<@!${ctx.author.id}> Hugs <@!${member.user.id}>, What a cutes.`)
-            .setFooter('Powered by nekos.life', 'https://nekos.life/static/icons/favicon-194x194.png');
-    
-            return await ctx.send(embed);
+            if (!match) return `:x: \`\`Member "${argsString}" not found.\`\``
+            if (match.user.id !== userID || match.user.id !== ctx.main.user.id) {
+                userID = match.user.id;
+            }
+
         }
 
-        const embed = new this.api.MessageEmbed()
-            .setImage(result.url)
-            .setDescription(`Here a hugs <@!${ctx.author.id}>`)
+        const res = await ctx.bot.nekosapi.get('hug');
+
+        const embed = new ctx.bot.api.MessageEmbed()
+            .setDescription(userID === ctx.author.id || userID === ctx.main.user.id ? `Here let me hugs you <@!${ctx.author.id}>` : `Awoo, <@!${ctx.author.id}> has hugged <@!${userID}>`)
+            .setImage(res)
             .setFooter('Powered by nekos.life', 'https://nekos.life/static/icons/favicon-194x194.png');
-    
-        await ctx.send(embed);
-	}
+
+        return embed;
+    }
 }

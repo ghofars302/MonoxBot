@@ -1,24 +1,20 @@
+const {exec} = require('child-process-promise');
+
 module.exports = {
-	description: 'Execute system process / commands.',
-	category: 'adminOnly',
-	cooldown: 1000,
-    args: '(code..)',
-    aliases: ['ceval'],
-	adminOnly: true,
-	run: async function (ctx, args, argsString) {
-		if (!argsString) return this.messageHandler.invalidArguments(ctx.message);
+    description: 'Evaluate system command line.',
+    category: 'adminOnly',
+    adminOnly: true,
+    run: async function (ctx, args, argsString) {
+        if (!argsString) return `\`\`\`${ctx.bot.config.prefix}exec <command line>\n\nEvaluate system command line.\`\`\``;
 
-        this.childProcess.exec(argsString, async (err, stdout, stderr) => {
-            if (err) {
-                await ctx.send(stderr, {
-                    code: 'xl'
-                });
-                return; 
-            }
+        const now = Date.now();
 
-            ctx.send(stdout, {
-                code: 'xl'
-            })
-        })
-	}
-};
+        try {
+            const res = await exec(argsString);
+
+            return `Exec output, Took: \`\`${Date.now() - now}ms\`\` \`\`\`xl\n${await res.stdout}\`\`\``;
+        } catch (error) {
+            return `Exec output, Took: \`\`${Date.now() - now}ms\`\` \`\`\`xl\n${error}\`\`\``;
+        }
+    }
+}

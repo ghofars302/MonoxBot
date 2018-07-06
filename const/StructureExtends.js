@@ -4,7 +4,7 @@ module.exports = Structures.extend('Guild', Guild => {
     class MonoxBotGuild extends Guild {
         constructor(...args) {
             super(...args);
-            this.guildPrefix = 'null'
+            this.guildPrefix = this.client.prefix;
         }
     }
 

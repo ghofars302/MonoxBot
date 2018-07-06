@@ -1,126 +1,57 @@
+const {stripIndent} = require('common-tags');
+const API = require('../../modules/rex.json');
+
 module.exports = {
 	description: 'Evaluates code on rextester.com',
 	category: 'Utils',
-	args: '(language) (code..)',
-	run: async function (ctx, args, argsString) {
-        if (!argsString) return this.messageHandler.invalidArguments(ctx.message);
+    args: '<Language> <Code>',
+    ownerOnly: true,
+	run: async function (ctx, args) {
+        if (args.length < 1) return `\`\`\`${ctx.bot.config.prefix}rex <Language> <code>\n\nSubcommands:\n-list (Get rextester language supported-list)\n\nRun or test your code in rextester.com\`\`\``;
 
-        if (args[0].toLowerCase() === 'list') {
-            return ctx.send(this.util.inspect(list), {code: 'xl'});
-        }
-        if (!language.includes(args[0])) return ctx.send(':x: ``Unknown language``');
+        const Lang = args.shift().toLowerCase();
+        const code = args.join(' ');
 
-        const code = encodeURIComponent(argsString.slice(args[0].length));
-        const res = await this.fetch(`http://rextester.com/rundotnet/api?LanguageChoice=${list[args[0]]}&Program=${code}`, {
-            method: 'POST'
-        });
+        if (Lang.toLowerCase() === 'list') return stripIndent`
+            \`\`\`
+            Rextester language list:
+            - C#            - Lisp          - Ocaml
+            - VBNET         - Prolog        - Kotlin
+            - F#            - Go            - Brainfuck
+            - Java          - Scala         - Fortan
+            - Python27      - Scheme
+            - C             - Nodejs
+            - C++           - Python3
+            - Php           - Octave
+            - Pascal        - Tcl
+            - ObjectiveC    - MySql
+            - Haskell       - PostgreSql
+            - Ruby          - Oracle
+            - Perl          - Swift
+            - Lua           - Bash
+            - Nasm          - Ada
+            - SqlServer     - Erlang
+            - Javascript    - Elixir
+    
+            To use those language do: ${ctx.bot.config.prefix}rex <Language> <Code>
+            \`\`\`
+        `
 
-        const result = await res.json();
+        if (!Object.keys(API).includes(Lang)) return `:x: \`Unknown language, to get language list do: ${ctx.bot.config.prefix}rex list\``;
 
-        if (result['Errors']) return ctx.send(result['Errors'], {
-            code: 'js'
-        });
-
-        await ctx.send(result['Result'] || 'Empty response.', {
-            code: 'js'
-        });
+        try {
+            const res = await ctx.bot.rpromise.post({
+                uri: 'http://rextester.com/rundotnet/api',
+                qs: {
+                    LanguageChoice: API[Lang],
+                    Program: /(^```[a-z]*)|(```*$)/g.test(code) ? code.replace(/(^```[a-z]*)|(```*$)/g, '').trim() : code
+                },
+                json: true
+            });
+    
+            return `\`\`\`js\n${res['Result'] ? ctx.bot.api.Util.escapeMarkdown(res['Result'], true, true) : res['Errors'] ? ctx.bot.api.Util.escapeMarkdown(res['Errors'], true, true) : 'Empty response'}\`\`\``;
+        } catch (error) {
+            return `:x: \`There a Error while calling the API\``;
+        }    
 	}
 };
-
-const list = require('../../const/rex.json');
-
-const language = [
-    'c#',
-    'VBNET',
-    'vbnet',
-    'f#',
-    'java',
-    'Java',
-    'JAVA',
-    'python27',
-    'Python27',
-    'py27',
-    'Py27',
-    'PYTHON27',
-    'PY27',
-    'C',
-    'c',
-    'C++',
-    'cplusplus',
-    'php',
-    'Php',
-    'PHP',
-    'Pascal',
-    'pascal',
-    'objectivec',
-    'OjectiveC',
-    'haskell',
-    'Haskell',
-    'ruby',
-    'RUBY',
-    'Ruby',
-    'Perl',
-    'PERL',
-    'perl',
-    'lua',
-    'Lua',
-    'LUA',
-    'nasm',
-    'Nasm',
-    'SQLServer',
-    'sqlserver',
-    'Sqlserver',
-    'javascript',
-    'js',
-    'JavaScript',
-    'JS',
-    'javaScript',
-    'Lisp',
-    'lisp',
-    'Prolog',
-    'prolog',
-    'Go',
-    'go',
-    'scala',
-    'Scala',
-    'Scheme',
-    'scheme',
-    'node.js',
-    'nodejs',
-    'node',
-    'Node.js',
-    'Nodejs',
-    'Node',
-    'python3',
-    'Python3',
-    'python',
-    'Python',
-    'py3',
-    'Py3',
-    'PYTHON3',
-    'PY3',
-    'Octave',
-    'octave',
-    'Clang',
-    'clang',
-    'Cvc',
-    'cvc',
-    'D',
-    'R',
-    'Tcl',
-    'tcl',
-    'MySql',
-    'mysql',
-    'mySql',
-    'PostgreSQL',
-    'postgresql',
-    'Postgresql',
-    'postgres',
-    'Postgres',
-    'oracle',
-    'Oracle',
-    'Swift',
-    'swift',
-    'bash',
-    'Bash'
-];
