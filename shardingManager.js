@@ -13,7 +13,7 @@ class MonoxSharding { // eslint-disable-line no-unused-vars
 
 	init() {
 		const shardManager = new API.ShardingManager('./bot.js', { // eslint-disable-line no-unused-vars
-			token: process.env.token
+			token: process.env.TOKEN
 		});
 
 		/* eslint-disable no-console */
