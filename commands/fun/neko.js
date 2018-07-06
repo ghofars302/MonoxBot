@@ -61,7 +61,7 @@ module.exports = {
                 const type = Object.keys(nsfw).random();
 
                 const res = await ctx.bot.rpromise({
-                    uri: api + sfw[type],
+                    uri: api + nsfw[type],
                     json: true
                 });
 
