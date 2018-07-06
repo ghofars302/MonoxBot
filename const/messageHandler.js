@@ -105,7 +105,7 @@ class messageHandler {
 			this.context.handleError(error, ctx);
 		}
 
-		if (this.bot.utils.isAdmin(ctx.author.id)) this.bot.utils.queryDB('INSERT INTO commands VALUES ($1, $2, $3, $4, $5)', [ctx.id, command.name, ctx.author.id, ctx.channel.id, ctx.guild ? ctx.guild.id : ctx.channel.id]);
+		if (!this.bot.utils.isAdmin(ctx.author.id)) this.bot.utils.queryDB('INSERT INTO commands VALUES ($1, $2, $3, $4, $5)', [ctx.id, command.name, ctx.author.id, ctx.channel.id, ctx.guild ? ctx.guild.id : ctx.channel.id]);
 	}
 	
 	splitArguments(string) {
