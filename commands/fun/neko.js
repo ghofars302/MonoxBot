@@ -141,7 +141,7 @@ const nsfw = {
     'blowjob': '/img/blowjob',
     'eroyuri': '/img/eroyuri',
     'yuri': '/img/yuri',
-    'nsfwavatar': '/img/nsfwavatar',
+    'nsfwavatar': '/img/nsfw_avatar',
     'trap': '/img/trap',
     'spank': '/img/spank' 
 }
