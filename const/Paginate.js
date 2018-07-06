@@ -58,7 +58,7 @@ module.exports = class Paginate {
 
             if (emoji.includes(this.emoji.delete)) return msg.delete();
 
-            if (msg.guild && msg.channel.permissionsFor(msg.guild.me).has('MANAGE_MESSSAGES')) await response.users.remove(user);
+            if (msg.guild && msg.channel.permissionsFor(msg.guild.me).has('MANAGE_MESSAGES')) await response.users.remove(user);
 
             switch (emoji[0] || emoji[1]) {
                 case this.emoji.back:
