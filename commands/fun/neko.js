@@ -71,7 +71,7 @@ module.exports = {
                 if (Object.keys(sfw).includes(argsString) || Object.keys(nsfw).includes(argsString)) {
                     if (Object.keys(nsfw).includes(argsString) && !ctx.isNSFW) return ':x: ``Nekos.life NSFW tags only can be used in Discord NSFW Channel``';
                     const res = await ctx.bot.rpromise({
-                        uri: api + (sfw.includes(argsString) ? sfw[argsString] : nsfw[argsString]),
+                        uri: api + (Object.keys(sfw).includes(argsString) ? sfw[argsString] : nsfw[argsString]),
                         json: true
                     });
     
