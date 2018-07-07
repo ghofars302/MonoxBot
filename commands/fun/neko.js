@@ -5,7 +5,6 @@ module.exports = {
     category: 'Fun',
     args: '<tag>',
     cooldown: 2500,
-    adminOnly: true,
     aliases: ['nekos'],
     run: async function (ctx, args, argsString) {
         if (argsString) {
