@@ -7,6 +7,33 @@ class utils {
 		return this.bot.config.admins.includes(userID);
 	}
 
+	ImageEmbedPagination(ctx, array, message, fieldTitle, fieldMessage) {
+		if (fieldTitle && !fieldMessage) throw new Error('Embed filed value must not empty');
+
+		let page = [];
+		let pageNumber = 0;
+		page.push('EMBED#UNDEFINED');
+
+		
+		for (const items of array) {
+			const embed = new ctx.bot.api.MessageEmbed();
+			if (message) embed.setDescription(message);
+			if (fieldTitle && fieldMessage) embed.addField(fieldTitle, fieldMessage)
+			embed.setImage(items);
+
+			if (array.length > 1) {
+				pageNumber = pageNumber + 1; // eslint-disable-line operator-assignment
+				embed.setFooter(`Page ${pageNumber} of ${array.length}`);
+			} else {
+				embed.setFooter(`Page 1 of 1`);
+			}
+
+			page.push(embed);
+		}
+
+		return page;
+	}
+
 	async getImagesFromMessage(msg, args) {
 		let imageURLs = [];
 
@@ -154,7 +181,7 @@ class utils {
 	
 		if (result) user = result;
 		if (!result) {
-			if (context.isDM()) {
+			if (context.isDM) {
 				if (!isNaN(argsString)) throw `:x: \`User with ID "${argsString}" not found.\``
 				throw ':x: `Use UserID to get user in DMChannel`'
 			}

@@ -8,12 +8,12 @@ module.exports = {
     category: 'Image',
     cooldown: 5000,
     args: '<@Mentions | User | URL>',
-    run: async (ctx, args) => {
+    run: async (ctx, { args }) => {
         const image = await ctx.bot.utils.getImagesFromMessage(ctx.message, args);
 
         if (image.length === 0) return stripIndent`
             \`\`\`
-            ${ctx.bot.config.prefix}glitch <@Mentions | User | URL>
+            ${ctx.prefix}glitch <@Mentions | User | URL>
 
             Glitching... a image.
             \`\`\`

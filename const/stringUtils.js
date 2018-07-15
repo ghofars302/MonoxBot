@@ -1,9 +1,8 @@
 const {stripIndent} = require('common-tags')
-const {prefix} = require('../config/config.json');
 const {version} = require('../package.json');
 
 class stringUtils {
-    static displayHelpPage(number) {
+    static displayHelpPage(prefix, number) {
         const pageOne = stripIndent`
             \`\`\`
             MonoxBot ${version} commands list
@@ -13,6 +12,7 @@ class stringUtils {
             VOICE.........Page number 5
 
             PS: You can see help for individual command by do ${prefix}help <Command>
+                You can see latest update by using command ${prefix}new
 
             To paginate the help page react message below.
             \`\`\`
@@ -71,6 +71,7 @@ class stringUtils {
             ${prefix}image <Query>
             ${prefix}clean <Limit> [Filter]
             ${prefix}urban <Query>
+            ${prefix}prefix <Prefix>
 
             // '<>' means must be a argument
             // '[]' means optional argument

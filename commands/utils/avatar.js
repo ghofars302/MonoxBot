@@ -3,7 +3,7 @@ module.exports = {
     category: 'Utils',
     args: '(@Mentions | User)',
     aliases: ['pfp'],
-    run: async function (ctx, args, argsString) {
+    run: async function (ctx, { argsString }) {
         let user = ctx.author;
 
         if (argsString) {

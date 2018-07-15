@@ -23,9 +23,12 @@
     "child-process-promise": "^2.2.1",
     "colors": "^1.2.1",
     "common-tags": "^1.8.0",
+    "dateformat": "^3.0.3",
     "discord-paginationembed": "github:gazmull/discord-paginationembed",
     "discord.js": "git+https://github.com/hydrabolt/discord.js#master",
     "dotenv": "^5.0.1",
+    "enmap": "^2.6.3",
+    "enmap-sqlite": "^2.0.3",
     "express": "^4.16.3",
     "fs-extra": "^6.0.1",
     "glitch-canvas": "^1.1.5",
@@ -41,6 +44,7 @@
     "puppeteer": "^1.4.0",
     "request": "^2.87.0",
     "request-promise": "^4.2.2",
+    "sqlite3": "^4.0.1",
     "ytdl-core": "^0.20.2"
   }
 }

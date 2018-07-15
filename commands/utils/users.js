@@ -1,10 +1,12 @@
+const PrettyDate = require('../../modules/PrettyDate');
+
 module.exports = {
 	description: 'Replies with the user\'s stats',
 	category: 'Utils',
 	args: '<@Mentions | User>',
 	aliases: ['userinfo', 'whois', 'user', 'u'],
 	cooldown: 5000,
-	run: async function (ctx, args, argsString) {
+	run: async function (ctx, { argsString }) {
 		let user = ctx.author
 
 		if (argsString) {
@@ -23,7 +25,7 @@ module.exports = {
 		const shownServers = servers.slice(-3);
 
 		let body = `\`${shownServers.join('`, `')}`;
-		body += shownServers.length < servers.length ? `\` + ${servers.length - shownServers.length} more` : '`';
+		body += shownServers.length < servers.length ? `\` + ${servers.length - shownServers.length} more` : 'None`';
 		
 		const status = user.presence.status;
 		const activity = user.presence.activity;
@@ -37,10 +39,10 @@ module.exports = {
 			.addField(`${user.bot ? 'BotID' : 'UserID'}`, user.id, true)
 
 		if (activity) embed.addField(`${activity.type === 'LISTENING' ? 'Listening to' : activity.type === 'STREAMING' ? 'Streaming Game' : 'Playing'}`, `${activity.type === 'LISTENING' ? `${activity.state} ${activity.details}`  : activity.type === 'STREAMING' ? `[${activity.name}](${activity.url})` : activity.name}`, true) // eslint-disable-line no-multi-spaces
-			.addField(`${user.bot ? 'Bot Created Date' : 'User Join Date'}`, new Date(user.createdTimestamp), true)
+		embed.addField(`${user.bot ? 'Bot Created Date' : 'User Join Date'}`, PrettyDate(user.createdTimestamp), true)
 
-		if (guild) embed.addField('Guild Join Date', new Date(guild.joinedTimestamp))
-			.addField(`Status`, `${status === 'dnd' ? 'Do not distrub' : status === 'idle' ? 'Idle' : status === 'online' ? 'Online' : 'Offline'}`)
+		if (guild) embed.addField('Guild Join Date', PrettyDate(guild.joinedTimestamp))
+		embed.addField(`Status`, `${status === 'dnd' ? 'Do not distrub' : status === 'idle' ? 'Idle' : status === 'online' ? 'Online' : 'Offline'}`)
 			.addField(`See on \`${servers.length}\` server`, body)
 		
 		return embed

@@ -9,11 +9,11 @@ module.exports = {
     guildOnly: true,
     adminGuildOnly: true,
     cooldown: 2000,
-    run: async function (ctx, args) {
+    run: async function (ctx, { args }) {
         if (!ctx.channel.permissionsFor(ctx.guild.me).has('MANAGE_MESSAGES')) return 'This command require permission `MANAGE_MESSAGES`';
         if (args.length < 1) return stripIndent `
                     \`\`\`
-                    ${ctx.bot.config.prefix}clean <Number> <Filter>
+                    ${ctx.prefix}clean <Number> <Filter>
 
                     Filters:
                     -bots       Clean messages that send by bots
@@ -37,16 +37,18 @@ module.exports = {
         if (filter) {
             let FilterMessage;
             if (filter === 'invite') {
-                FilterMessage = ctx => ctx.content.search(/(discord\.gg\/.+|discordapp\.com\/invite\/.+)/i) !== -1; // eslint-disable-line no-useless-escape
+                FilterMessage = message => message.content.search(/(discord\.gg\/.+|discordapp\.com\/invite\/.+)/i) !== -1; // eslint-disable-line no-useless-escape
             } else if (filter === 'links') {
-                FilterMessage = ctx => ctx.content.search(/https?:\/\/[^ \/\.]+\.[^ \/\.]+/) !== -1; // eslint-disable-line no-useless-escape
+                FilterMessage = message => message.content.search(/https?:\/\/[^ \/\.]+\.[^ \/\.]+/) !== -1; // eslint-disable-line no-useless-escape
             } else if (filter === 'bots') {
-                FilterMessage = ctx => ctx.author.bot;
+                FilterMessage = message => message.author.bot;
             } else if (filter === 'monoxbot') {
-                FilterMessage = ctx => ctx.author.id === ctx.main.user.id;
+                FilterMessage = message => message.author.id === ctx.main.user.id;
+            } else if (filter === 'self') {
+                FilterMessage = message => message.author.id === ctx.author.id;
             } else {
                 return ':x: `Invalid filter`';
-            }
+            } 
 
             const messages = await ctx.channel.messages.fetch({limit: realNumber}).catch(error => null);
             const DeletMessages = messages.filter(FilterMessage);

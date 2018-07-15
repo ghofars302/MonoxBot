@@ -7,6 +7,9 @@ const Client = require('./const/Client');
 const ConfirmHelper = require('./const/confirmationHelper');
 const Paginate = require('./const/Paginate');
 const Events = require('./const/events');
+const logger = require('./modules/MonoxLogger');
+const fAPI = require('./modules/fAPI');
+const Context = require('./const/Context');
 
 process.on('unhandledRejection', (err) => {
 	if (err.message && ['Missing Access', 'Missing Permissions', 'Unknown Message'].some(x => err.message.includes(x))) return;
@@ -25,6 +28,7 @@ class MonoxBot {
 		this.ConfirmationHelper = new ConfirmHelper(this);
 		this.Paginate = new Paginate(this);
 		this.db = this.ResourceLoader.createDBInstance();
+		this.logger = logger;
 		
 		this.client = new Client({
 			disableEveryone: true,
@@ -37,9 +41,12 @@ class MonoxBot {
 			},
 			prefix: this.config.prefix,
 			owner: this.config.admins
-		});
+		}, this);
 		
 		new Events(this);
+
+		this.fAPI = fAPI;
+		this.context = new Context(this);
 
 		this.ResourceLoader.loadModules();
 		this.commands = this.ResourceLoader.loadCommands();

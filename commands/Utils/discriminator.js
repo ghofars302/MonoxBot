@@ -4,11 +4,11 @@ module.exports = {
     args: '<number>',
     aliases: ['discrim'],
     cooldown: 1000,
-    run: async function (ctx, args, argsString) {
+    run: async function (ctx, { argsString }) {
         let discriminator = ctx.author.discriminator;
 
         if (argsString) {
-            if (!/^\d{4}$/.test(argsString)) return ':x: `Format error: args must be number string`';
+            if (isNaN(argsString) || !/^\d{4}$/.test(argsString)) return ':x: `Format error: args must be number string`';
             discriminator = argsString;
         }
 

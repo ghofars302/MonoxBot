@@ -3,11 +3,11 @@ module.exports = {
     category: 'Fun',
     args: '[@Mentions | User]',
     cooldown: 2000,
-    run: async function (ctx, args, argsString) {
+    run: async function (ctx, { argsString }) {
         let userID = ctx.author.id;
 
         if (argsString) {
-            if (ctx.isDM()) return 'Yoo, you\'re in DMChannel so only me and you'
+            if (ctx.isDM) return 'Yoo, you\'re in DMChannel so only me and you'
             const match = ctx.bot.utils.getMemberFromString(ctx, argsString);
 
             if (!match) return `:x: \`\`Member "${argsString}" not found.\`\``

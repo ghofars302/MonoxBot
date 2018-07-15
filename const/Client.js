@@ -1,19 +1,30 @@
 const {Client} = require('discord.js');
 const MonoxAPIError = require('../modules/MonoxAPIError');
+const Provider = require('./provider');
 
 class MonoxClient extends Client {
-    constructor(options) {
+    constructor(options, bot) {
         super(options);
         
         if (!options.owner || isNaN(options.owner)) throw new MonoxAPIError('Owner must be UserID or must not be empty'); 
         this.owner = options.owner || null;
         if (!options.prefix) throw new MonoxAPIError('Null or undefined is not a prefix');
         this.prefix = options.prefix;
+
+        this.bot = bot;
+
+        try {
+            this.bot.logger.log(this, '[DATABASE] Initializing SQLite DB');
+            this.provider = new Provider();
+        } catch (error) {
+            this.bot.logger.error('Cannot initializing SQLite DB');
+            this.provider = null
+        }
     }
 
     async login(token) {
         try {
-            await super.login(token);
+            return await super.login(token);
         } catch (error) {
             throw new MonoxAPIError(`Unable to login into Discord API with provided TOKEN, \n${(error && error.stack) && error}}`);
         }

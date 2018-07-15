@@ -5,11 +5,11 @@ module.exports = {
     category: 'Utils',
     args: '<Code>',
     cooldown: 1000,
-    run: async function (ctx, args, argsString) {
-        if (!argsString) return `\`\`\`${ctx.bot.config.prefix}beautify <Code>\n\nMake shit looks js code to beautify looks\`\`\``;
+    run: async function (ctx, { argsString }) {
+        if (!argsString) return `\`\`\`${ctx.prefix}beautify <Code>\n\nMake shit looks js code to beautify looks\`\`\``;
 
         const content = /(^```js)|(```$)/g.test(argsString) ? argsString.replace(/(^```js)|(```$)/g, '').trim() : argsString;
 
         return `\`\`\`js\n${beautify(content)}\`\`\``
     }
-}
+}   

@@ -1,5 +1,3 @@
-const ContextHandler = require('./Context');
-
 class RegisterEvent {
     constructor(bot) {
         this.bot = bot;
@@ -11,14 +9,15 @@ class RegisterEvent {
     }
 
     message() {
-        this.client.on('message', (msg) => {
-            const context = new ContextHandler().initContext(msg, this.client, this.bot);
+        this.client.on('message', async (msg) => {
+            const context = await this.bot.context.initContext(msg);
 
-            this.bot.messageHandler.ContextCommand(context);
+            return this.bot.messageHandler.ContextCommand(context);
         });
 
-        this.client.on('messageUpdate', (oldMsg, newMsg) => {
-            if (oldMsg === newMsg) return;
+        this.client.on('messageUpdate', async (oldMsg, newMsg) => {
+            if (oldMsg.content === newMsg.content) return;
+            
             try {
                 if (this.bot.commandEditingStore.has(oldMsg.id)) {
                     const lastMessage = this.bot.commandEditingStore.get(oldMsg.id);
@@ -27,13 +26,11 @@ class RegisterEvent {
                         this.bot.commandEditingStore.delete(oldMsg.id);
                     }
                 }
-            } catch (e) {
-                // do nothing..
-            }
+            } catch (e) {} // eslint-disable-line no-empty
 
-            const context = new ContextHandler().initContext(newMsg, this.client, this.bot);
+            const context = await this.bot.context.initContext(newMsg);
 
-            this.bot.messageHandler.ContextCommand(context);
+            return this.bot.messageHandler.ContextCommand(context);
         });
 
         this.client.on('messageDelete', (msg) => {
@@ -45,37 +42,37 @@ class RegisterEvent {
                     lastMessage.delete();
                     this.bot.commandEditingStore.delete(msg.id);
                 }
-            } catch (e) {
-                // do nothing..
-            }
+            } catch (e) {} // eslint-disable-line no-empty
         });
     }
 
     botevent() {
         this.client.on('error', (err) => {
             const ErrCleaned = this.bot.util.inspect(err);
-            console.log(`[SHARD ${this.client.shard.id}] [ERROR] Error websocked: ${ErrCleaned}`); // eslint-disable-line no-console
+            this.bot.logger.error(`[ERROR] Error websocked: ${ErrCleaned}`); 
         });
 
         this.client.on('disconnect', () => {
-            console.log(`[SHARD ${this.client.shard.id}] [DISCONNECT] Disconnect from discord API.`); // eslint-disable-line no-console
+            this.bot.logger.error(`[DISCONNECT] Disconnect from discord API.`); 
             process.exit();
         });
 
         this.client.on('ready', async () => {
             if (!this.client.user.bot) {
-                console.log(`[MonoxBot Framework] [TOKEN] Token was user's token and MonoxBot not support selfbot mode, exiting...`); // eslint-disable-line no-console
+                this.bot.logger.error(`[TOKEN] Token was user's token and MonoxBot not support selfbot mode, exiting...`);
                 return process.exit();
             }
 
             const fetched = await this.client.fetchApplication();
 
             if (fetched.owner.id !== this.client.owner) {
-                console.log(`[MonoxBot Framework] [Error] The provided token owner not matched with owner ID, exiting...`) // eslint-disable-line no-console
+                this.bot.logger.error(`[Error] The provided token owner not matched with owner ID, exiting...`)
                 return process.exit();
             }
 
-            console.log(`[SHARD ${this.client.shard.id}] [READY] Ready for commands, servings ${this.client.guilds.size.toString()} guilds`); // eslint-disable-line no-console
+            this.client.secret = fetched.botPublic ? false : true; // eslint-disable-line no-unneeded-ternary
+
+            this.bot.logger.log(this.client, `[READY] Ready for commands, servings ${this.client.guilds.size.toString()} guilds`);
             this.client.user.setActivity(`${this.bot.config.prefix}help ${require('../package.json')['version']}`, {
                 type: 'PLAYING'
             });

@@ -4,8 +4,8 @@ module.exports = {
     description: 'Evaluate system command line.',
     category: 'adminOnly',
     adminOnly: true,
-    run: async function (ctx, args, argsString) {
-        if (!argsString) return `\`\`\`${ctx.bot.config.prefix}exec <command line>\n\nEvaluate system command line.\`\`\``;
+    run: async function (ctx, { argsString }) {
+        if (!argsString) return `\`\`\`${ctx.prefix}exec <command line>\n\nEvaluate system command line.\`\`\``;
 
         const now = Date.now();
 

@@ -2,7 +2,7 @@ module.exports = {
     description: 'Testing of imagemagick before export it to API',
     adminOnly: true,
     category: 'test',
-    run: async function (ctx, args) {
+    run: async function (ctx, { args }) {
         if (args.length < 1) return 'I need image and args';
 
         const image = await ctx.bot.utils.getImagesFromMessage(ctx.message, args);

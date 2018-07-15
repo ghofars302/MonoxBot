@@ -6,7 +6,7 @@ module.exports = {
     description: 'Get client lantecy or ping a website',
     args: '<URLs> or <IPs>',
     cooldown: 1000,
-    run: async function (ctx, args, argsString) {
+    run: async function (ctx, { argsString }) {
         const msg = await ctx.reply('Pinging...');
 
         if (!argsString) return msg.edit(`Pong... <Message: Took \`\`${msg.createdTimestamp - ctx.message.createdTimestamp}ms\`\`, Client \`\`${Math.round(ctx.main.ping)}ms\`\`>`);

@@ -4,18 +4,10 @@ module.exports = {
     args: '<Query>',
     aliases: ['im', 'img'],
     cooldown: 1000,
-    run: async function (ctx, args, argsString) {
-        if (!argsString) return `\`\`\`${ctx.bot.config.prefix}image (query)\n\nSearch images on google image search\`\`\``
+    run: async function (ctx, { argsString }) {
+        if (!argsString) return `\`\`\`${ctx.prefix}image (query)\n\nSearch images on google image search\`\`\``
 
-        const api = 'https://www.googleapis.com/customsearch/v1'
-
-        const embed = (number, list) => {
-            return new ctx.bot.api.MessageEmbed()
-                .setDescription(`Search result for query: **${argsString}** <Page \`${number}\` of \`${list.length}\`>`)
-                .setImage(list[number])
-                .setFooter('monoxbot.ga')
-                .setTimestamp();
-        }
+        const api = 'https://www.googleapis.com/customsearch/v1';
 
         const config = {
             method: 'GET',
@@ -37,16 +29,20 @@ module.exports = {
 
             const res = await ctx.bot.rpromise(config);
 
+            if (!res.items) return 'Nothing found.'
+
             for (const thing of res.items) {
                 list.push(thing.link);
             }
 
-            const msg = await ctx.reply(embed(1, list));
+            const embed = ctx.bot.utils.ImageEmbedPagination(ctx, list, `Image search results from: ${argsString}`);
 
-            const paginate = ctx.bot.Paginate.initPaginate(msg, ctx.author, list.length, true);
+            const msg = await ctx.reply(embed[1]);
+
+            const paginate = ctx.bot.Paginate.initPaginate(msg, ctx.author, embed.length, true);
 
             paginate.on('paginate', number => {
-                msg.edit(embed(number, list));
+                msg.edit(embed[number]);
             });
 
             return true

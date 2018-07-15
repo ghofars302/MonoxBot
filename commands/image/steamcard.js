@@ -12,13 +12,13 @@ module.exports = {
     category: 'Image',
     cooldown: 5000,
     args: '<@Mentions | User | URL> <Text>',
-    run: async (ctx, args) => {
+    run: async (ctx, { args }) => {
         const image = await ctx.bot.utils.getImagesFromMessage(ctx.message, args);
         let text = ctx.bot.utils.isImageArg(ctx.message, args[0]) ? args.slice(1).join(' ') : args.join(' ');
 
         if (image.length === 0 && !text) return stripIndent`
             \`\`\`
-            ${ctx.bot.config.prefix}steamcard <@Mentions | User | URL> <Text>
+            ${ctx.prefix}steamcard <@Mentions | User | URL> <Text>
 
             Create a Steam trading card from a image.
             \`\`\`

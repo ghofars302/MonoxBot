@@ -1,32 +1,32 @@
-const {DiscordAPIError} = require('discord.js');
-const {FetchError} = require('node-fetch');
-
 class Context {
-    constructor() {}
+    constructor(bot) {
+        this.bot = bot;
+    }
 
-    initContext(message, main, bot) {
+    initContext(message) {
+
         const context = {};
 
         context.message = message;
-        context.main = main;
-        context.bot = bot;
+        context.main = this.bot.client;
+        context.bot = this.bot;
         context.id = message.id;
         context.content = message.content;
-        context.channels = main.channels;
+        context.isDM = !message.guild
+        context.channels = this.bot.client.channels;
         context.channel = message.channel;
-        context.users = main.users;
-        context.member = message.member;
+        context.users = this.bot.client.users;
         context.author = message.author;
         context.createdAt = message.createdAt;
-        context.guilds = main.guilds;
-        context.guild = message.guild;
+        context.guilds = this.bot.client.guilds;
+        context.message.isAnswered = false;
 
-
-        context.isDM = () => {
-            if (context.message.channel.type === 'dm') return true;
-            return false;
+        if (!context.isDM) {
+            context.member = message.member;
+            context.guild = message.guild;
         }
 
+        context.prefix = context.isDM ? this.bot.client.config.prefix : message.guild.guildPrefix
         context.isNSFW = context.message.channel.nsfw
 
         context.reply = async (...args) => this.handleMessage(context, 'default', args);
@@ -45,6 +45,9 @@ class Context {
     }
 
     async handleMessage(context, type, args) {
+        if (context.message.deleted) return;
+        if (context.message.isAnswered) return;
+
         const regex = new RegExp(`${context.main.token}`);
 
         if (args.length !== 0 && typeof args[0] === 'string' && (args[0].includes(context.main.token) || regex.test(args[0]))) {
@@ -53,28 +56,30 @@ class Context {
         }
 
         if (type === 'direct') {
-            return context.author.send(...args).then(m => {
-                if (context.author.bot) return m;
-                context.bot.commandEditingStore.set(context.id, m);
+            context.message.isAnswered = true;
+            return context.author.send(...args).then(messageObject => {
+                if (context.author.bot) return messageObject;
+                context.bot.commandEditingStore.set(context.id, messageObject);
 
-                return m;
+                return messageObject;
             });
         } else {
-            return context.channel.send(...args).then(m => {
-                if (context.author.bot) return m;
-                context.bot.commandEditingStore.set(context.id, m);
+            context.message.isAnswered = true;
+            return context.channel.send(...args).then(messageObject => {
+                if (context.author.bot) return messageObject;
+                context.bot.commandEditingStore.set(context.id, messageObject);
 
-                return m;
+                return messageObject;
             });
         }
     }
 
     handleError(error, context) {
-        if (error instanceof DiscordAPIError) {
+        if (error instanceof context.bot.api.DiscordAPIError) {
             return context.reply(`:warning: \`Message send failed, probably >8MB file upload or >2000 words\` \`\`\`js\n${error}\`\`\``);
         }
 
-        if (error instanceof FetchError) {
+        if (error instanceof context.bot.fetch.FetchError || error instanceof context.bot.fAPI.Error) {
             console.log((error && error.stack) || error); // eslint-disable-line no-console
             return context.reply(':warning: ``API down or took too long``');
         }
@@ -90,3 +95,4 @@ class Context {
 }
 
 module.exports = Context;
+

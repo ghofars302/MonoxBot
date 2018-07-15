@@ -5,11 +5,11 @@ module.exports = {
     category: 'Image',
     cooldown: 2500,
     guildOnly: true,
-    run: async (ctx, args) => {
+    run: async (ctx, { args }) => {
         const image = await ctx.bot.utils.getImagesFromMessage(ctx.message, args);
 
         if (image.length === 0) return stripIndent`
-            ${ctx.bot.config.prefix}sharpen <@Mentions | User | URL>
+            ${ctx.prefix}sharpen <@Mentions | User | URL>
 
             Make a image shinny or else :V
         `

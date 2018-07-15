@@ -2,7 +2,7 @@ module.exports = {
 	description: 'Restart process on current shard.',
 	category: 'adminOnly',
 	adminOnly: true,
-	run: async function (ctx, args, argsString) {
+	run: async function (ctx, { argsString }) {
                 if (argsString) {
                         argsString = argsString.toLowerCase();
                         if (argsString === 'all' || argsString === 'global') {

@@ -1,28 +1,63 @@
+const Bluebird = require('bluebird');
+const MonoxAPIError = require('./MonoxAPIError');
 const request = require('request-promise');
-const MonoxAPIError = require('./MonoxAPIError')
 
 const endpoints = {
-    "magick": "/magick",
-    "charcoal": "/charcoal"
+    magick: '/magick',
+    charcoal: '/charcoal' 
 }
 
-module.exports = async (type, imageURL) => {
-    const URI = 'https://monoxapi.glitch.me/api';
+module.exports = {
+    image: async function (type, url) {
+        if (!Object.keys(endpoints).includes(type)) throw new MonoxAPIError('Unknown image processing type.');
 
-    if (!Object.keys(endpoints).includes(type)) throw new MonoxAPIError('No API type called.');
+        return new Bluebird(async (resolve, reject) => {
+            try {
+                const result = await request({
+                    method: 'POST',
+                    uri: 'https://monoxapi.glitch.me/api' + endpoints[type],
+                    qs: {
+                        key: process.env.KEY1,
+                        url: url
+                    },
+                    json: true
+                });
 
-    const res = await request.post({
-        uri: URI + endpoints[type],
-        qs: {
-            key: process.env.KEY1,
-            url: imageURL
-        },
-        json: true
-    });
+                if (res.ERROR) reject(new MonoxAPIError(res.ERROR));
 
-    if (res.ERROR) throw new MonoxAPIError('connection timeout.');
+                const buffer = Buffer.from(res.BUFFER.data);
 
-    const buffer = Buffer.from(res.BUFFER.data);
+                resolve(buffer);
+            } catch (error) {
+                if (error instanceof Error) reject(error);
+                reject(new MonoxAPIError(error.message));
+            }
+        })
+    },
+    screenshot: async function (url) {
+        if (!url) url = 'https://google.com';
 
-    return buffer;
+        return new Bluebird(async (resolve, reject) => {
+            try {
+                const result = await request({
+                    method: 'POST',
+                    uri: 'https://monoxscreenshot.glitch.me/api',
+                    qs: {
+                        key: process.env.KEY1,
+                        url: url
+                    },
+                    json: true
+                });
+
+                if (res.ERROR) reject(res.ERROR);
+
+                const buffer = Buffer.from(res.BUFFER.data);
+
+                resolve(buffer);
+            } catch (error) {
+                if (error instanceof Error) reject(error);
+                reject(new MonoxAPIError(error.message));
+            }
+        })
+    }
 }

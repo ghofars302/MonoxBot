@@ -6,20 +6,20 @@ module.exports = {
     category: 'Utils',
     cooldown: 5000,
     args: '<Command>',
-    run: async function (ctx, args, argsString) {
+    run: async function (ctx, { argsString }) {
         if (ctx.author.id !== ctx.main.owner && !ctx.bot.config.pageHelp && !argsString) return `Help command currently WIP, use \`\`${ctx.bot.config.prefix}help <Command>\`\` instead.`;
 
         if (!argsString) {
-            const helpMsg = await ctx.reply(displayHelpPage())
+            const helpMsg = await ctx.reply(displayHelpPage(ctx.prefix, undefined))
         
-            const paginate = ctx.bot.Paginate.initPaginate(helpMsg, ctx.author, 5);
+            const paginate = ctx.bot.Paginate.initPaginate(helpMsg, ctx.author, 6);
 
             if (!paginate) {
                 return false;
             }
 
             paginate.on('paginate', number => {
-                helpMsg.edit(displayHelpPage(number));
+                helpMsg.edit(displayHelpPage(ctx.prefix, number));
             });
 
             return true;

@@ -3,7 +3,7 @@ module.exports = {
     category: 'Voice',
     cooldown: 10000,
     guildOnly: true,
-    run: async function (ctx, args) {
+    run: async function (ctx, { args }) {
         if (!ctx.guild.me.voiceChannel || !ctx.bot.voiceStreams.has(ctx.guild.id) || !ctx.bot.playingSongs.has(ctx.guild.id)) return ':x: The bot isn\'t playing anything!'
         if (!ctx.bot.songQueues.get(ctx.guild.id) || !ctx.bot.songQueues.get(ctx.guild.id).length) return `:x: There no other song in queue, use \`\`${ctx.bot.config.prefix}leave\`\` to stop song.`
         const currentSong = ctx.bot.playingSongs.get(ctx.guild.id);

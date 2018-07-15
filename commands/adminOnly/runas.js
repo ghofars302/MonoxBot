@@ -2,8 +2,8 @@ module.exports = {
     description: 'Run a command as another user/member',
     adminOnly: true,
     guildOnly: true,
-    run: async function (ctx, args) {
-        if (args.length < 2) return `\`\`\`${ctx.bot.config.prefix}runas <user> <command>\n\nRun a command as another user/member\`\`\``;
+    run: async function (ctx, { args }) {
+        if (args.length < 2) return `\`\`\`${ctx.prefix}runas <user> <command>\n\nRun a command as another user/member\`\`\``;
 
         const user = ctx.users.get(args.shift().replace(/[^\d]/g, ''));
         if (!user) return ':x: ``Invalid user``';

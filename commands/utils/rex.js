@@ -8,7 +8,7 @@ module.exports = {
     category: 'Utils',
     args: '<Language> <Code>',
     ownerOnly: true,
-    run: async function (ctx, args) {
+    run: async function (ctx, { args }) {
         if (args.length < 1) return `\`\`\`${ctx.bot.config.prefix}rex <Language> <code>\n\nSubcommands:\n-list (Get rextester language supported-list)\n\nRun or test your code in rextester.com\`\`\``;
 
         const Lang = args.shift().toLowerCase();
@@ -35,7 +35,7 @@ module.exports = {
             - SqlServer     - Erlang
             - Javascript    - Elixir
     
-            To use those language do: ${ctx.bot.config.prefix}rex <Language> <Code>
+            To use those language do: ${ctx.prefix}rex <Language> <Code>
             \`\`\`
         `
 

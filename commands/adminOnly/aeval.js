@@ -3,7 +3,7 @@ module.exports = {
 	category: 'adminOnly',
 	args: '(code...)',
 	adminOnly: true,
-	run: async function (ctx, args, argsString) {
+	run: async function (ctx, { args, argsString }) {
 		if (!argsString) return this.messageHandler.invalidArguments(ctx);
 		let argsCode = argsString;
 		let trueOrNot = args.shift().toLowerCase();

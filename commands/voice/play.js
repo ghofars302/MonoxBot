@@ -4,7 +4,7 @@ module.exports = {
     args: '(query..)',
     cooldown: 10000,
     guildOnly: true,
-    run: async function (ctx, args, argsString) {
+    run: async function (ctx, { argsString }) {
         if (!argsString && !ctx.bot.voiceStreams.has(ctx.guild.id)) return ctx.bot.messageHandler.invalidArguments(ctx);
 
         if (!argsString && ctx.bot.voiceStreams.has(ctx.guild.id)) {

@@ -1,10 +1,24 @@
 const {Structures} = require('discord.js');
+const Provider = require('./GuildProvider');
 
 module.exports = Structures.extend('Guild', Guild => {
     class MonoxBotGuild extends Guild {
         constructor(...args) {
             super(...args);
-            this.guildPrefix = this.client.prefix;
+
+            this.provider = new Provider(this.client, this)
+
+            this.guildPrefix = this.provider.getPrefix() ? this.provider.getPrefix() : this.client.prefix
+        }
+        
+        get commandPrefix() {
+            if (this.guildPrefix === null) return this.client.prefix;
+            return this.guildPrefix;
+        }
+
+        set commandPrefix(value) {
+            this.guildPrefix = value
+            this.provider.setPrefix(value);
         }
     }
 
