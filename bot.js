@@ -35,7 +35,7 @@ class MonoxBot {
 			fetchAllMembers: true,
 			messageCacheLifetime: 0,
 			messageCacheMaxSize: 500,
-			disableEvents: ['TYPING_START'],
+			disableEvents: ['TYPING_START', 'PRESENCE_UPDATE'],
 			WebsocketOptions: {
 				compress: true
 			},

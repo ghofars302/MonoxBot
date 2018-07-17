@@ -1,6 +1,6 @@
 {
   "name": "monoxbot",
-  "version": "1.5.0",
+  "version": "2.5.0",
   "description": "Test framework for MonoxBot",
   "main": "bot.js",
   "scripts": {
@@ -21,10 +21,7 @@
     "booru": "^0.5.0",
     "canvas": "^2.0.0-alpha.12",
     "child-process-promise": "^2.2.1",
-    "colors": "^1.2.1",
     "common-tags": "^1.8.0",
-    "dateformat": "^3.0.3",
-    "discord-paginationembed": "github:gazmull/discord-paginationembed",
     "discord.js": "git+https://github.com/hydrabolt/discord.js#master",
     "dotenv": "^5.0.1",
     "enmap": "^2.6.3",
@@ -41,7 +38,6 @@
     "node-opus": "^0.3.0",
     "node-superfetch": "^0.1.2",
     "pg": "^7.4.3",
-    "puppeteer": "^1.4.0",
     "request": "^2.87.0",
     "request-promise": "^4.2.2",
     "sqlite3": "^4.0.1",
