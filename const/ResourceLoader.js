@@ -44,7 +44,6 @@ class ResourceLoader {
 		this.bot.gm = require('gm').subClass({imageMagick: true});
 		this.bot.fetch = require('node-fetch');
 		this.bot.fs = require('fs');
-		this.bot.puppeteer = require('puppeteer');
 		this.bot.childProcess = require('child_process');
 		this.bot.ytdl = require('ytdl-core');
 		this.bot.axios = require('axios');
