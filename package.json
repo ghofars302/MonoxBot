@@ -1,46 +1,48 @@
 {
-  "name": "monoxbot",
-  "version": "2.5.0",
-  "description": "Test framework for MonoxBot",
-  "main": "bot.js",
-  "scripts": {
-    "test": "echo There no Test for MonoxBot LOL :) contact github.com/ghofars302 for test server",
-    "start": "node shardingManager.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:ghofars302/MonoxBot.git"
-  },
-  "keywords": [],
-  "license": "MIT",
-  "engines": {
-    "node": "9.x.x"
-  },
-  "dependencies": {
-    "axios": "^0.18.0",
-    "booru": "^0.5.0",
-    "canvas": "^2.0.0-alpha.12",
-    "child-process-promise": "^2.2.1",
-    "common-tags": "^1.8.0",
-    "discord.js": "git+https://github.com/hydrabolt/discord.js#master",
-    "dotenv": "^5.0.1",
-    "enmap": "^2.6.3",
-    "enmap-sqlite": "^2.0.3",
-    "express": "^4.16.3",
-    "fs-extra": "^6.0.1",
-    "glitch-canvas": "^1.1.5",
-    "gm": "^1.23.1",
-    "humanize-duration": "^3.14.0",
-    "js-beautify": "^1.7.5",
-    "moment": "^2.22.2",
-    "moment-duration-format": "^2.2.2",
-    "node-fetch": "^2.1.2",
-    "node-opus": "^0.3.0",
-    "node-superfetch": "^0.1.2",
-    "pg": "^7.4.3",
-    "request": "^2.87.0",
-    "request-promise": "^4.2.2",
-    "sqlite3": "^4.0.1",
-    "ytdl-core": "^0.20.2"
-  }
+    "name": "monoxbot",
+    "version": "2.5.0",
+    "description": "Source code for MonoxBot, monoxbot.ga",
+    "main": "bot.js",
+    "scripts": {
+        "test": "echo There no Test for MonoxBot LOL :) contact github.com/ghofars302 for test server",
+        "start": "node shardingManager.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:ghofars302/MonoxBot.git"
+    },
+    "keywords": [],
+    "license": "AGPL-3.0",
+    "engines": {
+        "node": "9.x.x"
+    },
+    "dependencies": {
+        "axios": "^0.18.0",
+        "booru": "^0.5.0",
+        "canvas": "^2.0.0-alpha.12",
+        "child-process-promise": "^2.2.1",
+        "common-tags": "^1.8.0",
+        "discord.js": "git+https://github.com/hydrabolt/discord.js#master",
+        "dotenv": "^5.0.1",
+        "enmap": "^2.6.3",
+        "enmap-sqlite": "^2.0.3",
+        "express": "^4.16.3",
+        "fs-extra": "^6.0.1",
+        "glitch-canvas": "^1.1.5",
+        "gm": "^1.23.1",
+        "humanize-duration": "^3.14.0",
+        "js-beautify": "^1.7.5",
+        "moment": "^2.22.2",
+        "moment-duration-format": "^2.2.2",
+        "node-fetch": "^2.1.2",
+        "node-superfetch": "^0.1.2",
+        "pg": "^7.4.3",
+        "request": "^2.87.0",
+        "request-promise": "^4.2.2",
+        "sqlite3": "^4.0.1",
+        "ytdl-core": "^0.20.2"
+    },
+    "peerDependencies": {
+        "node-opus": "^0.3.0"
+    }
 }
