@@ -16,7 +16,7 @@ module.exports = class appWeb {
         });
 
         app.use('/', (req, res) => {
-            res.status(404).json({"msg": "unknown request"});
+            res.status(200).send(`MonoxBot ${require(../package.json)['version']} API, use /api/commands to get list of MonoxBot commands.`);
         });
 
         app.listen(3000);
