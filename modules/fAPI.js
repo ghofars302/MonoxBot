@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const Promise = require('bluebird');
 
 const fAPI = async function (endpoint, options) {
     const http = require('http');
@@ -8,20 +9,17 @@ const fAPI = async function (endpoint, options) {
 
     const requestOptions = {
         agent,
+        method: 'POST',
         headers: {
-            'Authorization': process.env.matmen
-        }
-    };
-
-    if (options) {
-        requestOptions.method = 'POST';
-        requestOptions.headers['Content-Type'] = 'application/json';
-
-        requestOptions.body = JSON.stringify({
+            'Content-type': 'application/json',
+            'Authorization': process.env.matmen,
+            'User-Agent': `MonoxFramework ${require('../package.json')['version']} (MonoxBot)`
+        },
+        body: JSON.stringify({
             images: options.images,
-            args: options.args
-        });
-    }
+            args: options.args                                
+        })
+    };
 
     const result = await fetch(`http://processing.matmen.me:3000/${endpoint}`, requestOptions);
 
@@ -44,4 +42,3 @@ fAPI.Error = class fAPIError extends Error {
 }
 
 module.exports = fAPI;
-
