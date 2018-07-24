@@ -20,6 +20,7 @@ class Context {
         context.createdAt = message.createdAt;
         context.guilds = this.bot.client.guilds;
         context.message.isAnswered = false;
+        context.error = false;
 
         if (!context.isDM) {
             context.member = message.member;
@@ -46,7 +47,7 @@ class Context {
 
     async handleMessage(context, type, args) {
         if (context.message.deleted) return;
-        if (context.message.isAnswered) return;
+        if (context.message.isAnswered && !context.error) return;
 
         const regex = new RegExp(`${context.main.token}`);
 
