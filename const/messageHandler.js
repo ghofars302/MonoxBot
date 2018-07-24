@@ -33,7 +33,7 @@ class messageHandler {
 		if (!this.bot.utils.isAdmin(context.author.id)) {
 			const rows = this.bot.client.provider.getBlacklist();
 
-			if (rows.includes(context.author.id)) return;
+			if (rows && rows.includes(context.author.id)) return;
 		}
 
 		const mentionRegex = new RegExp(`^<@!?${this.bot.client.user.id}>`);
@@ -101,6 +101,7 @@ class messageHandler {
 				await context.reply(output);
 			}
 		} catch (error) {
+			
 			this.context.handleError(error, context);
 		}
 
