@@ -9,12 +9,12 @@ module.exports = {
         const options = {
             method: 'POST',
             headers: {
-                'Authorization': process.env.matmen
+                'Authorization': process.env.matmen,
+                'Content-Type': 'application/json',
+                'User-Agent': `MonoxFramework ${require('../package.json')['version']} (MonoxBot)`
             }
         }
-
-        options.headers['Content-Type'] = 'application/json';
-
+        
         options.body = JSON.stringify({
             args: {
                 text: argsString
