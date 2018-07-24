@@ -100,8 +100,8 @@ class messageHandler {
 			if (typeof output === 'string' || output instanceof context.bot.api.MessageEmbed) {
 				await context.reply(output);
 			}
-		} catch (error) {
-			
+		} catch (error) { 
+			context.error = true
 			this.context.handleError(error, context);
 		}
 
