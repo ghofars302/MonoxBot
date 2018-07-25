@@ -4,7 +4,7 @@ module.exports = {
     args: 'id <Message ID> | <Message content>',
     cooldown: 2000,
     run: async function (ctx, { args, argsString }) {
-        let user = ctx
+        let user = ctx.author;
         let member = null;
              
         const message = {
@@ -26,19 +26,29 @@ module.exports = {
             } 
         }
     
+        const author = {
+            username: (ctx.guild && ctx.guild.member(author).nickname) ? cxt.guild.member(author).nickname : author.username;
+            bot: author.bot,
+            avatarURL: author.displayAvatarURL()
+        }
+    
         if (ctx.guild) {
             member = ctx.guild.member(author);
-            
+            author.color = member.role.first().color;
         }
 
-        const res = await ctx.bot.nekosapi.get('slap');
+        const buffer = await ctx.bot.fAPI('quote' {
+                              args: {
+                                            message,
+                                            author,
+                                            light: false
+                                            compact; false,
+                                            timestamp: new Date()
+                                          }
+                           }
+        
+                                          
 
-        const embed = new ctx.bot.api.MessageEmbed()
-            .setDescription(userID === ctx.author.id || userID === ctx.main.user.id ? `Here let me slaps you <@!${ctx.author.id}>` : `<@!${ctx.author.id}> slapped <@!${userID}>, must be a real BAKA!!`)
-            .setImage(res)
-            .setFooter('Powered by nekos.life', 'https://nekos.life/static/icons/favicon-194x194.png');
-
-        return embed
     }
 }
 o
