@@ -1,20 +1,34 @@
 module.exports = {
-    description: 'Slap someone you hate or don\'t like',
+    description: 'Create a ',
     category: 'Fun',
-    args: '[@Mentions | User]',
+    args: 'id <Message ID> | <Message content>',
     cooldown: 2000,
-    run: async function (ctx, { argsString }) {
-        let userID = ctx.author.id;
-
-        if (argsString) {
-            if (ctx.isDM) return 'Yoo, you\'re in DMChannel so only me and you'
-            const match = ctx.bot.utils.getMemberFromString(ctx, argsString);
-
-            if (!match) return `:x: \`\`Member "${argsString}" not found.\`\``
-            if (match.user.id !== userID || match.user.id !== ctx.main.user.id) {
-                userID = match.user.id;
-            }
-
+    run: async function (ctx, { args, argsString }) {
+        let user = ctx
+        let member = null;
+             
+        const message = {
+            content: argsString,
+            embed: {}
+        };
+       
+        const IdOrNot = args[0].trim();
+        
+        if (idOrNot.toLowerCase() === 'id') { 
+            if (isNaN(args[1]) return ':x: `You must put message ID`'; 
+            try {
+                const messageObject = ctx.channel.messages.get(args[1]); 
+                message.content = messageObject.content;
+            
+                if (message.Object.embeds) messageObject.embed[0];
+            } catch (error) { 
+                return ':x: `Invalid message ID`' 
+            } 
+        }
+    
+        if (ctx.guild) {
+            member = ctx.guild.member(author);
+            
         }
 
         const res = await ctx.bot.nekosapi.get('slap');
@@ -27,3 +41,4 @@ module.exports = {
         return embed
     }
 }
+o
