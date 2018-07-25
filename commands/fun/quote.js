@@ -27,13 +27,13 @@ module.exports = {
         }
     
         const author = {
-            username: (ctx.guild && ctx.guild.member(author).nickname) ? ctx.guild.member(author).nickname : author.username,
-            bot: author.bot,
-            avatarURL: author.displayAvatarURL()
+            username: (ctx.guild && ctx.guild.member(author).nickname) ? ctx.guild.member(author).nickname : user.username,
+            bot: user.bot,
+            avatarURL: user.displayAvatarURL()
         }
     
         if (ctx.guild) {
-            member = ctx.guild.member(author);
+            member = ctx.guild.member(user);
             author.color = member.role.first().color;
         }
 
@@ -59,4 +59,4 @@ module.exports = {
         )                                         
     }
 }
-o
+
