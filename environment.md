@@ -4,6 +4,11 @@ I use environment to load secure thing without saving it into regular config.jso
 
 Create file name `.env` and fill that file with below this (ofc with your auth information)
 
+```
+NOTE: The token must be bot token that match with your id and NOT User account
+```
+
+
 ```env
 TOKEN='Your bot token here'
 DB='Your database name'
