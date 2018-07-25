@@ -15,7 +15,7 @@ module.exports = {
         const IdOrNot = args[0].trim();
         
         if (idOrNot.toLowerCase() === 'id') { 
-            if (isNaN(args[1]) return ':x: `You must put message ID`'; 
+            if (isNaN(args[1])) return ':x: `You must put message ID`'; 
             try {
                 const messageObject = ctx.channel.messages.get(args[1]); 
                 message.content = messageObject.content;
