@@ -21,4 +21,5 @@ youtubeApiKey='Your google api key'
 GoogleImageAPI1='Your google api key'
 CSE='Your google custom search ID'
 matmen='fAPI auth key'
+webhelper="true"
 ```
