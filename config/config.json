@@ -1,6 +1,6 @@
 {
 	"prefix" : "m!",
-	"admins" : "',
+	"admins" : "",
 	"webhelper" : false,
 	"pageHelp" : true
 }
