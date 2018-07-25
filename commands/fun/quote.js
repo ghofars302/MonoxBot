@@ -14,7 +14,7 @@ module.exports = {
        
         const IdOrNot = args[0].trim();
         
-        if (idOrNot.toLowerCase() === 'id') { 
+        if (IdOrNot.toLowerCase() === 'id') { 
             if (isNaN(args[1])) return ':x: `You must put message ID`'; 
             try {
                 const messageObject = ctx.channel.messages.get(args[1]); 
@@ -27,7 +27,7 @@ module.exports = {
         }
     
         const author = {
-            username: (ctx.guild && ctx.guild.member(author).nickname) ? cxt.guild.member(author).nickname : author.username,
+            username: (ctx.guild && ctx.guild.member(author).nickname) ? ctx.guild.member(author).nickname : author.username,
             bot: author.bot,
             avatarURL: author.displayAvatarURL()
         }
