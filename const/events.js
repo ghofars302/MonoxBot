@@ -64,6 +64,11 @@ class RegisterEvent {
             }
 
             const fetched = await this.client.fetchApplication();
+            
+            if (this.client.owner === "" || !this.client.owner) {
+                this.client.owner = fetched.owner.id;
+                this.bot.config.admins = fetched.owner.id;
+            }
 
             if (fetched.owner.id !== this.client.owner) {
                 this.bot.logger.error(`[Error] The provided token owner not matched with owner ID, exiting...`)
