@@ -8,8 +8,7 @@ module.exports = {
         let member = null;
              
         const message = {
-            content: argsString,
-            embed: {}
+            content: argsString
         };
        
         const IdOrNot = args[0].trim();
