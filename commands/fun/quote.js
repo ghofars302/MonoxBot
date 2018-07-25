@@ -21,7 +21,7 @@ module.exports = {
                 const messageObject = await ctx.channel.messages.fetch(args[1]);
                 message.content = messageObject.content;
             
-                if (message.Object.embeds) messageObject.embed[0];
+                if (messageObject.embeds) messageObject.embed[0];
             } catch (error) { 
                 return ':x: `Invalid message ID`' 
             } 
