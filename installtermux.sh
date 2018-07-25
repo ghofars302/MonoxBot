@@ -1,4 +1,7 @@
 #!/bin/bash
 
-print('Installing requirement for monoxbot on termux')
-pkg install nodejs imagemagick
+echo Installing MonoxBot requirement
+pkg install python2 python nodejs-current imagemagick
+
+echo installing dependencies
+npm install
