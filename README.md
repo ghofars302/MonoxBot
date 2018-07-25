@@ -14,7 +14,7 @@ Requirements
 - Imagemagick
 - PostgreSQL Server (Local or cloud)
 
-###Android
+### Android
 ```
 ANDROID NOTE: You must fixing npm in termux because npm can't get list of cpus 
               https://github.com/termux/termux-packages/issues/1855
@@ -32,7 +32,7 @@ ANDROID NOTE: Voice command won't working because node-opus won't installing in 
 - See environment.md to setup bot before open the bot.
 - Run the bot by do `npm start`
 
-###Windows or linux or etc
+### Windows or linux or etc
 
 Make sure all requirement(s) are installed.
 
