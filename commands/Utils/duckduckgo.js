@@ -11,7 +11,7 @@ module.exports = {
             headers: {
                 'Authorization': process.env.matmen,
                 'Content-Type': 'application/json',
-                'User-Agent': `MonoxFramework ${require('../package.json')['version']} (MonoxBot)`
+                'User-Agent': `MonoxFramework ${require('../../package.json')['version']} (MonoxBot)`
             }
         }
         
