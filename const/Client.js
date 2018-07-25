@@ -6,8 +6,7 @@ class MonoxClient extends Client {
     constructor(options, bot) {
         super(options);
         
-        if (!options.owner || isNaN(options.owner)) throw new MonoxAPIError('Owner must be UserID or must not be empty'); 
-        this.owner = options.owner || null;
+        this.owner = options.owner || '';
         if (!options.prefix) throw new MonoxAPIError('Null or undefined is not a prefix');
         this.prefix = options.prefix;
 
