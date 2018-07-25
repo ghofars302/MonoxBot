@@ -27,7 +27,7 @@ module.exports = {
         }
     
         const author = {
-            username: (ctx.guild && ctx.guild.member(author).nickname) ? cxt.guild.member(author).nickname : author.username;
+            username: (ctx.guild && ctx.guild.member(author).nickname) ? cxt.guild.member(author).nickname : author.username,
             bot: author.bot,
             avatarURL: author.displayAvatarURL()
         }
