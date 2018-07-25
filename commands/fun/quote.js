@@ -37,7 +37,7 @@ module.exports = {
             author.color = member.role.first().color;
         }
 
-        const buffer = await ctx.bot.fAPI('quote' {
+        const buffer = await ctx.bot.fAPI('quote', {
                               args: {
                                             message,
                                             author,
