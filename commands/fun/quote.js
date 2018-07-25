@@ -20,9 +20,9 @@ module.exports = {
                 console.log(args);
                 const messageObject = await ctx.channel.messages.fetch(args[1]);
                 user = messageObject.author;
-                message.content = messageObject.content;
+                message.content = messageObject.content || '';
             
-                if (messageObject.embeds) messageObject.embeds;
+                if (messageObject.embeds) messageObject.embeds[0];
             } catch (error) { 
                 return ':x: `Invalid message ID`' 
             } 
