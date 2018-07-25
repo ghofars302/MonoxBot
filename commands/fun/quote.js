@@ -45,10 +45,18 @@ module.exports = {
                                             compact; false,
                                             timestamp: new Date()
                                           }
-                           }
-        
-                                          
+                           });
 
+        return ctx.reply(
+            {files: 
+             [
+                 {
+                     name: 'quote.png', 
+                     attachment: buffer
+                 }
+             ]
+            }
+        )                                         
     }
 }
 o
