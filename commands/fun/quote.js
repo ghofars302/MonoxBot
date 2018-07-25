@@ -34,7 +34,7 @@ module.exports = {
     
         if (ctx.guild) {
             member = ctx.guild.member(user);
-            author.color = member.roles.first().color.toString(16)
+            author.color = member.roles.highest.color.toString(16)
         }
         
         const options = {
