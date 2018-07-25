@@ -22,7 +22,7 @@ module.exports = {
                 user = messageObject.author;
                 message.content = messageObject.content || '';
             
-                if (messageObject.embeds) messageObject.embeds[0];
+                // if (messageObject.embeds) messageObject.embeds[0];
             } catch (error) { 
                 return ':x: `Invalid message ID`' 
             } 
