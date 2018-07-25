@@ -34,7 +34,7 @@ module.exports = {
     
         if (ctx.guild) {
             member = ctx.guild.member(user);
-            author.color = member.role.first().color;
+            author.color = member.roles.first().color;
         }
 
         const buffer = await ctx.bot.fAPI('quote', {
