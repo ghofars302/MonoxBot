@@ -27,7 +27,7 @@ class Context {
             context.guild = message.guild;
         }
 
-        context.prefix = context.isDM ? this.bot.client.config.prefix : message.guild.guildPrefix
+        context.prefix = context.isDM ? this.bot.client.prefix : message.guild.guildPrefix
         context.isNSFW = context.message.channel.nsfw
 
         context.reply = async (...args) => this.handleMessage(context, 'default', args);
