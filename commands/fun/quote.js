@@ -37,16 +37,18 @@ module.exports = {
             member = ctx.guild.member(user);
             author.color = member.roles.first().color;
         }
+        
+        const options = {
+            args: {
+                message,
+                author,
+                light: false,
+                compact: false,
+                timestamp: new Date()
+               }
+        }
 
-        const buffer = await ctx.bot.fAPI('quote', {
-                              args: {
-                                            message,
-                                            author,
-                                            light: false,
-                                            compact: false,
-                                            timestamp: new Date()
-                                          }
-                           });
+        const buffer = await ctx.bot.fAPI('quote', options);
 
         return ctx.reply(
             {files: 
