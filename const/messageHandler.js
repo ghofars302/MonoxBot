@@ -57,8 +57,15 @@ class messageHandler {
 		if (command.adminOnly && !this.bot.utils.isAdmin(context.author.id)) return context.reply(':x: ``You don\'t have permission to use this command``');
 		if (command.guildOnly && !context.guild) return context.reply(':x: ``Guild only command. please switch into guild to use this command``');
 		if (this.bot.utils.isAdmin(context.author.id) && command.adminGuildOnly && !context.member.hasPermission('ADMINSTRATOR')) return context.reply(':x: ``only Guild adminstrator can use this command``');
-		if (command.nsfw && !context.channel.nsfw) return context.reply(':x: ``NSFW Command. please switch into channel tagged as NSFW``');
-
+		if (command.nsfw && !context.channel.nsfw) return context.reply(':x: ``NSFW Command. please switch into channel tagged as NSFW``'); 
+		if (command.category === 'Voice') { 
+			try {
+				require('node-opus') || require('opusscript')
+			} catch (error) { 
+				return context.reply(':x: `Voice command currently disabled`')
+			}
+		}
+		
 		if (!this.bot.utils.isAdmin(context.author.id)) {
 			if (this.bot.commandCooldowns.has(context.author.id)) {
 
