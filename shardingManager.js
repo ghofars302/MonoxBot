@@ -4,6 +4,8 @@ const API = require('discord.js');
 const SELF = require('./package.json');
 const WEBHELPER = require('./http/app');
 const CONFIG = require('./config/config.json');
+
+const trueOrNot = process.env.webhelper === "true" ? true : false;
 /* eslint-enable no-unused-vars */
 
 class MonoxSharding { // eslint-disable-line no-unused-vars
@@ -20,7 +22,7 @@ class MonoxSharding { // eslint-disable-line no-unused-vars
 		console.log(`[SHARD M] [Module] discord.js ${API.version} loaded.`);
 		console.log(`[SHARD M] [MonoxBot Framework] MonoxBot ${SELF['version']} launching... `);
 	
-		if (CONFIG.webhelper) {
+		if (trueOrNot) {
 			new WEBHELPER();
 			console.log(`[SHARD M] [WEBHELPER] Initializing Webhelper API at port 3000`);
 		} else {
