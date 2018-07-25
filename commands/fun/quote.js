@@ -8,7 +8,7 @@ module.exports = {
         let member = null;
              
         const message = {
-            content: argsString
+            content: argsString.replace(/<@!?(\d+)>/g, (match, id) => ctx.users.has(id) ? `[@${ctx.users.get(id).username}]` : match)
         };
        
         const IdOrNot = args[0].trim();
@@ -18,7 +18,8 @@ module.exports = {
             try {
                 const messageObject = await ctx.channel.messages.fetch(args[1]);
                 user = messageObject.author;
-                message.content = messageObject.content || '';
+                message.content = messageObject.content.replace(/<@!?(\d+)>/g, (match, id) => ctx.users.has(id) ? `[@${ctx.users.get(id).username}]` : match)
+ 
             
                 // if (messageObject.embeds) messageObject.embeds[0];
             } catch (error) { 
