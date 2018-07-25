@@ -41,8 +41,8 @@ module.exports = {
                               args: {
                                             message,
                                             author,
-                                            light: false
-                                            compact; false,
+                                            light: false,
+                                            compact: false,
                                             timestamp: new Date()
                                           }
                            });
