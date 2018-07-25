@@ -29,7 +29,6 @@
         "enmap-sqlite": "^2.0.3",
         "express": "^4.16.3",
         "fs-extra": "^6.0.1",
-        "glitch-canvas": "^1.1.5",
         "gm": "^1.23.1",
         "humanize-duration": "^3.14.0",
         "js-beautify": "^1.7.5",
