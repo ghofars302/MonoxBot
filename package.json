@@ -5,7 +5,7 @@
     "main": "bot.js",
     "scripts": {
         "test": "echo There no Test for MonoxBot LOL :) contact github.com/ghofars302 for test server",
-        "installtermux": "installtermux.sh",
+        "installtermux": "sh installtermux.sh",
         "start": "node shardingManager.js"
     },
     "repository": {
