@@ -17,7 +17,6 @@ module.exports = {
         if (IdOrNot.toLowerCase() === 'id') { 
             if (isNaN(args[1])) return ':x: `You must put message ID`'; 
             try {
-                console.log(args);
                 const messageObject = await ctx.channel.messages.fetch(args[1]);
                 user = messageObject.author;
                 message.content = messageObject.content || '';
