@@ -15,7 +15,7 @@ module.exports = {
         const regex = /<@!?(\d+)>/g
              
         const message = {
-            content: argsString.replace(regex, (match, id) => ctx.users.has(id) ? `[@${ctx.users.get(id).username}]` : match)
+            content: argsString.replace(regex, (match, id) =>  ctx.guild.members.has(id)) ? `[@${ctx.guild.members.get(id).nickname}]` : ctx.users.has(id) ? `[@${ctx.users.get(id).username}]` : match)
         };
        
         const IdOrNot = args[0].trim();
