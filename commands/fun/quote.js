@@ -49,7 +49,7 @@ module.exports = {
     
         if (ctx.guild) {
             member = ctx.guild.member(user);
-            author.color = `#${member.roles.highest.color.toString(16)})`;
+            author.color = member.displayHexColor;
         }
         
         const options = {
@@ -58,9 +58,10 @@ module.exports = {
                 author,
                 light: false,
                 compact: false,
-                timestamp: new Date()
                }
         }
+        
+        options.timestamp = 'undefined';
 
         const buffer = await ctx.bot.fAPI('quote', options);
 
