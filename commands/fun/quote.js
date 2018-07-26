@@ -62,7 +62,7 @@ module.exports = {
                }
         }
         
-        options.timestamp = moment(timestamp).calendar();
+        options.args.timestamp = moment(timestamp).calendar();
 
         const buffer = await ctx.bot.fAPI('quote', options);
 
