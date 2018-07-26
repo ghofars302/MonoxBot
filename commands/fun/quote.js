@@ -37,7 +37,7 @@ module.exports = {
         }
         
         if (regex.test(userOMention)) {
-            user = ctx.users.has(userOMention.replace(regex, '')) ? ctx.users.get(userOMention.replace(regex, '')) : ctx.author
+            user = userOMention.replace(regex, (match, id) => ctx.users.has(id) ? ctx.users.get(id) : ctx.author);
             message.content = args.join(' ');
         };
     
