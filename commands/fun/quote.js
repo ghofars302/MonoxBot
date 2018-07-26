@@ -11,6 +11,7 @@ module.exports = {
         let user = ctx.author;
         let member = null;
         let userOMention;
+        let timestamp = new Date();
         
         const regex = /<@!?(\d+)>/g
              
@@ -25,8 +26,8 @@ module.exports = {
             try {
                 const messageObject = await ctx.channel.messages.fetch(args[1]);
                 user = messageObject.author;
-                message.content = messageObject.content.replace(regex, (match, id) => ctx.users.has(id) ? `[@${ctx.users.get(id).username}]` : match)
- 
+                message.content = messageObject.content.replace(regex, (match, id) => ctx.guild.members.has(id)) ? `[@${ctx.guild.members.get(id).nickname}]`: ctx.users.has(id) ? `[@${ctx.users.get(id).username}]` : match)
+                timestamp = message.createdTimestamp;
             
                 // if (messageObject.embeds) messageObject.embeds[0];
             } catch (error) { 
@@ -61,7 +62,7 @@ module.exports = {
                }
         }
         
-        options.timestamp = 'undefined';
+        options.timestamp = moment(timestamp).calendar();
 
         const buffer = await ctx.bot.fAPI('quote', options);
 
