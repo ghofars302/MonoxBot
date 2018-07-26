@@ -1,9 +1,11 @@
 module.exports = {
-    description: 'Create a ',
+    description: 'Create Discord quote screenshot. ',
     category: 'Fun',
     args: 'id <Message ID> | <Message content>',
     cooldown: 2000,
     run: async function (ctx, { args, argsString }) {
+        if (args.length === 0 || !argsString) return `\`\`\`${ctx.prefix}quote (id <MessageID> | @Mentions <Message Content> | <Message content>)\n\nSubcommands:\n- id <MessageID> (Use message id in current channel to quote message)\n- @Mentions <Message content> (Create a quote but author was another member/user)\n- <Message content> (Create quote based on your text) (Default)\n\nCreate discord quote screenshot\`\`\``;
+        
         let user = ctx.author;
         let member = null;
              
