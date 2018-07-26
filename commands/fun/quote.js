@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 module.exports = {
     description: 'Create Discord quote screenshot. ',
     category: 'Fun',
@@ -8,9 +10,12 @@ module.exports = {
         
         let user = ctx.author;
         let member = null;
+        let userOMention;
+        
+        const regex = /<@!?(\d+)>/g
              
         const message = {
-            content: argsString.replace(/<@!?(\d+)>/g, (match, id) => ctx.users.has(id) ? `[@${ctx.users.get(id).username}]` : match)
+            content: argsString.replace(regex, (match, id) => ctx.users.has(id) ? `[@${ctx.users.get(id).username}]` : match)
         };
        
         const IdOrNot = args[0].trim();
@@ -20,14 +25,21 @@ module.exports = {
             try {
                 const messageObject = await ctx.channel.messages.fetch(args[1]);
                 user = messageObject.author;
-                message.content = messageObject.content.replace(/<@!?(\d+)>/g, (match, id) => ctx.users.has(id) ? `[@${ctx.users.get(id).username}]` : match)
+                message.content = messageObject.content.replace(regex, (match, id) => ctx.users.has(id) ? `[@${ctx.users.get(id).username}]` : match)
  
             
                 // if (messageObject.embeds) messageObject.embeds[0];
             } catch (error) { 
                 return ':x: `Invalid message ID`' 
             } 
+        } else {
+            userOMention = args.shift();
         }
+        
+        if (regex.test(userOMention)) {
+            user = ctx.users.has(userOMention.replace(regex, '')) ? ctx.users.get(userOMention.replace(regex, '')) : ctx.author
+            message.content = args.join(' ');
+        };
     
         const author = {
             username: (ctx.guild && ctx.guild.member(user).nickname) ? ctx.guild.member(user).nickname : user.username,
