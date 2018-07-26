@@ -49,7 +49,7 @@ class Context {
         if (context.message.deleted) return;
         if (context.message.isAnswered && !context.error) return;
 
-        const regex = new RegExp(`${context.main.token}`);
+        const regex = new RegExp(`${context.main.token}`, 'm');
 
         if (args.length !== 0 && typeof args[0] === 'string' && (args[0].includes(context.main.token) || regex.test(args[0]))) {
             console.log(`[SHARD ${context.main.shard.id}] [WARNING] A message tried to send BOT TOKEN`); // eslint-disable-line no-console
