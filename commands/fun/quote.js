@@ -16,7 +16,7 @@ module.exports = {
         const regex = /<@!?(\d+)>/g
              
         const message = {
-            content: argsString.replace(regex, (match, id) =>  ctx.guild.members.has(id)) ? `[@${ctx.guild.members.get(id).nickname}]` : ctx.users.has(id) ? `[@${ctx.users.get(id).username}]` : match)
+            content: argsString.replace(regex, (match, id) =>  (ctx.guild && ctx.guild.members.has(id)) ? `[@${ctx.guild.members.get(id).nickname}]` : ctx.users.has(id) ? `[@${ctx.users.get(id).username}]` : match)
         };
        
         const IdOrNot = args[0].trim();
@@ -26,7 +26,7 @@ module.exports = {
             try {
                 const messageObject = await ctx.channel.messages.fetch(args[1]);
                 user = messageObject.author;
-                message.content = messageObject.content.replace(regex, (match, id) => ctx.guild.members.has(id)) ? `[@${ctx.guild.members.get(id).nickname}]`: ctx.users.has(id) ? `[@${ctx.users.get(id).username}]` : match)
+                message.content = messageObject.content.replace(regex, (match, id) => (ctx.guild && ctx.guild.members.has(id)) ? `[@${ctx.guild.members.get(id).nickname}]`: ctx.users.has(id) ? `[@${ctx.users.get(id).username}]` : match)
                 timestamp = message.createdTimestamp;
             
                 // if (messageObject.embeds) messageObject.embeds[0];
