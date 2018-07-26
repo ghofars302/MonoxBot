@@ -13,7 +13,7 @@ module.exports = {
         let userOMention;
         let timestamp = new Date();
         
-        const regex = /<@!?(\d+)>/g
+        const regex = /<@!?(\d+)>/m
              
         const message = {
             content: argsString.replace(regex, (match, id) =>  (ctx.guild && ctx.guild.members.has(id) && ctx.guild.members.has(id).nickname) ? `[@${ctx.guild.members.get(id).nickname}]` : ctx.users.has(id) ? `[@${ctx.users.get(id).username}]` : match)
