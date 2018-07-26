@@ -50,7 +50,7 @@ module.exports = {
     
         if (ctx.guild) {
             member = ctx.guild.member(user);
-            author.color = member.displayHexColor;
+            author.color = member ? member.displayHexColor : '#ffffff'
         }
         
         const options = {
