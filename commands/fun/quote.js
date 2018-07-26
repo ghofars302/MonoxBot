@@ -40,6 +40,7 @@ module.exports = {
         if (regex.test(userOMention)) {
             user = ctx.users.get(userOMention.replace(regex, (match, id) => ctx.users.has(id) ? id : ctx.author.id))
             message.content = args.join(' ');
+            if (message.content.length < 1) return ':x: `Please insert message content`';
         };
     
         const author = {
