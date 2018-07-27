@@ -81,6 +81,9 @@ class Context {
         }
 
         if (error instanceof context.bot.fetch.FetchError || error instanceof context.bot.fAPI.Error) {
+            if (error instanceof context.bot.fAPI.Error) {
+                return context.reply(`:warning: \`fAPI processing failed\` \`\`\`js\n${error}\`\`\``);
+            }
             console.log((error && error.stack) || error); // eslint-disable-line no-console
             return context.reply(':warning: ``API down or took too long``');
         }
