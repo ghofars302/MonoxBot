@@ -29,7 +29,10 @@ module.exports = {
                 message.content = messageObject.content !=== '' ? messageObject.content.replace(regex, (match, id) => (ctx.guild && ctx.guild.members.has(id) && ctx.guild.members.get(id).nickname) ? `[@${ctx.guild.members.get(id).nickname}]`: ctx.users.has(id) ? `[@${ctx.users.get(id).username}]` : match) : '';
                 timestamp = message.createdTimestamp;
             
-                if (messageObject.embeds) messageObject.embeds[0];
+                if (messageObject.embeds) {
+                    const filtered = messageObject.embeds.filter(embed => embed.type === 'rich');
+                    if (filtered.length > 0) message.embed = filtered[0];
+                }
             } catch (error) { 
                 return ':x: `Invalid message ID`' 
             } 
