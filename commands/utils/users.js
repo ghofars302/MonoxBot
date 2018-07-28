@@ -25,7 +25,7 @@ module.exports = {
 		const shownServers = servers.slice(-3);
 
 		let body = `\`${shownServers.join('`, `')}`;
-		body += shownServers.length < servers.length ? `\` + ${servers.length - shownServers.length} more\`` : '';
+		body += shownServers.length < servers.length ? `\` + ${servers.length - shownServers.length} more1` : '';
 		
 		const status = user.presence.status;
 		const activity = user.presence.activity;
@@ -43,7 +43,7 @@ module.exports = {
 
 		if (guild) embed.addField('Guild Join Date', PrettyDate(guild.joinedTimestamp))
 		embed.addField(`Status`, `${status === 'dnd' ? 'Do not distrub' : status === 'idle' ? 'Idle' : status === 'online' ? 'Online' : 'Offline'}`)
-			.addField(`See on \`${servers.length}\` server`, body !== '' ? body : '`none`')
+			.addField(`See on \`${servers.length}\` server`, body !== '' ? body : '`none`') // eslint-disable-line no-negated-condition
 		
 		return embed
 	}
