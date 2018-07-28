@@ -6,6 +6,7 @@
     "scripts": {
         "test": "echo There no Test for MonoxBot LOL :) contact github.com/ghofars302 for test server",
         "installtermux": "sh installtermux.sh",
+        "preparedb": "node shardingManager.js --prepare",
         "start": "node shardingManager.js"
     },
     "repository": {
@@ -19,14 +20,11 @@
     },
     "dependencies": {
         "axios": "^0.18.0",
-        "booru": "^0.5.0",
         "canvas": "^2.0.0-alpha.12",
         "child-process-promise": "^2.2.1",
         "common-tags": "^1.8.0",
         "discord.js": "git+https://github.com/hydrabolt/discord.js#master",
         "dotenv": "^5.0.1",
-        "enmap": "^2.6.3",
-        "enmap-sqlite": "^2.0.3",
         "express": "^4.16.3",
         "fs-extra": "^6.0.1",
         "gm": "^1.23.1",
@@ -39,7 +37,6 @@
         "pg": "^7.4.3",
         "request": "^2.87.0",
         "request-promise": "^4.2.2",
-        "sqlite3": "^4.0.1",
         "ytdl-core": "^0.20.2"
     },
     "peerDependencies": {

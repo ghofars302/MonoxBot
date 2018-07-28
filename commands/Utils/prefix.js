@@ -4,18 +4,24 @@ module.exports = {
     args: '<Prefix> [reset|clear]',
     cooldown: 10000,
     run: async function (ctx, { argsString }) {
-        if (!argsString) return `Current prefix for **${ctx.guild.name}** was **${ctx.prefix}**`;
+        if (argsString) {
+			if (!ctx.member.hasPermission('MANAGE_GUILD') && !ctx.bot.utils.isAdmin(ctx.author.id)) return ':x: Only guild administrators can change the prefix'
 
-        if (!ctx.member.hasPermission('MANAGE_MESSAGES')) return ':x: `Only member has MANAGE_MESSAGES can do this`';
+			await ctx.bot.utils.queryDB('DELETE FROM settings WHERE server = $1 AND setting = $2', [ctx.guild.id, 'prefix']);
+			if (['reset', 'clear', ctx.main.prefix].includes(argsString.toLowerCase())) {
+                await ctx.guild.initPrefix()
+				return `Prefix reset to \`${ctx.main.prefix}\``
+			} else {
+                await ctx.bot.utils.queryDB('INSERT INTO settings VALUES ($1, $2, $3)', [ctx.guild.id, 'prefix', argsString]);
+                await ctx.guild.initPrefix()
+				return `Prefix set to \`${argsString}\``
+			}
+		} else {
+			const prefixResult = await ctx.bot.utils.queryDB('SELECT value FROM settings WHERE setting = $1 AND server = $2', ['prefix', ctx.guild.id]);
+			const prefix = prefixResult.rowCount > 0 ? prefixResult.rows[0].value : ctx.main.prefix;
 
-        if (argsString === 'reset' || argsString === 'clear') {
-            ctx.guild.commandPrefix = this.client.prefix;
-            return `:white_check_mark: Reset guild prefix to default one.`
-        }
+			return `Current prefix: \`${prefix}\``
+		}
 
-        if (argsString.length > 3) return 'You can\'t change prefix with that length.'
-
-        ctx.guild.commandPrefix = argsString;
-        return `:white_check_mark: Changed guild prefix to **${argsString}**`
     }
 }

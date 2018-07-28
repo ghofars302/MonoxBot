@@ -1,6 +1,5 @@
 const {Client} = require('discord.js');
 const MonoxAPIError = require('../modules/MonoxAPIError');
-const Provider = require('./provider');
 
 class MonoxClient extends Client {
     constructor(options, bot) {
@@ -11,14 +10,6 @@ class MonoxClient extends Client {
         this.prefix = options.prefix;
 
         this.bot = bot;
-
-        try {
-            this.bot.logger.log(this, '[DATABASE] Initializing SQLite DB');
-            this.provider = new Provider();
-        } catch (error) {
-            this.bot.logger.error('Cannot initializing SQLite DB');
-            this.provider = null
-        }
     }
 
     async login(token) {

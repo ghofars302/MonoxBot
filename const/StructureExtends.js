@@ -1,5 +1,6 @@
 const {Structures} = require('discord.js');
 const Provider = require('./GuildProvider');
+const Promise = require('bluebird');
 
 module.exports = Structures.extend('Guild', Guild => {
     class MonoxBotGuild extends Guild {
@@ -8,7 +9,16 @@ module.exports = Structures.extend('Guild', Guild => {
 
             this.provider = new Provider(this.client, this)
 
-            this.guildPrefix = this.provider.getPrefix() ? this.provider.getPrefix() : this.client.prefix
+            this.guildPrefix = null;
+            this.initPrefix();
+        }
+
+        async initPrefix() {
+            try {
+                const result = await this.provider.getPrefix();
+
+                this.guildPrefix = result ? result : this.client.prefix;
+            } catch (error) {} // eslint-disable-line no-empty
         }
         
         get commandPrefix() {
@@ -17,8 +27,14 @@ module.exports = Structures.extend('Guild', Guild => {
         }
 
         set commandPrefix(value) {
-            this.guildPrefix = value
-            this.provider.setPrefix(value);
+            return new Promise(async (resolve, reject) => {
+                try {
+                    await this.provider.prefix(value, 'set');
+                    resolve();
+                } catch (error) {
+                    reject(error)
+                }
+            })
         }
     }
 

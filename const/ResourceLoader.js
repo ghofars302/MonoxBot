@@ -57,21 +57,21 @@ class ResourceLoader {
 		});
 		this.bot.util = require('util');
 		this.bot.rpromise = require('request-promise');
-		this.bot.snekfetch = require('snekfetch');
 		this.bot.nekosapi = require('../modules/nekosAPI');
 		this.bot.fetchapi = require('../modules/fetchAPI');
+		this.bot.fAPI = require('../modules/fAPI');
+		this.bot.logger = require('../modules/MonoxLogger');
 	}
 
 	createDBInstance() {
 		return new postgres.Pool({
 			user: process.env.DB_USER,
 			password: process.env.DB_PASS,
-			database: process.env.DB,
+			database: process.env.DB_NAME,
 			host: process.env.DB_HOST,
 			port: process.env.DB_PORT,
 			max: 1,
-			idleTimeoutMillis: 30000,
-			ssl: true
+			idleTimeoutMillis: 30000
 		});
 	}
 }

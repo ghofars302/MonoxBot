@@ -4,20 +4,20 @@ class GuildProvider {
         this.guild = guild;
     }
 
-    getPrefix() {
-        if (!this.client.provider) throw new Error('No provider available');
+    async getPrefix() {
+        const prefixResult = await this.client.bot.utils.queryDB('SELECT value FROM settings WHERE setting = $1 AND server = $2', ['prefix', this.guild.id]);
 
-        const object = this.client.provider.get(this.guild.id);
-
-        if (!object) return null;
-
-        return object.prefix
+        return prefixResult.rowCount > 0 ? prefixResult.rows[0].value : null;
     }
 
-    setPrefix(value) {
-        if (!this.client.provider) throw new Error('No provider available');
-        
-        return this.client.provider.set(this.guild.id, 'prefix', value);
+    async prefix(value, type) {
+        try {
+            await this.client.bot.utils.queryDB('DELETE FROM settings WHERE server = $1 AND setting = $2', [this.guild.id, 'prefix']);
+            
+            if (type === 'set') await this.utils.queryDB('INSERT INTO settings VALUES ($1, $2, $3)', [this.guild.id, 'prefix', value]);
+        } catch (error) {
+            throw error
+        }
     }
 }
 

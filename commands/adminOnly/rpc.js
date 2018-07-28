@@ -39,6 +39,8 @@ module.exports = {
 				break;
 			case 'refresh':
 				try {
+					await ctx.reply('Restarting bot..');
+
 					await ctx.main.shard.broadcastEval(`process.exit()`);
 				} catch (error) {
 					ctx.reply(':x: `There a error while broadcasting to other shards`');

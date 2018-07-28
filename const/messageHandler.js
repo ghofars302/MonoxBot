@@ -31,9 +31,8 @@ class messageHandler {
 		if (context.author.bot) return;
 
 		if (!this.bot.utils.isAdmin(context.author.id)) {
-			const rows = this.bot.client.provider.getBlacklist();
-
-			if (rows && rows.includes(context.author.id)) return;
+			const isBlacklisted = await this.bot.utils.queryDB('SELECT FROM blacklists WHERE (type = \'server\' AND id = $1) OR (type = \'channel\' AND id = $2) OR (type = \'user\' AND id = $3)', [context.guild ? context.guild.id : context.channel.id, context.channel.id, context.author.id]);
+			if (isBlacklisted.rowCount > 0) return;
 		}
 
 		const mentionRegex = new RegExp(`^<@!?${this.bot.client.user.id}>`);
@@ -60,7 +59,7 @@ class messageHandler {
 		if (command.nsfw && !context.channel.nsfw) return context.reply(':x: ``NSFW Command. please switch into channel tagged as NSFW``'); 
 		if (command.category === 'Voice') { 
 			try {
-				require('node-opus') || require('opusscript')
+				require('node-opus') || require('opusscript') // eslint-disable-line no-unused-expressions
 			} catch (error) { 
 				return context.reply(':x: `Voice command currently disabled`')
 			}

@@ -1,12 +1,12 @@
-/* eslint-disable no-unused-vars */
 require('dotenv').load();
 const API = require('discord.js');
 const SELF = require('./package.json');
 const WEBHELPER = require('./http/app');
-const CONFIG = require('./config/config.json');
+const PREPAREDB = require('./const/prepareDB');
 
-const trueOrNot = process.env.webhelper === "true" ? true : false;
-/* eslint-enable no-unused-vars */
+const trueOrNot = process.env.webhelper === "true" ? true : false; // eslint-disable-line no-unneeded-ternary
+
+/* eslint-disable no-console */
 
 class MonoxSharding { // eslint-disable-line no-unused-vars
 	constructor() {
@@ -18,7 +18,6 @@ class MonoxSharding { // eslint-disable-line no-unused-vars
 			token: process.env.TOKEN
 		});
 
-		/* eslint-disable no-console */
 		console.log(`[SHARD M] [Module] discord.js ${API.version} loaded.`);
 		console.log(`[SHARD M] [MonoxBot Framework] MonoxBot ${SELF['version']} launching... `);
 	
@@ -31,8 +30,21 @@ class MonoxSharding { // eslint-disable-line no-unused-vars
 
 		shardManager.spawn();
 		console.log(`[SHARD M] [MANAGER] Initializing ${shardManager.totalShards.toString()} shards about ${(isNaN(shardManager.totalShards) ? 0 : shardManager.totalShards - 1) * 7.5}s`)
-		/* eslint-enable no-console */
 	}
 }
 
-new MonoxSharding();
+if (process.argv.includes('--prepare')) {
+	console.log('[Shard M] [Database] Preparing Database...');
+
+	PREPAREDB().then(() => {
+		console.log('[Shard M] [Database] Database prepared! Now you can run this bot.');
+
+		process.exit();
+	}).catch((err) => { // eslint-disable-line newline-per-chained-call
+		throw err;
+	})
+} else {
+	new MonoxSharding();
+}
+
+
