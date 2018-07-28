@@ -18,7 +18,11 @@ module.exports = Structures.extend('Guild', Guild => {
                 const result = await this.provider.getPrefix();
 
                 this.guildPrefix = result ? result : this.client.prefix;
-            } catch (error) {} // eslint-disable-line no-empty
+
+                return true
+            } catch (error) {
+                throw error;
+            }
         }
         
         get commandPrefix() {
