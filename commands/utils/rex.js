@@ -46,7 +46,8 @@ module.exports = {
                 uri: 'http://rextester.com/rundotnet/api',
                 qs: {
                     LanguageChoice: API[Lang],
-                    Program: /(^```[a-z]*)|(```*$)/g.test(code) ? code.replace(/(^```[a-z]*)|(```*$)/g, '').trim() : code
+                    Program: /(^```[a-z]*)|(```*$)/g.test(code) ? code.replace(/(^```[a-z]*)|(```*$)/g, '').trim() : code,
+                    CompilerArgs: '-o a.out source_file.cpp'
                 },
                 json: true
             });
