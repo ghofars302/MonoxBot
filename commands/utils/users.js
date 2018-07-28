@@ -25,7 +25,7 @@ module.exports = {
 		const shownServers = servers.slice(-3);
 
 		let body = `\`${shownServers.join('`, `')}`;
-		body += shownServers.length < servers.length ? `\` + ${servers.length - shownServers.length} more\` : '';
+		body += shownServers.length < servers.length ? `\` + ${servers.length - shownServers.length} more\`` : '';
 		
 		const status = user.presence.status;
 		const activity = user.presence.activity;
