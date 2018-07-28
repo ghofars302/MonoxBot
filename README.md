@@ -40,4 +40,18 @@ Make sure all requirement(s) are installed.
 - cd to repository folder
 - Install remaining requirements by do `npm install`
 - See environment.md to setup bot before open the bot.
-- Run the bot by do `npm start
+- Run the bot by do `npm start`
+
+### Enabling Voice-command support
+
+```
+# ANDROID ISN'T SUPPORTED #
+
+Voice support disabled by default because high cost of hosting thing.
+Also it won't work on android tho.
+```
+
+Make sure python 2.7 installed and some other requirements
+
+- do `npm install node-opus`
+- Run the bot by do `npm start`
