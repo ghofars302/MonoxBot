@@ -36,7 +36,7 @@ module.exports = {
         } else {
             const msg = await ctx.reply(embedPage(ctx, text.results, 1));
 
-            const paginate = ctx.bot.Paginate.initPaginate(msg, ctx.author, text.results.length / 10 + 1, true);
+            const paginate = ctx.bot.Paginate.initPaginate(msg, ctx.author, Math.round(text.results.length) / 10 + 1, true);
 
             paginate.on('paginate', number => {
                 msg.edit(embedPage(ctx, text.results, number));

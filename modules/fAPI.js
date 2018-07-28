@@ -21,17 +21,25 @@ const fAPI = async function (endpoint, options) {
         })
     };
 
-    const result = await fetch(`http://processing.matmen.me:3000/${endpoint}`, requestOptions);
+    return new Promise(async (resolve, reject) => {
+        const result = await fetch(`http://processing.matmen.me:3000/${endpoint}`, requestOptions);
 
-    if (result.status !== 200) {
-        const text = await result.text();
+        if (result.status !== 200) {
+            const text = await result.text();
 
-        return Promise.reject(new fAPI.Error(text));
-    }
+            return reject(new fAPI.Error(text));
+        }
 
-    /* eslint-disable no-negated-condition */
-    const buffer = await result.buffer();
-    return buffer;
+        const buffer = await result.buffer()
+
+        resolve(buffer);
+    });
+}
+
+fAPI.path = async function() {
+    const res = await fetch(`http://processing.matmen.me:3000/pathlist`);
+
+    return res.json();
 }
 
 fAPI.Error = class fAPIError extends Error {
