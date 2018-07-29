@@ -39,7 +39,17 @@ const fAPI = async function (endpoint, options) {
 fAPI.path = async function() {
     const res = await fetch(`http://processing.matmen.me:3000/pathlist`);
 
-    return res.json();
+    const path = await res.json();
+
+    return path.paths;
+}
+
+fAPI.method = async function() {
+    const res = await fetch(`http://processing.matmen.me:3000/pathlist`);
+
+    const path = await res.json();
+
+    return path.defaultRequestBody;
 }
 
 fAPI.Error = class fAPIError extends Error {
