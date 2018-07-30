@@ -7,21 +7,21 @@ module.exports = {
 	aliases: ['t'],
 	cooldown: 1000,
 	run: async function (ctx, { args }) {
-		if (args.length === 0) return InvalidArgument(ctx)
+		if (args.length === 0) return invalidArgument(ctx)
 
 		if (['add', 'create'].includes(args[0].toLowerCase())) {
 
 			if (args.length < 3) return ':x: `Please input tag  name to create`';
       const name = args[0].toLowerCase()
       
-      if (['add', 'create', 'edit', 'gift', 'dump', 'delete', 'owner'].includes(name)) return ':x: `You can\'t create tag with that name because that was keyword`':
+      if (['add', 'create', 'edit', 'gift', 'dump', 'delete', 'owner'].includes(name)) return ':x: `You can\'t create tag with that name because that was keyword`';
       
 			const content = args.splice(2, args.length).join(' ');
       if (content.length < 1) return ':x: `You must input content`';
 
 			const tags = await this.utils.queryDB('SELECT content FROM tags WHERE name = $1', [name]);
 			if (tags.rowCount > 0) return `:x: Tag **${name}** already exists!`
-			await ctx.bot.utils.queryDB('INSERT INTO tags VALUES ($1, $2, $3)', [name, content, message.author.id]);
+			await ctx.bot.utils.queryDB('INSERT INTO tags VALUES ($1, $2, $3)', [name, content, ctx.author.id]);
 			return `:white_check_mark: Created tag **${name}**!`
 
 		} else if (args[0].toLowerCase() === 'edit') {
@@ -48,7 +48,7 @@ module.exports = {
 
 			const tag = await this.utils.queryDB('SELECT userid FROM tags WHERE name = $1', [name]);
 			if (tag.rowCount < 1) return `:x: Tag **${name}** not found!`
-			if (!this.utils.isAdmin(ctx.author.id) && ctx.author.id !== tag.rows[0].userid) return ':x: `You don\'t own that tag!`');
+			if (!this.utils.isAdmin(ctx.author.id) && ctx.author.id !== tag.rows[0].userid) return ':x: `You don\'t own that tag!`';
 
 			const newName = args[2].toLowerCase();
 
@@ -71,7 +71,7 @@ module.exports = {
 			if (tag.rowCount < 1) return `:x: Tag **${name}** not found!`
 			if (!this.utils.isAdmin(ctx.author.id) && ctx.author.id !== tag.rows[0].userid) return ':x: `You don\'t own that tag!`'
 
-			if (user.id === ctx.author.id) return ':x: `You cant gift tags to yourself!`');
+			if (user.id === ctx.author.id) return ':x: `You cant gift tags to yourself!`'
 			if (user.id === this.client.user.id) return ':x: `You cant gift tags to me!`'
 
 			await this.utils.queryDB('UPDATE tags SET userid = $2 WHERE name = $1', [name, user.id]);
@@ -84,7 +84,7 @@ module.exports = {
 			const name = args.splice(1, args.length).join(' ').toLowerCase();
 
 			const tag = await this.utils.queryDB('SELECT userid FROM tags WHERE name = $1', [name]);
-			if (tag.rowCount < 1) return `:x: Tag **${name}** not found!`);
+			if (tag.rowCount < 1) return `:x: Tag **${name}** not found!`
 			if (!this.utils.isAdmin(ctx.author.id) && ctx.author.id !== tag.rows[0].userid) return ':x: `You don\'t own that tag!`'
 
 			await this.utils.queryDB('DELETE FROM tags WHERE name = $1', [name]);
@@ -197,7 +197,7 @@ module.exports = {
 	}
 };
 
-const UnknownArgument = (ctx) => stripIndent`
+const invalidArgument = (ctx) => stripIndent`
   \`\`\`
   ${ctx.prefix}tag <name> | create | owner | dump | list | delete | raw | gift
 
