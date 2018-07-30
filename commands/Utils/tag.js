@@ -191,7 +191,7 @@ module.exports = {
 			const tag = await ctx.bot.utils.queryDB('SELECT content FROM tags WHERE name = $1', [name]);
 			if (tag.rowCount < 1) return `:x: Tag **${name}** not found!` 
       
-      return ctx.utils.filterMentions(tag.rows[0].content);
+      return ctx.bot.utils.filterMentions(tag.rows[0].content);
       
 		}
 	}
