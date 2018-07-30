@@ -209,5 +209,5 @@ const invalidArgument = (ctx) => stripIndent`
   - delete <tag> (Delete tag)
 
   Base of custom command.
-
+  \`\`\`
 `
