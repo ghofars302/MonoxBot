@@ -12,7 +12,7 @@ module.exports = {
 		if (['add', 'create'].includes(args[0].toLowerCase())) {
 
 			if (args.length < 3) return ':x: `Please input tag  name to create`';
-      const name = args[0].toLowerCase()
+      const name = args[1].toLowerCase()
       
       if (['add', 'create', 'edit', 'gift', 'dump', 'delete', 'owner'].includes(name)) return ':x: `You can\'t create tag with that name because that was keyword`';
       
