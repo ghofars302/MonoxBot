@@ -22,17 +22,21 @@ const fAPI = async function (endpoint, options) {
     };
 
     return new Promise(async (resolve, reject) => {
-        const result = await fetch(`http://processing.matmen.me:3000/${endpoint}`, requestOptions);
+        try {
+            const result = await fetch(`http://processing.matmen.me:3000/${endpoint}`, requestOptions);
 
-        if (result.status !== 200) {
-            const text = await result.text();
+            if (result.status !== 200) {
+                const text = await result.text();
 
-            return reject(new fAPI.Error(text));
-        }
+                return reject(new fAPI.Error(text));
+            }
 
-        const buffer = await result.buffer()
+            const buffer = await result.buffer()
 
-        resolve(buffer);
+            resolve(buffer);
+         } catch (error) {
+             reject(error);
+         }
     });
 }
 
