@@ -35,7 +35,7 @@ const fAPI = async function (endpoint, options) {
 
             resolve(buffer);
          } catch (error) {
-             reject(new fetch.FetchError(error.message));
+             reject(error);
          }
     });
 }
