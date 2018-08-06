@@ -13,7 +13,7 @@
         "type": "git",
         "url": "git@github.com:ghofars302/MonoxBot.git"
     },
-    "keywords": ['MonoxBot', 'discordbot', 'javascript', 'node', 'nodejs'],
+    "keywords": [],
     "license": "AGPL-3.0",
     "engines": {
         "node": "10.x.x"
