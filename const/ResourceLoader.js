@@ -45,7 +45,6 @@ class ResourceLoader {
 		this.bot.fetch = require('node-fetch');
 		this.bot.fs = require('fs');
 		this.bot.childProcess = require('child_process');
-		this.bot.ytdl = require('ytdl-core');
 		this.bot.axios = require('axios');
 		this.bot.hd = humanizeDuration.humanizer({
 			languages: {
