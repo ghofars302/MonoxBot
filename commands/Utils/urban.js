@@ -14,7 +14,7 @@ module.exports = {
             json: true
         });
 
-        if (res.result_type === 'no_results') return 'Nothing found';
+        if (res.list.length === 0) return 'Nothing found';
 
         const urban = UrbanEmbed(ctx, res.list);
 
