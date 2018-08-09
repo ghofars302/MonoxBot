@@ -61,6 +61,12 @@ class Context {
             return context.author.send(...args).then(messageObject => {
                 if (context.author.bot) return messageObject;
                 context.bot.commandEditingStore.set(context.id, messageObject);
+                
+                setTimeout(() => {
+                    if (context.bot.commandEditingStore.has(context.id)) {
+                        context.bot.commandEditingStore.delete(context.id);
+                    }
+                }, 300000);
 
                 return messageObject;
             });
@@ -69,7 +75,13 @@ class Context {
             return context.channel.send(...args).then(messageObject => {
                 if (context.author.bot) return messageObject;
                 context.bot.commandEditingStore.set(context.id, messageObject);
-
+                
+                setTimeout(() => {
+                    if (context.bot.commandEditingStore.has(context.id)) {
+                        context.bot.commandEditingStore.delete(context.id);
+                    }
+                }, 300000);
+                
                 return messageObject;
             });
         }
