@@ -57,7 +57,7 @@ module.exports = {
         let playSong = url => {
             let endReason
 
-            const stream = ctx.bot.ytdl(url, {
+            const stream = ytdl(url, {
                 filter: 'audioonly'
             });
 
