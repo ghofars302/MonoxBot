@@ -77,7 +77,7 @@ module.exports = {
 			if (user.bot) return ':x: `You can\'t gift tag to Bot`';
 			
 			const msg = await ctx.reply(`<@!${user.id}>, **${ctx.author.tag}** want give you tag **${name}**\nSay **yes** to accept it, Say **no** to reject it`); 
-			const AwaitMsg = await msg.channel.awaitMessages(m => m.author.id === user.id && ['yes', 'y', 'no', 'n'].includes(m.content.toLowerCase()), {max: 1, time: 10000, errors: ['time']});
+			const AwaitMsg = await msg.channel.awaitMessages(m => m.author.id === user.id && ['yes', 'y', 'no', 'n'].includes(m.content.toLowerCase()), {max: 1, time: 10000});
 			ctx.message.isAnswered = false;
 			
 			if (AwaitMsg.array().length === 0) { 
