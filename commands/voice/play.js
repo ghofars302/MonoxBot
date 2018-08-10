@@ -1,3 +1,5 @@
+const ytdl = require('ytdl-core');
+
 module.exports = {
     description: 'Plays a song or adds it to the queue',
     category: 'Voice',
