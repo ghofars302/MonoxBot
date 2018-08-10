@@ -11,10 +11,10 @@ module.exports = {
 
 		if (['add', 'create'].includes(args[0].toLowerCase())) {
 
-			if (args.length < 3) return ':x: `Please input tag  name to create`';
+			if (args.length < 3) return ':x: `Please input tag content to create`';
      			const name = args[1].toLowerCase()
       
-      			if (['add', 'create', 'edit', 'gift', 'dump', 'delete', 'owner', 'view', 'raw'].includes(name)) return ':x: `You can\'t create tag with that name because that was keyword`';
+      			if (['add', 'create', 'edit', 'gift', 'dump', 'delete', 'owner', 'view', 'raw', 'rename'].includes(name)) return ':x: `You can\'t create tag with that name because that was keyword`';
       
 			const content = args.splice(2, args.length).join(' ');
       			if (content.length < 1) return ':x: `You must input content`';
@@ -26,7 +26,7 @@ module.exports = {
 
 		} else if (args[0].toLowerCase() === 'edit') {
 
-			if (args.length < 3) return ':x: `You must input tag to edit`';
+			if (args.length < 3) return ':x: `You must input new tag content to edit it`';
 
 			const name = args[1].toLowerCase();
 			const content = args.splice(2, args.length).join(' ');
@@ -42,7 +42,7 @@ module.exports = {
 
 		} else if (args[0].toLowerCase() === 'rename') {
 
-			if (args.length < 3) return ':x: `You must input tag`';
+			if (args.length < 3) return ':x: `You must input new tag name`';
 
 			const name = args[1].toLowerCase();
 
@@ -74,6 +74,7 @@ module.exports = {
 
 			if (user.id === ctx.author.id) return ':x: `You cant gift tags to yourself!`';
 			if (user.id === this.client.user.id) return ':x: `You cant gift tags to me!`'; 
+			if (user.bot) return ':x: `You can\'t gift tag to Bot`';
 			
 			const msg = await ctx.reply(`<@!${user.id}>, <@!${ctx.author.id}> want give you tag ${name}\nSay *yes* to accept it, Say *no* to reject it`); 
 			const AwaitMsg = await msg.channel.awaitMessages(m => m.author.id === user.id && ['yes', 'y', 'no', 'n'].includes(m.content.toLowerCase()), {max: 1, time: 10000, errors: ['time']}); 
