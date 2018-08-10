@@ -38,6 +38,7 @@
         "request-promise": "^4.2.2"
     },
     "peerDependencies": {
-        "node-opus": "^0.3.0"
+        "node-opus": "^0.3.0",
+        "ytdl-vore": "^0.24.0"
     }
 }
