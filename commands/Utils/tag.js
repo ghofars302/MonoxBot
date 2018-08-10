@@ -80,7 +80,7 @@ module.exports = {
 			const AwaitMsg = await msg.channel.awaitMessages(m => m.author.id === user.id && ['yes', 'y', 'no', 'n'].includes(m.content.toLowerCase()), {max: 1, time: 10000, errors: ['time']});
 			ctx.message.isAnswered = false;
 			
-			if (AwaitMsg.length === 0) { 
+			if (AwaitMsg.array().length === 0) { 
 				return ':x: `Action canceled because timeout`';
 			}
 			
