@@ -76,13 +76,13 @@ module.exports = {
 			if (user.id === this.client.user.id) return ':x: `You cant gift tags to me!`'; 
 			if (user.bot) return ':x: `You can\'t gift tag to Bot`';
 			
-			const msg = await ctx.reply(`<@!${user.id}>, **${user.tag}** want give you tag ${name}\nSay **yes** to accept it, Say **no** to reject it`); 
-			const AwaitMsg = await msg.channel.awaitMessages(m => m.author.id === user.id && ['yes', 'y', 'no', 'n'].includes(m.content.toLowerCase()), {max: 1, time: 10000, errors: ['time']}); 
+			const msg = await ctx.reply(`<@!${user.id}>, **${ctx.author.tag}** want give you tag ${name}\nSay **yes** to accept it, Say **no** to reject it`); 
+			const AwaitMsg = await msg.channel.awaitMessages(m => m.author.id === user.id && ['yes', 'y', 'no', 'n'].includes(m.content.toLowerCase()), {max: 1, time: 10000, errors: ['time']});
+			ctx.message.isAnswered = true;
 			
 			if (AwaitMsg.length === 0) { 
 				return ':x: `Action canceled because timeout`';
 			}
-			console.log(AwaitMsg.first());
 			
 			const confirmed = AwaitMsg.first(); 
 			if (['no', 'n'].includes(confirmed.content.toLowerCase())) { 
