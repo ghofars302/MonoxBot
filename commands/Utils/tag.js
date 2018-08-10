@@ -78,19 +78,18 @@ module.exports = {
 			
 			const msg = await ctx.reply(`<@!${user.id}>, **${ctx.author.tag}** want give you tag **${name}**\nSay **yes** to accept it, Say **no** to reject it`); 
 			const AwaitMsg = await msg.channel.awaitMessages(m => m.author.id === user.id && ['yes', 'y', 'no', 'n'].includes(m.content.toLowerCase()), {max: 1, time: 10000});
-			ctx.message.isAnswered = false;
 			
 			if (AwaitMsg.array().length === 0) { 
-				return ':x: `Action canceled because timeout`';
+				return msg.edit(':x: `Action canceled because timeout`');
 			}
 			
 			const confirmed = AwaitMsg.first(); 
 			if (['no', 'n'].includes(confirmed.content.toLowerCase())) { 
-				return `:x: \`Action canceled, because ${user.tag} reject it\``;
+				return msg.edit(`:x: \`Action canceled, because ${user.tag} reject it\``);
 			}
 			
 			await this.utils.queryDB('UPDATE tags SET userid = $2 WHERE name = $1', [name, user.id]);
-			return `:gift: Gifted tag **${name}** to **${user.tag}**`
+			return msg.edit(`:gift: Gifted tag **${name}** to **${user.tag}**`);
 
 		} else if (['delete', 'remove'].includes(args[0].toLowerCase())) {
 
