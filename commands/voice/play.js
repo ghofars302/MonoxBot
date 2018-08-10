@@ -1,4 +1,6 @@
-const ytdl = require('ytdl-core');
+let ytdl;
+
+if (module.resolve('ytdl-core')) ytdl = require('ytdl-core');
 
 module.exports = {
     description: 'Plays a song or adds it to the queue',
