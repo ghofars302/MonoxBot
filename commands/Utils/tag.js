@@ -12,12 +12,12 @@ module.exports = {
 		if (['add', 'create'].includes(args[0].toLowerCase())) {
 
 			if (args.length < 3) return ':x: `Please input tag  name to create`';
-      const name = args[1].toLowerCase()
+     			const name = args[1].toLowerCase()
       
-      if (['add', 'create', 'edit', 'gift', 'dump', 'delete', 'owner'].includes(name)) return ':x: `You can\'t create tag with that name because that was keyword`';
+      			if (['add', 'create', 'edit', 'gift', 'dump', 'delete', 'owner'].includes(name)) return ':x: `You can\'t create tag with that name because that was keyword`';
       
 			const content = args.splice(2, args.length).join(' ');
-      if (content.length < 1) return ':x: `You must input content`';
+      			if (content.length < 1) return ':x: `You must input content`';
 
 			const tags = await this.utils.queryDB('SELECT content FROM tags WHERE name = $1', [name]);
 			if (tags.rowCount > 0) return `:x: Tag **${name}** already exists!`
@@ -31,7 +31,7 @@ module.exports = {
 			const name = args[1].toLowerCase();
 			const content = args.splice(2, args.length).join(' ');
       
-      if (content.length < 1) return ':x: `You must input content`';
+      			if (content.length < 1) return ':x: `You must input content`';
 
 			const tag = await this.utils.queryDB('SELECT userid FROM tags WHERE name = $1', [name]);
 			if (tag.rowCount < 1) return `:x: \`Tag **${name}** not found!\``
@@ -55,7 +55,8 @@ module.exports = {
 			await this.utils.queryDB('UPDATE tags SET name = $2 WHERE name = $1', [name, newName]);
 			return `:pencil: Renamed tag **${name}** to **${newName}**`
 
-		} else if (args[0].toLowerCase() === 'gift') {
+		} else if (args[0].toLowerCase() === 'gift') { 
+			if (ctx.isDM) return ':x: `You can\'t use gift tag when in outside Guild`';
 
 			if (args.length < 3) return ':x: `You must input tag name to gift`';
 
@@ -71,8 +72,10 @@ module.exports = {
 			if (tag.rowCount < 1) return `:x: Tag **${name}** not found!`
 			if (!this.utils.isAdmin(ctx.author.id) && ctx.author.id !== tag.rows[0].userid) return ':x: `You don\'t own that tag!`'
 
-			if (user.id === ctx.author.id) return ':x: `You cant gift tags to yourself!`'
-			if (user.id === this.client.user.id) return ':x: `You cant gift tags to me!`'
+			if (user.id === ctx.author.id) return ':x: `You cant gift tags to yourself!`';
+			if (user.id === this.client.user.id) return ':x: `You cant gift tags to me!`'; 
+			const msg = await ctx.reply(`<@!${user.id}>, <@!${ctx.author.id}> want give you tag ${name}\nSay *yes* to accept it, Say *no* to reject it`); 
+			const AwaitMsg = await msg.awaitMessages(m => m.author.id === user.id && (m.content.toLowerCase() === 'accept' || m.content.toLowerCase() === 'no'), {max: 1, time: 10000, errors: ['time']);
 
 			await this.utils.queryDB('UPDATE tags SET userid = $2 WHERE name = $1', [name, user.id]);
 			return `:gift: Gifted tag **${name}** to **${user.tag}**`
@@ -113,9 +116,9 @@ module.exports = {
 			if (tag.rowCount < 1) return `:x: Tag **${name}** not found!`
 
 			const userID = tag.rows[0].userid;
-      const user = await ctx.users.fetch(userID);
+      			const user = ctx.users.has(userID) ? ctx.users.get(userID) : await ctx.users.fetch(userID);
 
-			return `:bust_in_silhouette: Tag **${name}** is owned by **${user.id}**`
+			return `:bust_in_silhouette: Tag **${name}** is owned by **${user.tag}**`
 
 		} else if (args[0].toLowerCase() === 'list') {
 
@@ -177,7 +180,7 @@ module.exports = {
 
 			const tags = await ctx.bot.utils.queryDB('SELECT name, content FROM tags WHERE userid = $1', [user.id]); 
       
-      return ctx.reply(`Tag dump for \`${user.tag}\` (\`${tags.rowCount}\` Tags):`, {
+      			return ctx.reply(`Tag dump for \`${user.tag}\` (\`${tags.rowCount}\` Tags):`, {
 				files: [{
 					attachment: Buffer.from(JSON.stringify(tags.rows, null, 4), 'utf-8'),
 					name: `tagdump-${user.username}-${user.discriminator}.json`
@@ -191,7 +194,7 @@ module.exports = {
 			const tag = await ctx.bot.utils.queryDB('SELECT content FROM tags WHERE name = $1', [name]);
 			if (tag.rowCount < 1) return `:x: Tag **${name}** not found!` 
       
-      return ctx.bot.utils.filterMentions(tag.rows[0].content);
+      			return ctx.bot.utils.filterMentions(tag.rows[0].content);
       
 		}
 	}
@@ -199,14 +202,16 @@ module.exports = {
 
 const invalidArgument = (ctx) => stripIndent`
   \`\`\`
-  ${ctx.prefix}tag <name> | create | owner | dump | list | delete | raw | gift
+  ${ctx.prefix}tag <Name> | create | owner | dump | list | delete | raw | gift
 
   Subcommands:
   - create <Content> (Create a tag)
   - owner <Tag> (Get tag owner)
-  - dump <User> (Get all dump of tag)
-  - list <User> (Get list tags)
+  - dump [User] (Get list of tag in text file)
+  - list [User] (Get list of tags)
   - delete <tag> (Delete tag)
+  - raw <Tag> (View tag's raw source code)
+  - gift <Tag> <User> (Gift the tag to someone)
 
   Base of custom command.
   \`\`\`
