@@ -53,5 +53,5 @@ Also it won't work on android tho.
 
 Make sure python 2.7 installed and some other requirements
 
-- do `npm install node-opus`
+- do `npm install node-opus ytdl-core`
 - Run the bot by do `npm start`
