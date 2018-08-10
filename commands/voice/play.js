@@ -1,6 +1,7 @@
 let ytdl;
-
-if (require.resolve('ytdl-core')) ytdl = require('ytdl-core');
+try {
+    if (require.resolve('ytdl-core')) ytdl = require('ytdl-core');
+} catch (error) {} // eslint-disable-line no-empty
 
 module.exports = {
     description: 'Plays a song or adds it to the queue',
