@@ -84,7 +84,7 @@ module.exports = {
 			}
 			
 			const confirmed = AwaitMsg.first(); 
-			if (['no', 'n'].includes(confirmed.toLowerCase())) { 
+			if (['no', 'n'].includes(confirmed.content.toLowerCase())) { 
 				return `:x: \`Action canceled, because ${user.tag} reject it\``;
 			}
 			
