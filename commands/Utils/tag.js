@@ -78,7 +78,7 @@ module.exports = {
 			
 			const msg = await ctx.reply(`<@!${user.id}>, **${ctx.author.tag}** want give you tag ${name}\nSay **yes** to accept it, Say **no** to reject it`); 
 			const AwaitMsg = await msg.channel.awaitMessages(m => m.author.id === user.id && ['yes', 'y', 'no', 'n'].includes(m.content.toLowerCase()), {max: 1, time: 10000, errors: ['time']});
-			ctx.message.isAnswered = true;
+			ctx.message.isAnswered = false;
 			
 			if (AwaitMsg.length === 0) { 
 				return ':x: `Action canceled because timeout`';
