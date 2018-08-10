@@ -1,5 +1,4 @@
 const { stripIndent } = require('common-tags')
-const { inspect } = require('util')
 
 module.exports = {
 	description: 'Base command for tags',
@@ -22,7 +21,7 @@ module.exports = {
 
 			const tags = await this.utils.queryDB('SELECT content FROM tags WHERE name = $1', [name]);
 			if (tags.rowCount > 0) return `:x: Tag **${name}** already exists!`
-			await ctx.bot.utils.queryDB('INSERT INTO tags VALUES ($1, $2, $3)', [name, inspect(content), ctx.author.id]);
+			await ctx.bot.utils.queryDB('INSERT INTO tags VALUES ($1, $2, $3)', [name, content, ctx.author.id]);
 			return `:white_check_mark: Created tag **${name}**!`
 
 		} else if (args[0].toLowerCase() === 'edit') {
