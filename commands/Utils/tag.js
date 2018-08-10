@@ -14,7 +14,7 @@ module.exports = {
 			if (args.length < 3) return ':x: `Please input tag  name to create`';
      			const name = args[1].toLowerCase()
       
-      			if (['add', 'create', 'edit', 'gift', 'dump', 'delete', 'owner'].includes(name)) return ':x: `You can\'t create tag with that name because that was keyword`';
+      			if (['add', 'create', 'edit', 'gift', 'dump', 'delete', 'owner', 'view', 'raw'].includes(name)) return ':x: `You can\'t create tag with that name because that was keyword`';
       
 			const content = args.splice(2, args.length).join(' ');
       			if (content.length < 1) return ':x: `You must input content`';
@@ -74,9 +74,19 @@ module.exports = {
 
 			if (user.id === ctx.author.id) return ':x: `You cant gift tags to yourself!`';
 			if (user.id === this.client.user.id) return ':x: `You cant gift tags to me!`'; 
+			
 			const msg = await ctx.reply(`<@!${user.id}>, <@!${ctx.author.id}> want give you tag ${name}\nSay *yes* to accept it, Say *no* to reject it`); 
-			const AwaitMsg = await msg.awaitMessages(m => m.author.id === user.id && (m.content.toLowerCase() === 'accept' || m.content.toLowerCase() === 'no'), {max: 1, time: 10000, errors: ['time']);
-
+			const AwaitMsg = await msg.channel.awaitMessages(m => m.author.id === user.id && ['yes', 'y', 'no', 'n'].includes(m.content.toLowerCase()), {max: 1, time: 10000, errors: ['time']}); 
+			
+			if (AwaitMsg.length === 0) { 
+				return ':x: `Action canceled because timeout`';
+			}
+			
+			const confirmed = AwaitMsg.first(); 
+			if (['no', 'n'].includes(confirmed.toLowerCase())) { 
+				return `:x: \`Action canceled, because ${user.tag} reject it\``;
+			}
+			
 			await this.utils.queryDB('UPDATE tags SET userid = $2 WHERE name = $1', [name, user.id]);
 			return `:gift: Gifted tag **${name}** to **${user.tag}**`
 
@@ -202,15 +212,15 @@ module.exports = {
 
 const invalidArgument = (ctx) => stripIndent`
   \`\`\`
-  ${ctx.prefix}tag <Name> | create | owner | dump | list | delete | raw | gift
+  ${ctx.prefix}tag <Tag> | create | owner | dump | list | delete | raw | gift
 
   Subcommands:
-  - create <Content> (Create a tag)
+  - add/create <Name> <Content> (Create a tag)
   - owner <Tag> (Get tag owner)
   - dump [User] (Get list of tag in text file)
-  - list [User] (Get list of tags)
-  - delete <tag> (Delete tag)
-  - raw <Tag> (View tag's raw source code)
+  - list [User] | all (Get list of user's tags or all tags)
+  - delete/remove <tag> (Delete tag)
+  - raw/view <Tag> (View tag's raw source code)
   - gift <Tag> <User> (Gift the tag to someone)
 
   Base of custom command.
