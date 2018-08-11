@@ -8,16 +8,10 @@ module.exports = {
 
 		switch (args[0].toLowerCase()) {
 			case 'pull': 
-				let result;
-				
 				try { 
-					const { exec } = require('child_process');
-
-					await exec('git pull origin master', {}, (err, stdout, stderr) => {
-						if (err) throw stderr;
-						result = stdout;
-					}) 
+					const { exec } = require('child_process'); 
 					
+					const result = await ctx.bot.utils.childExec('git pull origin master');
 					
 					return `:white_check_mark: \`Operation success\`\n\`\`\`js\n${result === undefined ? 'No logs here' : result}\`\`\``;
 				} catch (error) {
