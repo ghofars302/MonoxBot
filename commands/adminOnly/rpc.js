@@ -13,15 +13,15 @@ module.exports = {
 				try { 
 					const { exec } = require('child_process');
 
-					await exec('git pull origin master', {}, (err, res) => {
-						if (err) throw err; 
-						result = res;
+					await exec('git pull origin master', {}, (err, stdout, stderr) => {
+						if (err) throw stderr;
+						result = stdout;
 					}) 
 					
 					
 					return `:white_check_mark: \`Operation success\`\n\`\`\`js\n${await result.stdout}\`\`\``;
 				} catch (error) {
-					return `:x: \`There a error while pull the git\`\n\`\`\`js\n${await error.stderr}\`\`\``;
+					return `:x: \`There a error while pull the git\`\n\`\`\`js\n${await error}\`\`\``;
 				}
 			case 'reload':
 				try {
