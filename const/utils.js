@@ -1,3 +1,6 @@
+const Bluebird = require('bluebird');
+const childProcess = require('child_process');
+
 class utils {
 	constructor(bot) {
 		this.bot = bot;
@@ -49,6 +52,16 @@ class utils {
 		}
 
 		return page;
+	} 
+	
+	childExec(code) { 
+		return new Bluebird((resolve, reject) => { 
+			childPocess.exec(code, function (err, stdout, stderr) { 
+				if (err) reject(err || stderr); 
+				resolve(stdout)
+			});
+		});
+		
 	}
 
 	async getImagesFromMessage(msg, args) {
