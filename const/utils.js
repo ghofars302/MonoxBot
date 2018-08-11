@@ -55,7 +55,7 @@ class utils {
 	
 	childExec(code) { 
 		return new Bluebird((resolve, reject) => { 
-			require('child_process').exec(code, {timeout: 30} function (err, stdout, stderr) { 
+			require('child_process').exec(code, {timeout: 30}, function (err, stdout, stderr) { 
 				if (err) reject(err || stderr); 
 				resolve(stdout)
 			});
