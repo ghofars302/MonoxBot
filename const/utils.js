@@ -1,5 +1,4 @@
 const Bluebird = require('bluebird');
-const childProcess = require('child_process');
 
 class utils {
 	constructor(bot) {
@@ -56,7 +55,7 @@ class utils {
 	
 	childExec(code) { 
 		return new Bluebird((resolve, reject) => { 
-			childPocess.exec(code, function (err, stdout, stderr) { 
+			require('child_process').exec(code, function (err, stdout, stderr) { 
 				if (err) reject(err || stderr); 
 				resolve(stdout)
 			});
