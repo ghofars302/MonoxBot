@@ -19,7 +19,7 @@ module.exports = {
 					}) 
 					
 					
-					return `:white_check_mark: \`Operation success\`\n\`\`\`js\n${await result}\`\`\``;
+					return `:white_check_mark: \`Operation success\`\n\`\`\`js\n${result === undefined ? 'No logs here' : result}\`\`\``;
 				} catch (error) {
 					return `:x: \`There a error while pull the git\`\n\`\`\`js\n${await error}\`\`\``;
 				}
