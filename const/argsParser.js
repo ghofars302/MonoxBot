@@ -1,95 +1,77 @@
-const codeBlockRegex = /```(?:(\S+)\n)?\s*([^]+?)\s*```/i;
-
 class argsParser {
     constructor() {}
 
     async parseArgsCommand(msgArgument, ctx, command) {
-        const args = {};
-        const defaultArgs = {};
+    
+        const argsString = msgArgument.join(' ');
+        const args = this.SplitArgs(argsString);
 
-        defaultArgs.argsString = msgArgument.join(' ');
-        defaultArgs.args = this.SplitArgs(defaultArgs.argsString);
-
-        if (!command.args) return defaultArgs;
+        if (!command.args) return { args, argsString };
 
         switch (command.args.type) {
             case 'code':
-                if (codeBlockRegex.test(defaultArgs.argsString)) {
-                    const parsed = codeBlockRegex.exec(defaultArgs.argsString);
-                    args.code = parsed[2];
-                    args.lang = parsed[1] ? parsed[1].toLowerCase() : null;
+		const codeBlockRegex = /```(?:(\S+)\n)?\s*([^]+?)\s*```/i;
+			
+                if (codeBlockRegex.test(argsString)) {
+                    const parsed = codeBlockRegex.exec(argsString);
 
-                    return args;
+                    return { code: parsed[2], lang: parsed[1] ? parsed[1].toLowerCase() : null }
                 }
 
-                args.code = defaultArgs.argsString;
-                args.lang = null;
-
-                return args;
+                return { code: argsString, code: null }
             case 'member':
                 if (ctx.guild) {
-                    const member = ctx.bot.utils.getMemberFromString(ctx.message, defaultArgs.argsString);
-    
-                    args.member = member ? member : null;
+                    const member = ctx.bot.utils.getMemberFromString(ctx.message, argsString);
 
-                    return args;
+                    return { member: member ? member : null }
                 }
 
-                args.member = null;
-
-                return args;
+                return { member: null }
 
             case 'user':
-                if (/^[0-9]+$/.test(defaultArgs.argsString)) {
+                if (/^[0-9]+$/.test(argsString)) {
                     try {
-                        const user = ctx.users.has(defaultArgs.argsString) ? ctx.users.get(defaultArgs.argsString) : await ctx.users.fetch(defaultArgs.argsString);
-                        args.user = user;
+                        const user = ctx.users.has(argsString) ? ctx.users.get(argsString) : await ctx.users.fetch(argsString);
 
-                        return args
+                        return { user: user }
                     } catch (error) {
-                        args.user = null;
+                        return { user: null }
                     }
                 }
                 if (ctx.guild) {
                     let result;
 
-                    const fetched = ctx.bot.utils.getMemberFromString(ctx.message, defaultArgs.argsString);
+                    const fetched = ctx.bot.utils.getMemberFromString(ctx.message, argsString);
                     if (fetched) result = fetched.user;
                     if (!result) {
                         try {
-                            result = ctx.users.has(defaultArgs.argsString) ? ctx.users.get(defaultArgs.argsString) : await ctx.users.fetch(defaultArgs.argsString);
+                            result = ctx.users.has(argsString) ? ctx.users.get(argsString) : await ctx.users.fetch(argsString);
                         } catch (error) {
                             result = null;
                         }
                     }
-                    
-                    args.user = result;
 
-                    return args;
+                    return { user: result }
                 }
 
-                args.user = null
-
-                return args;
+                return { user: null }
             case 'message':
                 if (ctx.guild) {
-                    if (/^[0-9]+$/.test(defaultArgs.argsString)) {
+                    if (/^[0-9]+$/.test(argsString)) {
                         try {
-                            const fetched = ctx.channel.messages.has(defaultArgs.argsString) ? ctx.channel.messages.get(defaultArgs) : await ctx.channel.messages.fetch(defaultArgs.argsString);
-                            args.message = fetched;
+                            const fetched = ctx.channel.messages.has(argsString) ? ctx.channel.messages.get(argsString) : await ctx.channel.messages.fetch(argsString);
 
-                            return args;
+                            return { message: fetched }
                         } catch (error) {
-                            args.message = ctx.message;
+                            return { message: ctx.message }
                         }
                     }
                 }
 
-                args.message = ctx.message;
-
-                return args;
-            default:
-                return defaultArgs;
+                return { message: ctx.message }
+            default: 
+		if (typeof command.args.type === 'undefined') return { args, argsString }
+                throw new Error(`Argument type: ${command.args.type} not supported`);
         }
     }
 
