@@ -14,7 +14,7 @@ Requirements
 - Imagemagick
 - PostgreSQL Server (Local or cloud)
 
-### Android
+### Android (Not supported LOL)
 ```
 ANDROID NOTE: You must fixing npm in termux because npm can't get list of cpus 
               https://github.com/termux/termux-packages/issues/1855
