@@ -15,7 +15,8 @@ module.exports = {
 					const code = /(^```[a-z]*)|(```*$)/g.test(string) ? string.replace(/(^```[a-z]*)|(```*$)/g, '').trim() : string;
 
 					await eval(code);
-				} catch (error) {
+				} catch (error) { 
+					ctx.error = true;
 					return `Took: \`\`${Math.floor(Date.now() - now)}ms\`\`, Output type: \`\`${error === undefined ? 'undefined' : error === null ? 'null' : error.name}\`\` \`\`\`js\n${typeof error === 'string' ? ctx.bot.api.Util.escapeMarkdown(error, true, true) : error}\`\`\``
 				}
 				break;
@@ -27,7 +28,8 @@ module.exports = {
 					const result = await eval(code);
 
 					return `Took: \`\`${Math.floor(Date.now() - now)}ms\`\`, Output type: \`\`${typeof result}\`\` \`\`\`js\n${ctx.bot.api.Util.escapeMarkdown(await ctx.bot.utils.clean(result), true, true)}\`\`\``
-				} catch (error) {
+				} catch (error) { 
+					ctx.error = true;
 					return `Took: \`\`${Math.floor(Date.now() - now)}ms\`\`, Output type: \`\`${error === undefined ? 'undefined' : error === null ? 'null' : error.name}\`\` \`\`\`js\n${typeof error === 'string' ? ctx.bot.api.Util.escapeMarkdown(error, true, true) : error}\`\`\``
 				}
 		}
