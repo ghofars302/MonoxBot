@@ -103,7 +103,7 @@ const nekos = async (ctx, tag) => {
     const embed = new ctx.bot.api.MessageEmbed()
         .setDescription(`Tag: **${nekos}**`)
         .setImage(res.url)
-        .setFooter('Powered by nekos.life', 'https://nekos.life/static/icons/favicon-194x194.png');
+        .setFooter('Powered by nekos.life\nReact :new: to get new Image', 'https://nekos.life/static/icons/favicon-194x194.png');
 
     return embed;
 }
