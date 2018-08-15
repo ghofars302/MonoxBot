@@ -3,9 +3,9 @@ MonoxBot
 
 Source code for MonoxBot
 
-If you want invite this bot follow this link <http://monoxbot.ga>
+The bot already live. If you want invite this bot follow this link <http://monoxbot.ga>
 
-# Selfhost
+# Self-hosting
 
 Requirements
 - Python 2.7
@@ -14,13 +14,16 @@ Requirements
 - Imagemagick
 - PostgreSQL Server (Local or cloud)
 
-### Android (Not supported LOL)
+### Android (Not supported)
 ```
 ANDROID NOTE: You must fixing npm in termux because npm can't get list of cpus 
               https://github.com/termux/termux-packages/issues/1855
 ```
 ```
 ANDROID NOTE: Voice command won't working because node-opus won't installing in android
+```
+```
+ANDROID NOTE: node-canvas currently return 404 while installing via npm
 ```
 - Install termux in google play
 - Open and install node.js
