@@ -13,7 +13,13 @@
         "type": "git",
         "url": "git@github.com:ghofars302/MonoxBot.git"
     },
-    "keywords": [],
+    "keywords": [
+        "monoxbot",
+        "monox discord",
+        "monox"
+        "ghofars302"
+        "monodoxy"
+    ],
     "license": "AGPL-3.0",
     "engines": {
         "node": "10.x.x"
