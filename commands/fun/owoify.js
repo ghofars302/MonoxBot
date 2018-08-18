@@ -2,7 +2,6 @@ module.exports = {
     description: 'Make funny message',
     category: 'Fun',
     args: '<Message>',
-    aliases: ['owoify'],
     cooldown: 2000,
     run: async function (ctx, { argsString }) {
         let userID = ctx.author.id;
