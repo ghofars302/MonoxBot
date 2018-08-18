@@ -6,6 +6,7 @@ class RegisterEvent {
         this.message();
         this.botevent();
         this.others();
+        this.pagination()
     }
 
     message() {
@@ -82,6 +83,20 @@ class RegisterEvent {
                 type: 'PLAYING'
             });
         });
+
+        this.client.on('ratelimit', (ratelimit) => {
+            this.bot.logger.error(`[Shard ${this.client.shard.id}] [Ratelimit] ${ratelimit.info} at ${ratelimit.path}`)
+        })
+    }
+
+    pagination() {
+        this.client.on('messageReactionAdd', (react, user) => {
+            this.bot.Paginate.handleReactionAdd(react, user);
+        })
+
+        this.client.on('messageReactionRemove', (react, user) => {
+            this.bot.Paginate.handleReactionRemove(react, user);
+        })
     }
 
     others() {

@@ -1,16 +1,25 @@
 class argsParser {
-    constructor() {}
+    constructor(handler) {
+        this.handler = handler;
+    }
 
     async parseArgsCommand(msgArgument, ctx, command) {
     
-        const argsString = msgArgument.join(' ');
-        const args = this.SplitArgs(argsString);
+        let argsString = msgArgument.join(' ');
+        let args = this.SplitArgs(argsString);
 
-        if (!command.args) return { args, argsString };
+        if (!command.args || typeof command.args === 'string') return { args, argsString };
+
+        if (!argsString && command.args.default) {
+            args = [command.args.default];
+            argsString = command.args.default;
+        }
+
+        if (!argsString && command.args.require) return this.handler.invalidArguments(ctx, 'Missing argument!!!');
 
         switch (command.args.type) {
             case 'code':
-		const codeBlockRegex = /```(?:(\S+)\n)?\s*([^]+?)\s*```/i;
+                const codeBlockRegex = /```(?:(\S+)\n)?\s*([^]+?)\s*```/i; // eslint-disable-line no-case-declarations
 			
                 if (codeBlockRegex.test(argsString)) {
                     const parsed = codeBlockRegex.exec(argsString);
@@ -18,7 +27,7 @@ class argsParser {
                     return { code: parsed[2], lang: parsed[1] ? parsed[1].toLowerCase() : null }
                 }
 
-                return { code: argsString, code: null }
+                return { code: argsString, lang: null }
             case 'member':
                 if (ctx.guild) {
                     const member = ctx.bot.utils.getMemberFromString(ctx.message, argsString);
@@ -69,8 +78,11 @@ class argsParser {
                 }
 
                 return { message: ctx.message }
+            case 'integer':
+                return { number: parseInt(argsString) }
+            
             default: 
-		if (typeof command.args.type === 'undefined') return { args, argsString }
+                if (typeof command.args.type === 'undefined') return { args, argsString }
                 throw new Error(`Argument type: ${command.args.type} not supported`);
         }
     }

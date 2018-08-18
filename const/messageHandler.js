@@ -1,4 +1,7 @@
 const Context = require('./Context');
+const argsPaser = require('./argsParser');
+const commontags = require('common-tags');
+
 require('./StructureExtends');
 
 Array.prototype.random = function() {
@@ -25,6 +28,7 @@ class messageHandler {
 		this.bot = bot;
 
 		this.context = new Context();
+		this.argsPaser = new argsPaser(this);
 	}
 
 	async ContextCommand(context) {
@@ -91,10 +95,10 @@ class messageHandler {
 			}
 		}
 
-		const args = {};
+		context.command = command;
 
-		args.argsString = msgArguments.join(' ');
-		args.args = this.splitArguments(args.argsString); 
+		const args = await this.argsPaser.parseArgsCommand(msgArguments, context, command);
+		if (!args) return;
 
 		context.channel.startTyping();
 		context.channel.stopTyping(true);
@@ -137,16 +141,20 @@ class messageHandler {
 		return args;
 	}
 
-	async invalidArguments(context) {
-		const mentionRegex = new RegExp(`^<@!?${this.bot.client.user.id}> `);
-		let prefix = this.bot.config.prefix;
+	async invalidArguments(context, reason) {
+		if (!context.command) throw new Error('Invalid command object');
+		if (!context.command.args || ['undefined'].includes(typeof context.command.args)) throw new Error('Invalid args object');
+		if (!reason) reason = 'undefined';
 
-		const messageArguments = (mentionRegex.test(context.content) ? context.content.replace(mentionRegex, '') : context.content.replace(prefix, '')).replace(/^ +/g, '').split(/ +/g);
-		const commandName = messageArguments.shift().toLowerCase();
-		let command = this.bot.commands.get(commandName);
-		if (command.alias) command = this.bot.commands.get(command.name);
+		await context.reply(commontags.stripIndent`
+			${reason}
+			\`\`\`
+			${context.prefix}${context.command.name} ${typeof context.command.args === 'object' ? context.command.args.pattern : context.command.args}
+			${' '.repeat(context.prefix.length + context.command.name.length)} ${'^'.repeat(typeof context.command.args === 'object' ? context.command.args.pattern.length : context.command.args.length)}
+			\`\`\`
+		`)
 
-		context.reply(`\`\`\`${this.bot.config.prefix}${commandName} ${command.args}\n${command.description}\`\`\``);
+		return false;
 	}
 }
 

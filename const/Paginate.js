@@ -1,12 +1,10 @@
 const EventEmitter = require('events');
-const {
-    MessageEmbed
-} = require('discord.js');
-const {
-    stripIndent
-} = require('common-tags')
+const emojis = ['⏮', '◀', '▶', '⏭', '⏹'];
+const newEmojis = ['🆕'];
 
 /**
+ * Rewritten in 18 August 2018
+ * 
  * @param {class} Paginate - A pagination Util for MonoxBot framework.
  */
 
@@ -15,199 +13,164 @@ module.exports = class Paginate {
         this.bot = bot;
 
         this.timeout = 60000
+        this.emojis = ['⏮', '◀', '▶', '⏭', '⏹'];
+        this.new = ['🆕'];
     }
 
-    initPaginate(msg, author, length, help) {
-        let paginate = {};
+    async handleReactionAdd(msgReaction, user) {
+        if (user.bot || !msgReaction.message.pagination || msgReaction.message.pagination.invokerUserID !== user.id) return;
 
-        paginate.event = new EventEmitter();
-        paginate.currentPage = 1;
-        paginate.pages = length - 1;
-        paginate.author = author;
+        if (msgReaction.message.guild && msgReaction.message.channel.permissionsFor(msgReaction.message.guild.me).has('MANAGE_MESSAGE')) {
+            await msgReaction.users.remove(user);
+        }
 
-        msg.paginate = paginate;
+        if (msgReaction.message.pagination.type === 'next') {
+            return msgReaction.message.pagination.eventEmitter.emit('next');
+        }
 
-        this._drawPagination(msg, help); // eslint-disable-line no-underscore-dangle
-
-        return msg.paginate.event;
+        return this.paginationEvent(msgReaction);
     }
 
-    initNext(msg, author) {
-        let paginate = {};
+    async handleReactionRemove(msgReaction, user) {
+        if (user.bot || !msgReaction.message.pagination || msgReaction.message.pagination.invokerUserID !== user.id) return;
 
-        paginate.event = new EventEmitter();
-        paginate.author = author;
+        if (msgReaction.message.guild && msgReaction.message.channel.permissionsFor(msgReaction.message.guild.me).has('MANAGE_MESSAGE')) {
+            return;
+        }
 
-        msg.paginate = paginate;
+        if (msgReaction.message.pagination.type === 'next') {
+            return msgReaction.message.pagination.eventEmitter.emit('next');
+        }
 
-        this._drawNext(msg); // eslint-disable-line no-underscore-dangle
-
-        return msg.paginate.event;
+        return this.paginationEvent(msgReaction);
     }
 
-    async _drawNext(msg) {
-        try {
-            await msg.react('🆕')
-
-            return this._awaitResponseNext(msg); // eslint-disable-line no-underscore-dangle
-        } catch (error) {
-            // Do nothing..
+    paginationEvent(msgReaction) {
+        switch (msgReaction.emoji.name) {
+            case '⏮':
+                this.paginationFirst(msgReaction.message.pagination);
+                break;
+            case '◀':
+                this.paginatePrevious(msgReaction.message.pagination);
+                break;
+            case '▶':
+                this.paginateNext(msgReaction.message.pagination);
+                break;
+            case '⏭':
+                this.paginateLast(msgReaction.message.pagination);
+                break;
+            case '⏹':
+                msgReaction.message.delete();
+                break;
+            default:
+                break;
         }
     }
 
-    async _awaitResponseNext(msg) {
-        const filter = (react, user) => {
-            const passedEmojis = ['🆕'].includes(react.emoji.name);
-
-            return user.id === msg.paginate.author.id && passedEmojis;
+    paginationFirst(pagination) {
+        if (pagination.currentPage === 1) {
+            return;
         }
-
-        try {
-            const reactions = await msg.awaitReactions(filter, {
-                max: 1,
-                time: 120000,
-                errors: ['time']
-            });
-
-            const response = reactions.first();
-            const user = response.users.last();
-
-            if (msg.guild && msg.channel.permissionsFor(msg.guild.me).has('MANAGE_MESSAGES')) await response.users.remove(user);
-
-            msg.paginate.event.emit('next');
-            return this._awaitResponseNext(msg); // eslint-disable-line no-underscore-dangle
-
-        } catch (error) {
-            if (msg.guild && msg.channel.permissionsFor(msg.guild.me).has('MANAGE_MESSAGES')) {
-                msg.reactions.removeAll();
-            } else {
-                this._stopPagination(msg); // eslint-disable-line no-underscore-dangle
-            }
-
-            if (error instanceof Error) throw error;
-        }
+      
+        pagination.currentPage = 1;
+        pagination.eventEmitter.emit('paginate', 1);
     }
 
-    async _drawPagination(msg, help) {
-        try {
-            await msg.react('◀');
-            await msg.react('▶');
-            await msg.react('⏹');
-            if (help) await msg.react('ℹ');
-
-            return this._awaitResponsePagination(msg); // eslint-disable-line no-underscore-dangle
-        } catch (error) {
-            // Do nothing..
+    paginateLast(pagination) {
+        if (pagination.currentPage === pagination.pageCount) {
+          return;
         }
+    
+        pagination.currentPage = pagination.pageCount;
+        pagination.eventEmitter.emit('paginate', pagination.pageCount);
     }
 
-    async _awaitResponsePagination(msg) {
-        const filter = (react, user) => {
-            const passedEmojis = ['◀', '▶', '⏹', 'ℹ'].includes(react.emoji.name);
+    paginateNext(pagination) {
+        pagination.currentPage = (pagination.currentPage + 1 <= pagination.pageCount) ? pagination.currentPage + 1 : 1;
+        pagination.eventEmitter.emit('paginate', pagination.currentPage);
+    }
 
-            return user.id === msg.paginate.author.id && passedEmojis;
+    paginatePrevious(pagination) {
+        pagination.currentPage = (pagination.currentPage - 1 < 1) ? pagination.pageCount : pagination.currentPage - 1;
+        pagination.eventEmitter.emit('paginate', pagination.currentPage);
+    }
+
+    initPaginate(message, invoker, pageCount) {
+        if (message.guild && !message.channel.permissionsFor(message.guild.me).has('ADD_REACTIONS')) {
+            message.edit('Sorry, but I\'m missing the folowing permission ADD_REACTIONS', {embed: []});
+            return false;
         }
 
-        try {
-            const reactions = await msg.awaitReactions(filter, {
-                max: 1,
-                time: 60000,
-                errors: ['time']
-            });
+        const pgObject = {};
 
-            const response = reactions.first();
-            const user = response.users.last();
-            const emoji = [response.emoji.name];
+        pgObject.invokerUserID = invoker.id;
+        pgObject.pageCount = pageCount;
+        pgObject.currentPage = 1;
+        pgObject.eventEmitter = new EventEmitter();
+        pgObject.timer = setTimeout(this.stopPagination.bind(null, message, this.bot.client), 120000);
+        message.pagination = pgObject;
 
-            if (msg.guild && msg.channel.permissionsFor(msg.guild.me).has('MANAGE_MESSAGES')) await response.users.remove(user);
+        this.addReactions(message);
 
-            switch (emoji[0] || emoji[1]) {
-                case '◀':
-                    if (msg.paginate.pages === 0) return this._awaitResponsePagination(msg); // eslint-disable-line no-underscore-dangle
+        return pgObject.eventEmitter;
+    }
 
-                    this._back(msg); // eslint-disable-line no-underscore-dangle
-                    break;
+    initNext(message, invoker) {
+        if (message.guild && !message.channel.permissionsFor(message.guild.me).has('ADD_REACTIONS')) {
+            message.edit('Sorry, but I\'m missing the folowing permission ADD_REACTIONS', {embed: []});
+            return false;
+        }
 
-                case '▶':
-                    if (msg.paginate.pages === 0) return this._awaitResponsePagination(msg); // eslint-disable-line no-underscore-dangle
+        const nextObject = {};
 
-                    this._forward(msg); // eslint-disable-line no-underscore-dangle
-                    break;
+        nextObject.invokerUserID = invoker.id;
+        nextObject.eventEmitter = new EventEmitter();
+        nextObject.timer = setTimeout(this.stopNext.bind(null, message, this.bot.client), 120000);
+        nextObject.type = 'next';
+        message.pagination = nextObject;
 
-                case '⏹':
-                    msg.delete();
-                    break;
+        for (const i of newEmojis) {
+            try {
+                message.react(i);
+            } catch (e) {} // eslint-disable-line no-empty
+        }
 
-                case 'ℹ':
-                    if (msg.paginate.pages === 0) return this._awaitResponsePagination(msg); // eslint-disable-line no-underscore-dangle
+        return nextObject.eventEmitter;
+    }
 
-                    this._help(msg); // eslint-disable-line no-underscore-dangle
-                    break;
-
-                default:
-                    break;
-            }
-        } catch (error) {
-            if (msg.guild && msg.channel.permissionsFor(msg.guild.me).has('MANAGE_MESSAGES')) {
-                msg.reactions.removeAll();
-            } else {
-                this._stopPagination(msg); // eslint-disable-line no-underscore-dangle
-            }
-
-            if (error instanceof Error) throw error;
+    async addReactions(message) {
+        for (const i of emojis) {
+            try {
+                await message.react(i);
+            } catch (e) {} // eslint-disable-line no-empty
         }
     }
 
-    async _back(msg) {
-        msg.paginate.currentPage = (msg.paginate.currentPage - 1 < 1) ? msg.paginate.pages : msg.paginate.currentPage - 1;
-
-        msg.paginate.event.emit('paginate', msg.paginate.currentPage);
-
-        return this._awaitResponsePagination(msg) // eslint-disable-line no-underscore-dangle
-    }
-
-    async _forward(msg) {
-        msg.paginate.currentPage = (msg.paginate.currentPage + 1 <= msg.paginate.pages) ? msg.paginate.currentPage + 1 : 1
-
-        msg.paginate.event.emit('paginate', msg.paginate.currentPage);
-
-        return this._awaitResponsePagination(msg) // eslint-disable-line no-underscore-dangle
-    }
-
-    async _help(msg) {
-        const embed = new MessageEmbed()
-            .setDescription(stripIndent `
-                MonoxPagination util helper.
-
-                ◀ => Back to previously page.
-                ▶ => Forward to next page.
-                ⏹ => Stop the pagination and delete the message.
-                ℹ => Show this message helper.
-
-                NOTE: this paginator still WIP. may contains
-                      some bugs
-            `)
-            .setFooter(`monoxbot.ga`)
-            .setTimestamp();
-
-        msg.edit(embed)
-
-        return this._awaitResponsePagination(msg) // eslint-disable-line no-underscore-dangle
-    }
-
-    _stopPagination(msg) {
-        for (const reaction of msg.reactions.values()) {
-            if (['◀', '▶', '⏹', 'ℹ'].includes(reaction.emoji.name)) {
+    stopNext(message, main) {
+        for (const reaction of message.reactions.values()) {
+            if (newEmojis.includes(reaction.emoji.name)) {
                 for (const user of reaction.users.values()) {
-                    if (user.id === this.bot.client.user.id || (msg.guild && msg.channel.permissionsFor(msg.guild.me).has('MANAGE_MESSAGES'))) {
+                    if (user.id === main.user.id || (message.guild && message.channel.permissionsFor(message.guild.me).has('MANAGE_MESSAGES'))) {
                         reaction.users.remove(user);
                     }
                 }
             }
         }
 
-        delete msg.paginate;
+        delete message.pagination;
+    }
 
-        return true;
+    stopPagination(message, main) {
+        for (const reaction of message.reactions.values()) {
+            if (emojis.includes(reaction.emoji.name)) {
+                for (const user of reaction.users.values()) {
+                    if (user.id === main.user.id || (message.guild && message.channel.permissionsFor(message.guild.me).has('MANAGE_MESSAGES'))) {
+                        reaction.users.remove(user);
+                    }
+                }
+            }
+        }
+
+        delete message.pagination;
     }
 }

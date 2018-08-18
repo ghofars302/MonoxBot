@@ -73,6 +73,22 @@ class ResourceLoader {
 			idleTimeoutMillis: 30000
 		});
 	}
+
+	generateHelpPages() {
+		const sorted = {};
+		let key;
+		const a = [];
+
+		[...this.bot.commands.keys()].forEach(key => {
+			a.push(key)
+		});
+
+		a.sort();
+
+		for (key = 0; key < a.length; key++) {
+			sorted[a[key]] = this.bot.commands
+		}
+	}
 }
 
 module.exports = ResourceLoader;

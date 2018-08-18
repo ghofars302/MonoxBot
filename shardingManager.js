@@ -6,6 +6,8 @@ const PREPAREDB = require('./const/prepareDB');
 
 const trueOrNot = process.env.webhelper === "true" ? true : false; // eslint-disable-line no-unneeded-ternary
 
+process.title = `MonoxBot ${SELF['version']}`
+
 /* eslint-disable no-console */
 
 class MonoxSharding { // eslint-disable-line no-unused-vars

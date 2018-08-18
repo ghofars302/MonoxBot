@@ -23,6 +23,7 @@ module.exports = {
                 }]
             })
         } catch (error) {
+            if (error instanceof ctx.bot.fetch.FetchError) return ':warning: ``API down or took too long``'
             return `:x: \`${error.message}\``
         }
     }

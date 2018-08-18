@@ -1,8 +1,15 @@
+/* eslint-disable max-lines */
+
 const Bluebird = require('bluebird');
 
 class utils {
 	constructor(bot) {
 		this.bot = bot;
+
+		this.emojiRegex = RegExp('[\u{1f300}-\u{1f5ff}\u{1f900}-\u{1f9ff}\u{1f600}-\u{1f64f}\u{1f680}-\u{1f6ff}\u{2600}-\u{26ff}\u{2700}-\u{27bf}\u{1f1e6}-\u{1f1ff}\u{1f191}-\u{1f251}\u{1f004}\u{1f0cf}\u{1f170}-\u{1f171}\u{1f17e}-\u{1f17f}\u{1f18e}\u{3030}\u{2b50}\u{2b55}\u{2934}-\u{2935}\u{2b05}-\u{2b07}\u{2b1b}-\u{2b1c}\u{3297}\u{3299}\u{303d}\u{00a9}\u{00ae}\u{2122}\u{23f3}\u{24c2}\u{23e9}-\u{23ef}\u{25b6}\u{23f8}-\u{23fa}]', 'u');
+		this.customEmojiRegex = RegExp('^(<:\\w+:)?(?<id>\\d{10,})>?$');
+		this.customEmojiEndpoint = 'https://cdn.discordapp.com/emojis/';
+		this.emojiEndpoint = 'https://bot.mods.nyc/twemoji/';
 	}
 	
 	filterMentions(string) {
@@ -20,10 +27,30 @@ class utils {
 			return '@invalid-user';
 		});
 
-  	}
+	}
 
 	isAdmin(userID) {
 		return this.bot.config.admins.includes(userID);
+	}
+
+	emojiToCodePoint(unicodeSurrogates) { 
+		const r = [];
+		let c = 0;
+		let p = 0;
+		let i = 0;
+	
+		while (i < unicodeSurrogates.length) {
+			c = unicodeSurrogates.charCodeAt(i++);
+			if (p) {
+				r.push((0x10000 + ((p - 0xD800) << 10) + (c - 0xDC00)).toString(16)); // eslint-disable-line no-bitwise
+				p = 0;
+			} else if (c >= 0xD800 && c <= 0xDBFF) {
+				p = c;
+			} else {
+				r.push(c.toString(16));
+			}
+		}
+		return r.join('-');
 	}
 
 	ImageEmbedPagination(ctx, array, message, fieldTitle, fieldMessage) {
@@ -60,7 +87,44 @@ class utils {
 				resolve(stdout)
 			});
 		});
-		
+	}
+
+	async checkImageURL(url) {
+		let httpResponse;
+
+		try {
+			httpResponse = await this.bot.axios({
+				method: 'head',
+				url,
+				headers: {
+					'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36'
+				},
+				maxRedirects: 5
+			})
+		} catch (error) {
+			return false
+		}
+
+		return httpResponse.status === 200;
+	}
+
+	async getEmojiURL(input) {
+		const isEmoji = this.emojiRegex.test(input)
+		const customEmojiResult = this.customEmojiRegex.exec(input)
+
+		let url;
+
+		if (!isEmoji && !customEmojiResult) return false;
+
+		if (isEmoji) {
+			url = `${this.emojiEndpoint}${this.emojiToCodePoint(input)}.png`
+		} else {
+			url = `${this.customEmojiEndpoint}${customEmojiResult[2]}`
+		}
+
+		if (!await this.checkImageURL(url)) return false;
+
+		return url;
 	}
 
 	async getImagesFromMessage(msg, args) {
@@ -71,8 +135,10 @@ class utils {
 			for (const value of args) {
 				if (this.isURL(value)) imageURLs.push(value);
 
-				if (/^<a?:.+:\d+>$/.test(value)) {
-					imageURLs.push(`https://cdn.discordapp.com/emojis/${value.match(/^<a?:.+:(\d+)>$/)[1]}`);
+				const emojiURL = await this.getEmojiURL(value);
+
+				if (emojiURL) {
+					imageURLs.push(emojiURL);
 				} else {
 					if (value === 'me') {
 						if (msg.author.displayAvatarURL().endsWith('.gif')) {

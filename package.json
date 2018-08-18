@@ -1,6 +1,6 @@
 {
     "name": "monoxbot",
-    "version": "2.5.0",
+    "version": "3.0.0",
     "description": "Source code for MonoxBot, monoxbot.ga",
     "main": "bot.js",
     "scripts": {
@@ -35,6 +35,7 @@
         "gm": "^1.23.1",
         "humanize-duration": "^3.14.0",
         "js-beautify": "^1.7.5",
+        "lodash": "^4.17.10",
         "moment": "^2.22.2",
         "moment-duration-format": "^2.2.2",
         "node-fetch": "^2.1.2",
