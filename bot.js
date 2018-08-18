@@ -9,6 +9,7 @@ const Paginate = require('./const/Paginate');
 const Events = require('./const/events');
 const Context = require('./const/Context');
 const Tables = require('./const/createTables');
+const stringUtils = require('./const/stringUtils');
 
 process.on('unhandledRejection', (err) => {
 	if (err.message && ['Missing Access', 'Missing Permissions', 'Unknown Message'].some(x => err.message.includes(x))) return;
@@ -27,6 +28,7 @@ class MonoxBot {
 		this.ConfirmationHelper = new ConfirmHelper(this);
 		this.Paginate = new Paginate(this);
 		this.db = this.ResourceLoader.createDBInstance();
+		this.stringUtils = new stringUtils(this);
 
 		Tables(this.db);
 		
@@ -49,6 +51,7 @@ class MonoxBot {
 
 		this.ResourceLoader.loadModules();
 		this.commands = this.ResourceLoader.loadCommands();
+		this.ResourceLoader.generateHelpPages();
 		
 		this.commandCooldowns = new api.Collection();
 		this.commandEditingStore = new api.Collection();

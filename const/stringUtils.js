@@ -1,108 +1,19 @@
-const {stripIndent} = require('common-tags')
-const {version} = require('../package.json');
-
 class stringUtils {
-    static displayHelpPage(prefix, number) {
-        const pageOne = stripIndent`
-            \`\`\`
-            MonoxBot ${version} commands list
-            FUN...........Page number 2
-            IMAGE.........Page number 3
-            UTILS.........Page number 4
-            VOICE.........Page number 5
+    constructor(main) {
+        this.main = main;
+    }
 
-            PS: You can see help for individual command by do ${prefix}help <Command>
-                You can see latest update by using command ${prefix}new
+    displayHelpPages(pageNumber) {
+        pageNumber = pageNumber || 1;
 
-            To paginate the help page react message below.
-            \`\`\`
-        `;
+        if (pageNumber < 1 || pageNumber > this.main.helpPages.length) pageNumber = 1;
 
-        const pageTwo = stripIndent`
-            \`\`\`
-            -==PAGE TWO==-
+        let output = `- MonoxBot command list (Page ${pageNumber} of ${this.main.helpPages.length}`;
 
-            ${prefix}hug [@Mentions | User]
-            ${prefix}neko <Tag | sfw | nsfw | list>
-            ${prefix}slap [@Mentions | User]
-            ${prefix}kiss [@Mentions | User]
-            ${prefix}cuddle [@Mentions | User]
-            ${prefix}pat [@Mentions | User]
-            ${prefix}feeding [@Mentions | User]
-            ${prefix}owo <Message>
+        output += `\`\`\`${this.main.helpPages[pageNumber - 1]}\`\`\``;
+        output += `To see individual commands, type help <command>`;
 
-            // '<>' means must be a argument
-            // '[]' means optional argument
-
-            To paginate the help page react message below.
-            \`\`\`
-        `;
-
-        const pageThree = stripIndent`
-            \`\`\`
-            -==PAGE THREE==-
-
-            ${prefix}bobross [@Mentions | User | URL]
-            ${prefix}gay [@Mentions | User | URL]
-            ${prefix}glich [@Mentions | User | URL]
-            ${prefix}steamcard [@Mentions | User | URL] [text]
-            ${prefix}sharpen [@Mentions | User | URL]
-
-            // '<>' means must be a argument
-            // '[]' means optional argument
-
-            To paginate the help page react message below.
-            \`\`\`
-        `;
-
-        const pageFour = stripIndent`
-            \`\`\`
-            -==PAGE FOUR==-
-
-            ${prefix}avatar <@Mentions | User>
-            ${prefix}help [Command]
-            ${prefix}info
-            ${prefix}ping [URL]
-            ${prefix}rex <Language> <code>
-            ${prefix}screenshot <URL>
-            ${prefix}undo
-            ${prefix}users <@Mentions | User>
-            ${prefix}beautify <JSCode>
-            ${prefix}image <Query>
-            ${prefix}clean <Limit> [Filter]
-            ${prefix}urban <Query>
-            ${prefix}prefix <Prefix>
-
-            // '<>' means must be a argument
-            // '[]' means optional argument
-
-            To paginate the help page react message below.
-            \`\`\`
-        `;
-
-        const pageFive = stripIndent`
-            \`\`\`
-            -==PAGE FIVE==-
-
-            ${prefix}play <Query | YoutubeURL>
-            ${prefix}stop 
-            ${prefix}pause 
-            ${prefix}skip ['-force']
-            ${prefix}queue
-
-            // '<>' means must be a argument
-            // '[]' means optional argument
-        
-            To paginate the help page react message below.
-            \`\`\`
-        `;
-
-        if (!number) return pageOne;
-        if (number === 1) return pageOne
-        if (number === 2) return pageTwo
-        if (number === 3) return pageThree
-        if (number === 4) return pageFour
-        if (number === 5) return pageFive
+        return output;
     }
 }
 

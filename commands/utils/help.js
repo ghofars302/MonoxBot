@@ -1,5 +1,4 @@
 const {stripIndent} = require('common-tags');
-const {displayHelpPage} = require('../../const/stringUtils');
 
 module.exports = {
     description: 'Get list command or individual command information',
@@ -10,7 +9,7 @@ module.exports = {
         if (ctx.author.id !== ctx.main.owner && !ctx.bot.config.pageHelp && !argsString) return `Help command currently WIP, use \`\`${ctx.bot.config.prefix}help <Command>\`\` instead.`;
 
         if (!argsString) {
-            const helpMsg = await ctx.reply(displayHelpPage(ctx.prefix, undefined))
+            const helpMsg = await ctx.reply(ctx.bot.stringUtils.displayHelpPages())
         
             const paginate = ctx.bot.Paginate.initPaginate(helpMsg, ctx.author, 6);
 
@@ -19,7 +18,7 @@ module.exports = {
             }
 
             paginate.on('paginate', number => {
-                helpMsg.edit(displayHelpPage(ctx.prefix, number));
+                helpMsg.edit(ctx.bot.stringUtils.displayHelpPages(number));
             });
 
             return true;

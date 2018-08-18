@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const humanizeDuration = require('humanize-duration');
 const postgres = require('pg'); 
+const _ = require('lodash');
 
 class ResourceLoader {
 	constructor(bot) {
@@ -60,6 +61,11 @@ class ResourceLoader {
 		this.bot.fetchapi = require('../modules/fetchAPI');
 		this.bot.fAPI = require('../modules/fAPI');
 		this.bot.logger = require('../modules/MonoxLogger');
+
+		/* Global Object */
+
+		global.fetch = this.bot.fetch;
+		global.fs = this.bot.fs;
 	}
 
 	createDBInstance() {
@@ -79,15 +85,56 @@ class ResourceLoader {
 		let key;
 		const a = [];
 
-		[...this.bot.commands.keys()].forEach(key => {
+		this.commandsObj = {};
+
+		this.bot.commands.forEach((value, key) => {
+			if (!value.alias) this.commandsObj[key] = value;
+		})
+
+		_.forEach(this.commandsObj, (value, key) => {
 			a.push(key)
 		});
 
 		a.sort();
 
+		this.bot.helpPages = [];
+
 		for (key = 0; key < a.length; key++) {
-			sorted[a[key]] = this.bot.commands
+			sorted[a[key]] = this.commandsObj[a[key]];
 		}
+
+		this.commands = sorted;
+
+		let iterate = 0;
+		let helpPageCount = 1;
+
+		let output = '';
+
+		_.forEach(this.commands, (command) => {
+			output += `- ${command.name}`;
+
+			if (command.aliases) {
+				if (Array.isArray(command.aliases)) {
+					output += ` [${command.aliases.join(' | ')}]`;
+				} else {
+					output += ` [${command.aliases}]`;
+				}
+			}
+
+			if (command.description) {
+				output += `\n     --- ${command.description}\n`;
+			}
+
+			this.bot.helpPages[helpPageCount - 1] = output;
+
+			iterate += 1;
+
+			if (iterate >= 10) {
+				helpPageCount += 1;
+				iterate = 0;
+				output = '';
+			}
+		})
 	}
 }
 
