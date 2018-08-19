@@ -4,6 +4,7 @@ module.exports = {
     description: 'Get list command or individual command information',
     category: 'Utils',
     cooldown: 5000,
+    aliases: ['cmds', 'halp'],
     args: '<Command>',
     run: async function (ctx, { argsString }) {
         if (ctx.author.id !== ctx.main.owner && !ctx.bot.config.pageHelp && !argsString) return `Help command currently WIP, use \`\`${ctx.bot.config.prefix}help <Command>\`\` instead.`;
@@ -31,9 +32,9 @@ module.exports = {
 
             return stripIndent`
                 \`\`\`
-                ${ctx.bot.config.prefix}${command.args ? `${argsString} ${command.args}` : `${argsString}`}
+                ${command.args ? (command.aliases ? `[${command.name}|${command.aliases.join('|')}] ${command.args ? (typeof command.args === 'object' ? command.args.pattern : command.args) : ''}`: `${command.name} ${command.args ? (typeof command.args === 'object' ? command.args.pattern : command.args) : ''}`) : `${argsString}`}
 
-                ${command.description}
+                ${command.description ? command.description : 'No description given.'}
                 \`\`\`
             `
         }

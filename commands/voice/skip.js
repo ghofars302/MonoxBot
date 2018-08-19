@@ -4,7 +4,7 @@ module.exports = {
     cooldown: 10000,
     guildOnly: true,
     run: async function (ctx, { args }) {
-        if (!ctx.guild.me.voiceChannel || !ctx.bot.voiceStreams.has(ctx.guild.id) || !ctx.bot.playingSongs.has(ctx.guild.id)) return ':x: The bot isn\'t playing anything!'
+        if (!ctx.guild.me.voice.channel || !ctx.bot.voiceStreams.has(ctx.guild.id) || !ctx.bot.playingSongs.has(ctx.guild.id)) return ':x: The bot isn\'t playing anything!'
         if (!ctx.bot.songQueues.get(ctx.guild.id) || !ctx.bot.songQueues.get(ctx.guild.id).length) return `:x: There no other song in queue, use \`\`${ctx.bot.config.prefix}leave\`\` to stop song.`
         const currentSong = ctx.bot.playingSongs.get(ctx.guild.id);
 
@@ -16,7 +16,7 @@ module.exports = {
                 timeout: 5000
             });
             return ctx.bot.voiceStreams.get(ctx.guild.id).endsong('skip');
-        } else if (!ctx.member.voiceChannel || ctx.member.voiceChannel.id !== ctx.guild.me.voiceChannel.id) return ':x: You cant start a vote when you\'re not in the voice channel!'
+        } else if (!ctx.member.voice.channel || ctx.member.voice.channel.id !== ctx.guild.me.voice.channel.id) return ':x: You cant start a vote when you\'re not in the voice channel!'
 
 
         let skipVote = await ctx.reply('Voting to skip song: react with ✅ to skip, react with ❎ to vote against skipping. ctx.bot vote will end in 5 seconds');
@@ -24,9 +24,9 @@ module.exports = {
         await skipVote.react('❎');
 
         const reactions = await skipVote.awaitReactions((reaction, user) => {
-            if (!ctx.guild.member(user).voiceChannel) return false;
-            if (!ctx.guild.me.voiceChannel) return false;
-            return ctx.guild.member(user).voiceChannel.id === ctx.guild.me.voiceChannel.id;
+            if (!ctx.guild.member(user).voice.channel) return false;
+            if (!ctx.guild.me.voice.channel) return false;
+            return ctx.guild.member(user).voice.channel.id === ctx.guild.me.voice.channel.id;
         }, {
             time: 5000
         });

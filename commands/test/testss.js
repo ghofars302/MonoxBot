@@ -1,8 +1,9 @@
 module.exports = {
     description: 'Take a screenshot on target URL(s)',
     cooldown: 5000,
+    hide: true,
     run: async function (ctx, { argsString }) {
-        if (!argsString) return `\`\`\`${ctx.bot.config.prefix}screenshot <URLs>\n\nTake a screenshot on target URL(s)\`\`\``;
+        if (!argsString) return `\`\`\`${ctx.prefix}screenshot <URLs>\n\nTake a screenshot on target URL(s)\`\`\``;
 
         const now = Date.now();
 

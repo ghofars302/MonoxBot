@@ -111,6 +111,10 @@ class ResourceLoader {
 		let output = '';
 
 		_.forEach(this.commands, (command) => {
+			if (command.hide) {
+				return;
+			}
+
 			output += `- ${command.name}`;
 
 			if (command.aliases) {

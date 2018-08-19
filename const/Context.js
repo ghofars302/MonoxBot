@@ -18,8 +18,7 @@ class Context {
         context.users = this.bot.client.users;
         context.author = message.author;
         context.createdAt = message.createdAt;
-        context.guilds = this.bot.client.guilds;
-        context.message.isAnswered = false;
+        context.guilds = this.bot.client.guild;
         context.error = false;
 
         if (!context.isDM) {
@@ -34,7 +33,11 @@ class Context {
 
         context.direct = async (...args) => this.handleMessage(context, 'direct', args);
 
-        context.react = emoji => {
+        context.react = async emoji => {
+            if (context.message.reactions.has(emoji)) {
+                const reaction = await context.message.reactions.get(emoji);
+                await reaction.remove()
+            }
             return context.message.react(emoji);
         }
 
@@ -47,22 +50,18 @@ class Context {
 
     async handleMessage(context, type, args) {
         if (context.message.deleted) return;
-        if (context.message.isAnswered && !context.error) return;
 
-        const regex = new RegExp(`${context.main.token}`, 'm');
-
-        if (args.length !== 0 && typeof args[0] === 'string' && (args[0].includes(context.main.token) || regex.test(args[0]))) {
-            console.log(`[SHARD ${context.main.shard.id}] [WARNING] A message tried to send BOT TOKEN`); // eslint-disable-line no-console
-            args[0] = args[0].replace(regex, '<TOKEN_CENSORED>');
+        if (args.length !== 0 && typeof args[0] === 'string' && (args[0].includes(context.main.token))) {
+            this.bot.logger.log(this.bot.client, `[WARNING] A message tried to send BOT TOKEN`); // eslint-disable-line no-console
+            args[0] = args[0].replace(context.main.token, '<TOKEN_CENSORED>');
         }
 
         if (type === 'direct') {
-            context.message.isAnswered = true;
             return context.author.send(...args).then(messageObject => {
                 if (context.author.bot) return messageObject;
                 context.bot.commandEditingStore.set(context.id, messageObject);
                 
-                setTimeout(() => {
+                messageObject.timer = setTimeout(() => {
                     if (context.bot.commandEditingStore.has(context.id)) {
                         context.bot.commandEditingStore.delete(context.id);
                     }
@@ -71,12 +70,11 @@ class Context {
                 return messageObject;
             });
         } else {
-            context.message.isAnswered = true;
             return context.channel.send(...args).then(messageObject => {
                 if (context.author.bot) return messageObject;
                 context.bot.commandEditingStore.set(context.id, messageObject);
                 
-                setTimeout(() => {
+                messageObject.timer = setTimeout(() => {
                     if (context.bot.commandEditingStore.has(context.id)) {
                         context.bot.commandEditingStore.delete(context.id);
                     }

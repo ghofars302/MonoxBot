@@ -1,23 +1,27 @@
-const { stripIndent } = require('common-tags')
+const {
+	stripIndent
+} = require('common-tags')
 
 module.exports = {
 	description: 'Base command for tags',
 	category: 'Utils',
-	args: '(name) [args] | add (name) (content..) | edit (name) (content..) | rename (name) (newName) | gift (name) (newOwner) | delete (name) | raw (name) | owner (name) | list [user]',
+	args: '<Tag> | create | owner | dump | list | delete | raw | gift | random',
 	aliases: ['t'],
 	cooldown: 1000,
-	run: async function (ctx, { args }) {
+	run: async function (ctx, {
+		args
+	}) {
 		if (args.length === 0) return invalidArgument(ctx)
 
 		if (['add', 'create'].includes(args[0].toLowerCase())) {
 
 			if (args.length < 3) return ':x: `Please input tag content to create`';
-     			const name = args[1].toLowerCase()
-      
-      			if (['add', 'create', 'edit', 'gift', 'dump', 'delete', 'owner', 'view', 'raw', 'rename'].includes(name)) return ':x: `You can\'t create tag with that name because that was keyword`';
-      
+			const name = args[1].toLowerCase()
+
+			if (['add', 'create', 'edit', 'gift', 'dump', 'delete', 'owner', 'view', 'raw', 'rename'].includes(name)) return ':x: `You can\'t create tag with that name because that was keyword`';
+
 			const content = args.splice(2, args.length).join(' ');
-      			if (content.length < 1) return ':x: `You must input content`';
+			if (content.length < 1) return ':x: `You must input content`';
 
 			const tags = await this.utils.queryDB('SELECT content FROM tags WHERE name = $1', [name]);
 			if (tags.rowCount > 0) return `:x: Tag **${name}** already exists!`
@@ -30,8 +34,8 @@ module.exports = {
 
 			const name = args[1].toLowerCase();
 			const content = args.splice(2, args.length).join(' ');
-      
-      			if (content.length < 1) return ':x: `You must input content`';
+
+			if (content.length < 1) return ':x: `You must input content`';
 
 			const tag = await this.utils.queryDB('SELECT userid FROM tags WHERE name = $1', [name]);
 			if (tag.rowCount < 1) return `:x: \`Tag **${name}** not found!\``
@@ -55,7 +59,7 @@ module.exports = {
 			await this.utils.queryDB('UPDATE tags SET name = $2 WHERE name = $1', [name, newName]);
 			return `:pencil: Renamed tag **${name}** to **${newName}**`
 
-		} else if (args[0].toLowerCase() === 'gift') { 
+		} else if (args[0].toLowerCase() === 'gift') {
 			if (ctx.isDM) return ':x: `You can\'t use gift tag when in outside Guild`';
 
 			if (args.length < 3) return ':x: `You must input tag name to gift`';
@@ -73,21 +77,24 @@ module.exports = {
 			if (!this.utils.isAdmin(ctx.author.id) && ctx.author.id !== tag.rows[0].userid) return ':x: `You don\'t own that tag!`'
 
 			if (user.id === ctx.author.id) return ':x: `You cant gift tags to yourself!`';
-			if (user.id === this.client.user.id) return ':x: `You cant gift tags to me!`'; 
+			if (user.id === this.client.user.id) return ':x: `You cant gift tags to me!`';
 			if (user.bot) return ':x: `You can\'t gift tag to Bot`';
-			
-			const msg = await ctx.reply(`<@!${user.id}>, **${ctx.author.tag}** want give you tag **${name}**\nSay **yes** to accept it, Say **no** to reject it`); 
-			const AwaitMsg = await msg.channel.awaitMessages(m => m.author.id === user.id && ['yes', 'y', 'no', 'n'].includes(m.content.toLowerCase()), {max: 1, time: 10000});
-			
-			if (AwaitMsg.array().length === 0) { 
+
+			const msg = await ctx.reply(`<@!${user.id}>, **${ctx.author.tag}** want give you tag **${name}**\nSay **yes** to accept it, Say **no** to reject it`);
+			const AwaitMsg = await msg.channel.awaitMessages(m => m.author.id === user.id && ['yes', 'y', 'no', 'n'].includes(m.content.toLowerCase()), {
+				max: 1,
+				time: 10000
+			});
+
+			if (AwaitMsg.array().length === 0) {
 				return msg.edit(':x: `Action canceled because timeout`');
 			}
-			
-			const confirmed = AwaitMsg.first(); 
-			if (['no', 'n'].includes(confirmed.content.toLowerCase())) { 
+
+			const confirmed = AwaitMsg.first();
+			if (['no', 'n'].includes(confirmed.content.toLowerCase())) {
 				return msg.edit(`:x: \`Action canceled, because ${user.tag} reject it\``);
 			}
-			
+
 			await this.utils.queryDB('UPDATE tags SET userid = $2 WHERE name = $1', [name, user.id]);
 			return msg.edit(`:gift: Gifted tag **${name}** to **${user.tag}**`);
 
@@ -95,7 +102,7 @@ module.exports = {
 
 			if (args.length < 2) return ':x: `You must input tag`';
 
-			const name = args.splice(1, args.length).join(' ').toLowerCase();
+			const name = args.splice(1, args.length).join(' ').toLowerCase(); // eslint-disable-line newline-per-chained-call
 
 			const tag = await this.utils.queryDB('SELECT userid FROM tags WHERE name = $1', [name]);
 			if (tag.rowCount < 1) return `:x: Tag **${name}** not found!`
@@ -121,13 +128,13 @@ module.exports = {
 
 			if (args.length < 2) return ':x: `Please input tag name`';
 
-			const name = args.splice(1, args.length).join(' ').toLowerCase();
+			const name = args.splice(1, args.length).join(' ').toLowerCase(); // eslint-disable-line newline-per-chained-call
 
 			const tag = await this.utils.queryDB('SELECT userid FROM tags WHERE name = $1', [name]);
 			if (tag.rowCount < 1) return `:x: Tag **${name}** not found!`
 
 			const userID = tag.rows[0].userid;
-      			const user = ctx.users.has(userID) ? ctx.users.get(userID) : await ctx.users.fetch(userID);
+			const user = ctx.users.has(userID) ? ctx.users.get(userID) : await ctx.users.fetch(userID);
 
 			return `:bust_in_silhouette: Tag **${name}** is owned by **${user.tag}**`
 
@@ -155,7 +162,7 @@ module.exports = {
 
 				const tags = await this.utils.queryDB('SELECT name FROM tags WHERE userid = $1', [user.id]);
 
-				const tagList = tags.rows.map(r => r.name.includes(' ') ? `"${r.name}"` : r.name).join('\n') || 'This user made no tags';
+				const tagList = tags.rows.map(r => r.name.includes(' ') ? `"${r.name}"` : r.name).join('\n') || 'This user made no tags'; // eslint-disable-line no-confusing-arrow
 
 				if (tagList.length > 2048) {
 
@@ -189,31 +196,38 @@ module.exports = {
 				if (match) user = match.user;
 			}
 
-			const tags = await ctx.bot.utils.queryDB('SELECT name, content FROM tags WHERE userid = $1', [user.id]); 
-      
-      			return ctx.reply(`Tag dump for \`${user.tag}\` (\`${tags.rowCount}\` Tags):`, {
+			const tags = await ctx.bot.utils.queryDB('SELECT name, content FROM tags WHERE userid = $1', [user.id]);
+
+			return ctx.reply(`Tag dump for \`${user.tag}\` (\`${tags.rowCount}\` Tags):`, {
 				files: [{
 					attachment: Buffer.from(JSON.stringify(tags.rows, null, 4), 'utf-8'),
 					name: `tagdump-${user.username}-${user.discriminator}.json`
 				}]
 			});
 
+		} else if (args[0].toLowerCase() === 'random') {
+
+			const allTags = await ctx.bot.utils.queryDB('SELECT * FROM tags');
+
+			const randomResult = allTags.rows.random();
+
+			return `Tag **${randomResult.name}**\n${ctx.bot.utils.filterMentions(randomResult.content)}`
 		} else {
 
 			const name = args[0].toLowerCase();
 
 			const tag = await ctx.bot.utils.queryDB('SELECT content FROM tags WHERE name = $1', [name]);
-			if (tag.rowCount < 1) return `:x: Tag **${name}** not found!` 
-      
-      			return ctx.bot.utils.filterMentions(tag.rows[0].content);
-      
+			if (tag.rowCount < 1) return `:x: Tag **${name}** not found!`
+
+			return ctx.bot.utils.filterMentions(tag.rows[0].content);
+
 		}
 	}
 };
 
-const invalidArgument = (ctx) => stripIndent`
+const invalidArgument = (ctx) => stripIndent `
   \`\`\`
-  ${ctx.prefix}tag <Tag> | create | owner | dump | list | delete | raw | gift
+  ${ctx.prefix}tag <Tag> | create | owner | dump | list | delete | raw | gift | random
 
   Subcommands:
   - add/create <Name> <Content> (Create a tag)
@@ -222,6 +236,7 @@ const invalidArgument = (ctx) => stripIndent`
   - list [User] | all (Get list of user's tags or all tags)
   - delete/remove <tag> (Delete tag)
   - raw/view <Tag> (View tag's raw source code)
+  - random (Get random tag from all tags)
   - gift <Tag> <User> (Gift the tag to someone)
 
   Base of custom command.

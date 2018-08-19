@@ -17,11 +17,11 @@ module.exports = {
             return 'Resume current song'
         }
 
-        const voiceChannel = ctx.member.voiceChannel;
+        const voiceChannel = ctx.member.voice.channel;
         if (!voiceChannel) return ':x: `Please be in a voice channel first!`'
         if (!voiceChannel.permissionsFor(ctx.guild.me).has('CONNECT')) return ':x: `I don\'t have permissions to join your current voice channel!`'
 
-        if (ctx.guild.me.voiceChannel && ctx.guild.me.voiceChannel.id !== voiceChannel.id) return ':x: `I am already playing in another channel!`'
+        if (ctx.guild.me.voice.channel && ctx.guild.me.voice.channel.id !== voiceChannel.id) return ':x: `I am already playing in another channel!`'
 
         const body = await ctx.bot.rpromise({
             uri: 'https://www.googleapis.com/youtube/v3/search',
@@ -90,10 +90,10 @@ module.exports = {
                     }));
 
                     playSong(currentSong.url);
-                    ctx.reply(`Now playing: \`${currentSong.video.title}\` by \`${currentSong.video.author}\` \`[${ctx.bot.hd(currentSong.video.duration, youtubeHdConfig)}]\`\nQueued by \`${ctx.bot.client.users.has(currentSong.user) ? ctx.bot.client.users.get(currentSong.user).tag : 'Unknown#0000'}\`\n\nURL: <${currentSong.url}>`);
+                    ctx.message.channel.send(`Now playing: \`${currentSong.video.title}\` by \`${currentSong.video.author}\` \`[${ctx.bot.hd(currentSong.video.duration, youtubeHdConfig)}]\`\nQueued by \`${ctx.bot.client.users.has(currentSong.user) ? ctx.bot.client.users.get(currentSong.user).tag : 'Unknown#0000'}\`\n\nURL: <${currentSong.url}>`);
                     ctx.bot.songQueues.set(ctx.guild.id, ctx.bot.songQueues.get(ctx.guild.id).splice(1));
                 } else {
-                    ctx.reply(':stop_button: `No more songs in queue, leaving channel`');
+                    ctx.message.channel.send(':stop_button: `No more songs in queue, leaving channel`');
                     ctx.bot.songQueues.delete(ctx.guild.id);
                     ctx.bot.voiceStreams.delete(ctx.guild.id);
                     ctx.bot.playingSongs.delete(ctx.guild.id);
@@ -123,14 +123,14 @@ module.exports = {
 
             ctx.bot.songQueues.set(ctx.guild.id, queue);
 
-            ctx.reply(`Added to queue: \`${currentSong.video.title}\` by \`${currentSong.video.author}\` \`[${ctx.bot.hd(currentSong.video.duration, youtubeHdConfig)}]\`\n\nURL: <${currentSong.url}>`);
+            ctx.message.channel.send(`Added to queue: \`${currentSong.video.title}\` by \`${currentSong.video.author}\` \`[${ctx.bot.hd(currentSong.video.duration, youtubeHdConfig)}]\`\n\nURL: <${currentSong.url}>`);
         } else {
             ctx.bot.playingSongs.set(ctx.guild.id, Object.assign(currentSong, {
                 startedAt: Date.now()
             }));
 
             playSong(currentSong.url);
-            ctx.reply(`Now playing: \`${currentSong.video.title}\` by \`${currentSong.video.author}\` \`[${ctx.bot.hd(currentSong.video.duration, youtubeHdConfig)}]\`\nQueued by \`${ctx.bot.client.users.has(currentSong.user) ? ctx.bot.client.users.get(currentSong.user).tag : 'Unknown#0000'}\`\n\nURL: <${currentSong.url}>`);
+            ctx.message.channel.send(`Now playing: \`${currentSong.video.title}\` by \`${currentSong.video.author}\` \`[${ctx.bot.hd(currentSong.video.duration, youtubeHdConfig)}]\`\nQueued by \`${ctx.bot.client.users.has(currentSong.user) ? ctx.bot.client.users.get(currentSong.user).tag : 'Unknown#0000'}\`\n\nURL: <${currentSong.url}>`);
         }
     }
 };

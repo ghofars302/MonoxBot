@@ -15,6 +15,10 @@ module.exports = {
 		try {
 			const result = await eval(code);
 
+			if (result instanceof ctx.bot.api.Message) {
+				if (ctx.guild.member(ctx.guild.me).hasPermission('ADD_REACTIONS')) return ctx.react('✅');
+				return;
+			}
 			return `Took: \`\`${Math.floor(Date.now() - now)}ms\`\`, Output type: \`\`${typeof result}\`\` \`\`\`${lang}\n${ctx.bot.api.Util.escapeMarkdown(await ctx.bot.utils.clean(result), true, true)}\`\`\``
 		} catch (error) { 
 			ctx.error = true;

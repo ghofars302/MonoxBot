@@ -1,6 +1,7 @@
 module.exports = {
     description: 'Testing of imagemagick before export it to API',
     adminOnly: true,
+    hide: true,
     category: 'test',
     run: async function (ctx, { args }) {
         if (args.length < 1) return 'I need image and args';

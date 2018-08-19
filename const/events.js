@@ -25,6 +25,9 @@ class RegisterEvent {
                     if (lastMessage) {
                         lastMessage.delete();
                         this.bot.commandEditingStore.delete(oldMsg.id);
+                        if (oldMsg.timer) {
+                            clearTimeout(oldMsg.timer);
+                        }
                     }
                 }
             } catch (e) {} // eslint-disable-line no-empty
@@ -42,6 +45,9 @@ class RegisterEvent {
                 if (lastMessage) {
                     lastMessage.delete();
                     this.bot.commandEditingStore.delete(msg.id);
+                    if (msg.timer) {
+                        clearTimeout(msg.timer);
+                    }
                 }
             } catch (e) {} // eslint-disable-line no-empty
         });
@@ -74,6 +80,10 @@ class RegisterEvent {
             if (fetched.owner.id !== this.client.owner) {
                 this.bot.logger.error(`[Error] The provided token owner not matched with owner ID, exiting...`)
                 return process.exit();
+            }
+
+            if (!this.client.shard) {
+                this.bot.logger('Running without sharding cause some commands not working.')
             }
 
             this.client.secret = fetched.botPublic ? false : true; // eslint-disable-line no-unneeded-ternary
