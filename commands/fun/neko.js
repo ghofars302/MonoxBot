@@ -29,13 +29,14 @@ module.exports = {
                 -feed       -anal
                 -cuddle     -lewdk
                 -waifu      -smallboobs
-                            -funatari
-                            -blowjob
+                -baka       -futanari
+                -smug       -blowjob
                             -eroyuri
                             -yuri
                             -nsfwavatar
                             -trap
                             -spank
+                            -wallpaper
 
                 To use those tags do: ${ctx.bot.config.prefix}neko <tags>
                 \`\`\`
@@ -133,7 +134,7 @@ const nsfw = {
     'pussy': '/img/pussy',
     'nekohentaigif': '/img/nsfw_neko_gif',
     'nekohentai': '/img/lewdkemo',
-    'lesbian': '/img/lesbian',
+    'lesbian': '/img/les',
     'kuni': '/img/kemo',
     'cum': '/img/cum',
     'classic': '/img/classic',
@@ -143,11 +144,12 @@ const nsfw = {
     'anal': '/img/anal',
     'lewdk': '/img/lewdk',
     'smallboobs': '/img/smallboobs',
-    'funatari': '/img/funatari',
+    'futanari': '/img/futanari',
     'blowjob': '/img/blowjob',
     'eroyuri': '/img/eroyuri',
     'yuri': '/img/yuri',
     'nsfwavatar': '/img/nsfw_avatar',
     'trap': '/img/trap',
-    'spank': '/img/spank'
+    'spank': '/img/spank',
+    'wallpaper': '/img/wallpaper'
 }
