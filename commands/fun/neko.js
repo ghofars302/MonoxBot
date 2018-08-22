@@ -98,12 +98,12 @@ const nekos = async (ctx, tag) => {
         json: true
     });
 
-    if (res.msg === '404') return 'Error: `API link is not correct.`';
+    if (res.msg === '404') return `Error: \`API path ${url} is not correct.\``;
 
     const embed = new ctx.bot.api.MessageEmbed()
         .setDescription(`Tag: **${nekos}**`)
         .setImage(res.url)
-        .setFooter('Powered by nekos.life\nReact 🆕 to get new Image', 'https://nekos.life/static/icons/favicon-194x194.png');
+        .setFooter('Powered by nekos.life \nReact 🆕 to get new Image', 'https://nekos.life/static/icons/favicon-194x194.png');
 
     return embed;
 }
@@ -122,7 +122,9 @@ const sfw = {
     'hug': '/img/hug',
     'foxgirl': '/img/fox_girl',
     'feed': '/img/feed',
-    'cuddle': '/img/cuddle'
+    'cuddle': '/img/cuddle',
+    'smug': '/img/smug',
+    'baka': '/img/baka'
 }
 
 const nsfw = {
