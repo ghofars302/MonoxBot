@@ -1,7 +1,7 @@
 module.exports = {
     description: 'Get list of users who have same discriminator.',
     category: 'Utils',
-    args: '<Number || Mention>',
+    args: '<Number | Mention>',
     aliases: ['discrim'],
     cooldown: 1000,
     run: async function (ctx, { argsString }) {
