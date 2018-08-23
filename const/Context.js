@@ -35,8 +35,8 @@ class Context {
 
         context.react = async emoji => {
             if (context.message.reactions.has(emoji)) {
-                const reaction = await context.message.reactions.get(emoji);
-                await reaction.remove()
+                const reaction = context.message.reactions.get(emoji);
+                await reaction.remove(context.main.user);
             }
             return context.message.react(emoji);
         }
