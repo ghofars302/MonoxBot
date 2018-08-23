@@ -1,5 +1,5 @@
 module.exports = {
-    description: 'Get list of user who have same discriminator.',
+    description: 'Get list of users who have same discriminator.',
     category: 'Utils',
     args: '<number>',
     aliases: ['discrim'],
@@ -7,9 +7,14 @@ module.exports = {
     run: async function (ctx, { argsString }) {
         let discriminator = ctx.author.discriminator;
 
-        if (argsString) {
-            if (isNaN(argsString) || !/^\d{4}$/.test(argsString)) return ':x: `Format error: args must be number string`';
-            discriminator = argsString;
+        if (argsString || ctx.message.mentions.users.size > 0) {
+            if (!isNaN(argsString) || /^\d{4}$/.test(argsString)) {
+                discriminator = argsString;
+            } else if (ctx.message.mentions.users.size > 0) {
+                discriminator = ctx.message.mentions.users.first().discriminator;
+            } else {
+                return ':x: `args must be Mentions or String number`;
+            }
         }
 
         let resultArray = [];
