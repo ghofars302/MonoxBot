@@ -13,7 +13,7 @@ module.exports = {
             } else if (ctx.message.mentions.users.size > 0) {
                 discriminator = ctx.message.mentions.users.first().discriminator;
             } else {
-                return ':x: `args must be Mentions or String number`;
+                return ':x: `args must be Mentions or String number`';
             }
         }
 
