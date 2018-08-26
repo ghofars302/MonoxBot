@@ -56,7 +56,7 @@ class RegisterEvent {
     
     personal() {
         this.client.on('message', async msg => {
-            if (!msg.guild) return;
+            if (!msg.guild || msg.author.bot) return;
             if (msg.guild.id === '386922866890899456') {
                 if (msg.channel.id === '387232388603838464') {
                     if (msg.content === '!download') {
