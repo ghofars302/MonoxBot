@@ -59,12 +59,14 @@ class RegisterEvent {
             if (!msg.guild) return;
             if (msg.guild.id === '386922866890899456') {
                 if (msg.channel.id === '387232388603838464') {
-                    try {
-                        await msg.author.send('Trigon download link: http://www.arponag.xyz/Trigon.html');
-                        return;
-                    } catch (error) {
-                        await msg.reply('Oof, seems you not open DM to everyone, or you block the bot from sending you Message');
-                        return;
+                    if (msg.content === '!download') {
+                        try {
+                            await msg.author.send('Trigon download link: http://www.arponag.xyz/Trigon.html');
+                            return;
+                        } catch (error) {
+                            await msg.reply('Oof, seems you not open DM to everyone, or you block the bot from sending you Message');
+                            return;
+                        }
                     }
                 }
             }
