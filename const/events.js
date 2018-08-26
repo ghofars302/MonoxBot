@@ -7,6 +7,7 @@ class RegisterEvent {
         this.botevent();
         this.others();
         this.pagination()
+        this.personal();
     }
 
     message() {
@@ -54,11 +55,17 @@ class RegisterEvent {
     }
     
     personal() {
-        this.client.on('message', msg => {
+        this.client.on('message', async msg => {
             if (!msg.guild) return;
             if (msg.guild.id === '386922866890899456') {
                 if (msg.channel.id === '387232388603838464') {
-                    return msg.author.send('Trigon download link: http://www.arponag.xyz/Trigon.html');
+                    try {
+                        await msg.author.send('Trigon download link: http://www.arponag.xyz/Trigon.html');
+                        return;
+                    } catch (error) {
+                        await msg.reply('Oof, seems you not open DM to everyone, or you block the bot from sending you Message');
+                        return;
+                    }
                 }
             }
         })
