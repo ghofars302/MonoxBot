@@ -52,6 +52,17 @@ class RegisterEvent {
             } catch (e) {} // eslint-disable-line no-empty
         });
     }
+    
+    personal() {
+        this.client.on('message', msg => {
+            if (!msg.guild) return;
+            if (msg.guild.id === '386922866890899456') {
+                if (msg.channel.id === '387232388603838464') {
+                    return msg.author.send('Trigon download link: http://www.arponag.xyz/Trigon.html');
+                }
+            }
+        })
+    }
 
     botevent() {
         this.client.on('error', (err) => {
