@@ -41,7 +41,7 @@ module.exports = {
 
         if (regex.test(userOMention)) {
             user = ctx.users.get(userOMention.replace(regex, (match, id) => ctx.users.has(id) ? id : ctx.author.id)) // eslint-disable-line
-            message.content = args.join(' ').replace(regex, (match, id) => (ctx.guild && ctx.guild.members.has(id) && ctx.guild.users.get(id).nickname) ? `[@${ctx.guild.members.get(id).nickname}]` : ctx.users.has(id) ? `[@{ctx.users.get(id).username}]` : match); // eslint-disable-line
+            message.content = args.join(' ').replace(regex, (match, id) => (ctx.guild && ctx.guild.members.has(id) && ctx.guild.members.get(id).nickname) ? `[@${ctx.guild.members.get(id).nickname}]` : ctx.users.has(id) ? `[@{ctx.users.get(id).username}]` : match); // eslint-disable-line
             if (message.content.length < 1) return ':x: `Please insert message content`';
         }
 
@@ -62,10 +62,9 @@ module.exports = {
                 author,
                 light: false,
                 compact: false,
+                timestamp: moment(timestamp).calendar()
             }
         }
-
-        options.args.timestamp = moment(timestamp).calendar();
 
         const buffer = await ctx.bot.fAPI('quote', options);
 
